@@ -1,0 +1,26 @@
+regressaoPolinomial <- function(pontos, ordem){
+  matrizAumentada <- matrix(1, nrow = (ordem + 1), ncol = length(pontos))
+  coeficientes <- matrix(0, nrow = (ordem + 1), ncol = (ordem + 1))
+  constantes <- c( rep(0, (ordem+1) ) )
+  
+  for(i in 2:(ordem+1)){
+    matrizAumentada[i, ] <- (pontos[i]^i)
+  }
+  
+  for(i in 1:(ordem+1)){
+    constantes[i] <- (pontos[i] %*% matrizAumentada[i])
+    
+    for(j in 1:(ordem+1)){
+      # if Para Evitar Recalculo
+      if(i > j){
+        coeficientes[i, j] <- coeficientes[j, i]
+      }
+      
+      else{
+        coeficientes[i, j] <- matrizAumentada[i] * matrizAumentada[j]
+      }
+    } # for interno
+  } # for externo
+  
+  return(list(COEF = coeficientes, CONST = constantes))
+}
