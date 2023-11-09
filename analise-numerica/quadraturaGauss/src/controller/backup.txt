@@ -1,0 +1,27 @@
+    
+    /**
+     * Nao possui retorno
+     * recebe como parametro
+     * a funcao original
+     * @param funcao 
+     */
+    public static void legendre(String funcao){
+        String novoX = MudancaVariaveis.novoX(integral.getLimiteInferior(), integral.getLimiteSuperior());
+        
+        funcao = MudancaVariaveis.contatenaFuncaoString(funcao, novoX);
+        System.out.println(funcao);
+        funcao = MudancaVariaveis.novoDx(funcao, integral.getLimiteInferior(), integral.getLimiteSuperior());
+        integral.setIntegralCalculada(0f);
+        
+        System.out.println(funcao);
+        
+        for(int i = 0; i < tabelaLegendre.getQuantidadePontos(); i++){
+            integral.setIntegralCalculada(
+                    integral.getIntegralCalculada() +
+                    tabelaLegendre.getPeso(i) * Funcao.funcao(
+                            funcao,
+                            tabelaLegendre.getArgumento(i)
+                    )
+            );
+        }
+    }
