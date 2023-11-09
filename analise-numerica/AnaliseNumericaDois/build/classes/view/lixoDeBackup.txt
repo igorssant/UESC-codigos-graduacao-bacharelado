@@ -1,0 +1,11 @@
+/**
+     * funcao arbitraria.
+     * mexa para diversas funcoes
+     * recebe x e devolve f(x)
+     * @param x
+     * @return resultado
+     */
+   public static double funcao(double x){
+       double resultado = Math.pow(x, 3) - x - 4;
+       return resultado;
+   }

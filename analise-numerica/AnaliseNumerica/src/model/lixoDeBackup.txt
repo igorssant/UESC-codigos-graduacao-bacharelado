@@ -1,0 +1,45 @@
+ double verificaMudancaDeSinal = 0.0;
+        
+        objetoBissexao.gerarEstimativa();
+        objetoBissexao.gerarErro();
+        objetoBissexao.setFAnterior(
+                funcao(
+                        funcao,
+                        objetoBissexao.getIntervaloInferior()
+                )
+        );
+        objetoBissexao.setFAtual(0.0);
+        
+        if(objetoBissexao.getErro() < 0.0){
+            objetoBissexao.setErro( objetoBissexao.getErro() * (-1) );
+        }
+        
+        while( /*objetoBissexao.getErro() >= objetoBissexao.getTolerancia() &&*/ contador < limiteDeInteracoes ){
+            objetoBissexao.setFAtual(
+                    funcao(
+                            funcao,
+                            objetoBissexao.getEstimativa()
+                    )
+            );
+            verificaMudancaDeSinal = objetoBissexao.getFAnterior() * objetoBissexao.getFAtual();
+            
+            if(verificaMudancaDeSinal < 0.0){
+                objetoBissexao.setIntervaloSuperior(objetoBissexao.getEstimativa());
+            }
+            
+            else if(verificaMudancaDeSinal > 0.0){
+                
+            }
+            
+            else{
+                break;
+            }
+            
+            objetoBissexao.gerarErro();
+            
+            if(objetoBissexao.getErro() < 0.003){
+                objetoBissexao.setErro( objetoBissexao.getErro() * (-1) );
+            }
+            
+            objetoBissexao.gerarEstimativa();
+            contador++;
