@@ -1,0 +1,15 @@
+Recozimento Simulado (simulated annealing): esta pode ser vista como uma
+forma de restringir um método descendente, empregando critérios de rejeição que
+podem resultar na geração de um número de conjuntos com |V*| = 1.
+
+
+
+explorar conhecimento além do contido na função f( s ) e
+a vizinhança N( s ) sobre V* para ser mais proximamente representativo do mínimo
+sobre N( s ), sujeito à reestruturação especial de N( s )
+
+
+
+deve ser
+capaz de aceitar um movimento de s para s' (em V*) mesmo se f( s' ) > f( s ). Mas
+quando uma solução s' pior que s pode ser aceita, um looping pode ocorrer

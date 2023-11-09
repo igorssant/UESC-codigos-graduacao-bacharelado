@@ -1,0 +1,6 @@
+abrirBarragem
+fecharBarragem
+adicionarBarragem
+removerBarragem
+==========================
+Essas funções terão que ocorrer no Rio.java
