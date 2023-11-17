@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+ Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="1.0.1" use-changelog="false" last-position="0,0" last-zoom="0.75" max-obj-count="25"
+	 default-schema="public" default-owner="postgres"
+	 layers="Default layer"
+	 active-layers="0"
+	 layer-name-colors="#000000"
+	 layer-rect-colors="#b4b4b4"
+	 show-layer-names="false" show-layer-rects="false">
+<database name="new_database" is-template="false" allow-conns="true">
+</database>
+
+<schema name="public" layers="0" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<table name="tbl_departamento" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="340" y="920"/>
+	<column name="dept_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="dept_nome" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<constraint name="tbl_departamento_pk" type="pk-constr" table="public.tbl_departamento">
+		<columns names="dept_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_telefone" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="440" y="40"/>
+	<column name="tel_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="tel_numero_ddd" not-null="true">
+		<type name="numeric" length="11" precision="0"/>
+	</column>
+	<constraint name="tbl_telefone_pk" type="pk-constr" table="public.tbl_telefone">
+		<columns names="tel_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_espec_tel" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="40" y="40"/>
+	<column name="espec_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="espec_especificacao" not-null="true">
+		<type name="varchar" length="50"/>
+	</column>
+	<constraint name="tbl_espec_tel_pk" type="pk-constr" table="public.tbl_espec_tel">
+		<columns names="espec_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_tipo_telefone" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="0" y="200"/>
+	<column name="tptel_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="tptel_operadora" not-null="true">
+		<type name="varchar" length="20"/>
+	</column>
+	<constraint name="tbl_tipo_telefone_pk" type="pk-constr" table="public.tbl_tipo_telefone">
+		<columns names="tptel_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="tbl_tipo_telefone_has_many_tbl_telefone" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#ac972e"
+	 src-table="public.tbl_tipo_telefone"
+	 dst-table="public.tbl_telefone"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_espec_tel_has_many_tbl_telefone" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#72486f"
+	 src-table="public.tbl_espec_tel"
+	 dst-table="public.tbl_telefone"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_predio" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="20" y="1100"/>
+	<column name="pred_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="pred_nome" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<constraint name="tbl_predio_pk" type="pk-constr" table="public.tbl_predio">
+		<columns names="pred_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_colegiado" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="0" y="680"/>
+	<column name="cole_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="cole_nome" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<constraint name="tbl_colegiado_pk" type="pk-constr" table="public.tbl_colegiado">
+		<columns names="cole_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_colegiado_has_tbl_telefone" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="40" y="440"/>
+</table>
+
+<relationship name="tbl_colegiado_has_many_tbl_colegiado_has_tbl_telefone" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#1f73f5"
+	 src-table="public.tbl_colegiado"
+	 dst-table="public.tbl_colegiado_has_tbl_telefone"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_telefone_has_many_tbl_colegiado_has_tbl_telefone" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#f37f7c"
+	 src-table="public.tbl_telefone"
+	 dst-table="public.tbl_colegiado_has_tbl_telefone"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_predio_has_many_tbl_colegiado" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#a45bd8"
+	 src-table="public.tbl_predio"
+	 dst-table="public.tbl_colegiado"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_professor" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1060" y="260"/>
+	<column name="prof_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="prof_nome" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<constraint name="tbl_professor_pk" type="pk-constr" table="public.tbl_professor">
+		<columns names="prof_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_curso" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="920" y="840"/>
+	<column name="cur_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="cur_nome" not-null="true">
+		<type name="varchar" length="50"/>
+	</column>
+	<constraint name="tbl_curso_pk" type="pk-constr" table="public.tbl_curso">
+		<columns names="cur_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_estado" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="880" y="20"/>
+	<column name="est_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="est_nome" not-null="true">
+		<type name="varchar" length="50"/>
+	</column>
+	<constraint name="tbl_estado_pk" type="pk-constr" table="public.tbl_estado">
+		<columns names="est_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_cidade" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1240" y="40"/>
+	<column name="cid_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="cid_nome" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<constraint name="tbl_cidade_pk" type="pk-constr" table="public.tbl_cidade">
+		<columns names="cid_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_bairro" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1600" y="20"/>
+	<column name="bair_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="bair_nome" not-null="true">
+		<type name="varchar" length="50"/>
+	</column>
+	<constraint name="tbl_bairro_pk" type="pk-constr" table="public.tbl_bairro">
+		<columns names="bair_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="tbl_estado_has_many_tbl_cidade" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#82d92a"
+	 src-table="public.tbl_estado"
+	 dst-table="public.tbl_cidade"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_cidade_has_many_tbl_bairro" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#fd2b1d"
+	 src-table="public.tbl_cidade"
+	 dst-table="public.tbl_bairro"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_logradouro" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1960" y="40"/>
+	<column name="logr_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="logr_nome" not-null="true">
+		<type name="varchar" length="50"/>
+	</column>
+	<constraint name="tbl_logradouro_pk" type="pk-constr" table="public.tbl_logradouro">
+		<columns names="logr_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_endereco" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1940" y="260"/>
+	<column name="end_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="end_numero" not-null="true">
+		<type name="numeric" length="8" precision="0"/>
+	</column>
+	<constraint name="tbl_endereco_pk" type="pk-constr" table="public.tbl_endereco">
+		<columns names="end_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="tbl_logradouro_has_many_tbl_endereco" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#20c6b2"
+	 src-table="public.tbl_logradouro"
+	 dst-table="public.tbl_endereco"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_bairro_has_many_tbl_endereco" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#400583"
+	 src-table="public.tbl_bairro"
+	 dst-table="public.tbl_endereco"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_professor_has_tbl_endereco" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1480" y="480"/>
+</table>
+
+<relationship name="tbl_professor_has_many_tbl_professor_has_tbl_endereco" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#e5c964"
+	 src-table="public.tbl_professor"
+	 dst-table="public.tbl_professor_has_tbl_endereco"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_endereco_has_many_tbl_professor_has_tbl_endereco" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#259bf6"
+	 src-table="public.tbl_endereco"
+	 dst-table="public.tbl_professor_has_tbl_endereco"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_semestre" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1900" y="520"/>
+	<column name="seme_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="seme_nome" not-null="true">
+		<type name="varchar" length="7"/>
+	</column>
+	<column name="seme_data_inicio" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<column name="seme_data_fim" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<constraint name="tbl_semestre_pk" type="pk-constr" table="public.tbl_semestre">
+		<columns names="seme_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_disciplina" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1900" y="1000"/>
+	<column name="disc_codigo" not-null="true">
+		<type name="varchar" length="10"/>
+	</column>
+	<column name="disc_nome" not-null="true">
+		<type name="varchar" length="0"/>
+	</column>
+	<column name="disc_carga_horaria" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<constraint name="tbl_disciplina_pk" type="pk-constr" table="public.tbl_disciplina">
+		<columns names="disc_codigo" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_turno" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="680" y="1100"/>
+	<column name="turn_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="turn_descricao" not-null="true">
+		<type name="varchar" length="20"/>
+	</column>
+	<column name="turn_horario_inicio" not-null="true">
+		<type name="time" length="0"/>
+	</column>
+	<constraint name="tbl_turno_pk" type="pk-constr" table="public.tbl_turno">
+		<columns names="turn_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_professor_has_tbm_disciplina" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1060" y="620"/>
+</table>
+
+<relationship name="tbl_professor_has_many_tbl_professor_has_tbm_disciplina" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#fb94a1"
+	 src-table="public.tbl_professor"
+	 dst-table="public.tbl_professor_has_tbm_disciplina"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_disciplina_has_many_tbl_professor_has_tbm_disciplina" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#856c1a"
+	 src-table="public.tbl_disciplina"
+	 dst-table="public.tbl_professor_has_tbm_disciplina"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_turno_has_many_tbl_curso" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#8f45a8"
+	 src-table="public.tbl_turno"
+	 dst-table="public.tbl_curso"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_departamento_has_tbl_telefone" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="500" y="380"/>
+</table>
+
+<relationship name="tbl_departamento_has_many_tbl_departamento_has_tbl_telefone" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#ae4f1e"
+	 src-table="public.tbl_departamento"
+	 dst-table="public.tbl_departamento_has_tbl_telefone"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_telefone_has_many_tbl_departamento_has_tbl_telefone" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#39f3bd"
+	 src-table="public.tbl_telefone"
+	 dst-table="public.tbl_departamento_has_tbl_telefone"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_predio_has_many_tbl_departamento" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#0028eb"
+	 src-table="public.tbl_predio"
+	 dst-table="public.tbl_departamento"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_colegiado_has_many_tbl_curso" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#84bb54"
+	 src-table="public.tbl_colegiado"
+	 dst-table="public.tbl_curso"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_semestre_has_tbl_disciplina" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1980" y="760"/>
+</table>
+
+<relationship name="tbl_semestre_has_many_tbl_semestre_has_tbl_disciplina" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#19cb36"
+	 src-table="public.tbl_semestre"
+	 dst-table="public.tbl_semestre_has_tbl_disciplina"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_disciplina_has_many_tbl_semestre_has_tbl_disciplina" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#3ea889"
+	 src-table="public.tbl_disciplina"
+	 dst-table="public.tbl_semestre_has_tbl_disciplina"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_departamento_has_many_tbl_professor" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#23d064"
+	 src-table="public.tbl_departamento"
+	 dst-table="public.tbl_professor"
+	 src-required="false" dst-required="false"/>
+
+</dbmodel>

@@ -1,0 +1,1051 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+ Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="1.0.1" use-changelog="false" last-position="0,0" last-zoom="0.65" max-obj-count="60"
+	 default-schema="public" default-owner="postgres"
+	 layers="Default layer"
+	 active-layers="0"
+	 layer-name-colors="#000000"
+	 layer-rect-colors="#b4b4b4"
+	 show-layer-names="false" show-layer-rects="false">
+<database name="new_database" is-template="false" allow-conns="true">
+</database>
+
+<schema name="public" layers="0" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<table name="tbl_pessoa" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="0" y="100"/>
+	<column name="pes_cpf" not-null="true">
+		<type name="numeric" length="11" precision="0"/>
+	</column>
+	<column name="pes_nome" not-null="true">
+		<type name="varchar" length="50"/>
+	</column>
+	<column name="pes_data_nascimento" not-null="true">
+		<type name="date" length="0"/>
+	</column>
+	<constraint name="tbl_pessoa_pk" type="pk-constr" table="public.tbl_pessoa">
+		<columns names="pes_cpf" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_endereco" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="520" y="80"/>
+	<column name="end_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="end_numero">
+		<type name="numeric" length="7" precision="0"/>
+	</column>
+	<constraint name="tbl_endereco_pk" type="pk-constr" table="public.tbl_endereco">
+		<columns names="end_id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="logra_id_tbl_logradouro" index="2"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="tbl_logradouro_fk" index="1"/>
+	</customidxs>
+</table>
+
+<relationship name="tbl_endereco_has_many_tbl_pessoa" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#e54c48"
+	 src-table="public.tbl_endereco"
+	 dst-table="public.tbl_pessoa"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_colaborador" layers="0" collapse-mode="2" max-obj-count="12" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="920" y="680"/>
+	<column name="colab_matricula" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="colab_salario" not-null="true">
+		<type name="numeric" length="9" precision="2"/>
+	</column>
+	<column name="colab_periodo_ferias">
+		<type name="daterange" length="0"/>
+	</column>
+	<constraint name="tbl_colaborador_pk" type="pk-constr" table="public.tbl_colaborador">
+		<columns names="colab_matricula" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="carg_id_tbl_cargo" index="9"/>
+		<object name="empex_cnpj_tbl_empresa_externa" index="7"/>
+		<object name="manu_id_tbl_manutencao" index="8"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="tbl_cargo_fk" index="3"/>
+		<object name="tbl_empresa_externa_fk" index="1"/>
+		<object name="tbl_manutencao_fk" index="2"/>
+	</customidxs>
+</table>
+
+<table name="tbl_cliente" layers="0" collapse-mode="2" max-obj-count="7" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="380" y="1340"/>
+	<column name="cli_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="cli_mensalidade" not-null="true">
+		<type name="numeric" length="9" precision="2"/>
+	</column>
+	<constraint name="tbl_cliente_pk" type="pk-constr" table="public.tbl_cliente">
+		<columns names="cli_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="tbl_cliente_inherits_tbl_pessoa" type="relgen" layers="0"
+	 pk-pattern="{dt}_pk"
+	 custom-color="#255ad4"
+	 src-table="public.tbl_cliente"
+	 dst-table="public.tbl_pessoa"/>
+
+<relationship name="tbl_colaborador_inherits_tbl_pessoa" type="relgen" layers="0"
+	 pk-pattern="{dt}_pk"
+	 custom-color="#af9600"
+	 src-table="public.tbl_colaborador"
+	 dst-table="public.tbl_pessoa"/>
+
+<table name="tbl_dependente" layers="0" collapse-mode="2" max-obj-count="9" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="2.84217e-14" y="840"/>
+	<column name="depen_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<constraint name="tbl_dependente_pk" type="pk-constr" table="public.tbl_dependente">
+		<columns names="depen_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_empresa_externa" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1940" y="380"/>
+	<column name="empex_cnpj" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="empex_razao_social" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="empex_nome_fantasia" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="empex_funcao_trabalho" not-null="true">
+		<type name="varchar" length="50"/>
+	</column>
+	<constraint name="tbl_empresa_externa_pk" type="pk-constr" table="public.tbl_empresa_externa">
+		<columns names="empex_cnpj" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="tbl_empresa_externa_has_many_tbl_colaborador" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#5a84f1"
+	 src-table="public.tbl_empresa_externa"
+	 dst-table="public.tbl_colaborador"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_tipo_telefone" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1600" y="140"/>
+	<column name="tptel_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="tptel_operadora" not-null="true">
+		<type name="varchar" length="15"/>
+	</column>
+	<constraint name="tbl_tipo_telefone_pk" type="pk-constr" table="public.tbl_tipo_telefone">
+		<columns names="tptel_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_telefone" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1220" y="420"/>
+	<column name="tel_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="tel_ddd_numero" not-null="true">
+		<type name="numeric" length="12" precision="0"/>
+	</column>
+	<column name="tel_ddi">
+		<type name="numeric" length="5" precision="0"/>
+	</column>
+	<constraint name="tbl_telefone_pk" type="pk-constr" table="public.tbl_telefone">
+		<columns names="tel_id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="tptel_id_tbl_tipo_telefone" index="3"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="tbl_tipo_telefone_fk" index="0"/>
+	</customidxs>
+</table>
+
+<relationship name="tbl_tipo_telefone_has_many_tbl_telefone" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#d2bbf8"
+	 src-table="public.tbl_tipo_telefone"
+	 dst-table="public.tbl_telefone"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_pessoa_has_tbl_telefone" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="820" y="280"/>
+
+	<customidxs object-type="column">
+		<object name="pes_cpf_tbl_pessoa" index="0"/>
+		<object name="tel_id_tbl_telefone" index="1"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="tbl_pessoa_fk" index="0"/>
+		<object name="tbl_telefone_fk" index="1"/>
+	</customidxs>
+</table>
+
+<relationship name="tbl_pessoa_has_many_tbl_pessoa_has_tbl__telefone" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#1711b5"
+	 src-table="public.tbl_pessoa"
+	 dst-table="public.tbl_pessoa_has_tbl_telefone"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_telefone_has_many_tbl_pessoa_has_tbl__telefone" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#a9a51d"
+	 src-table="public.tbl_telefone"
+	 dst-table="public.tbl_pessoa_has_tbl_telefone"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_empresa_externa_has_tbl_telefone" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1940" y="100"/>
+</table>
+
+<relationship name="tbl_empresa_externa_has_many_tbl_empresa_externa_has_tbl_telefo" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#27da72"
+	 src-table="public.tbl_empresa_externa"
+	 dst-table="public.tbl_empresa_externa_has_tbl_telefone"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_telefone_has_many_tbl_empresa_externa_has_tbl_telefone" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#bb3014"
+	 src-table="public.tbl_telefone"
+	 dst-table="public.tbl_empresa_externa_has_tbl_telefone"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_endereco_has_many_tbl_empresa_externa" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#49afed"
+	 src-table="public.tbl_endereco"
+	 dst-table="public.tbl_empresa_externa"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_turma" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1860" y="1540"/>
+	<column name="tur_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="tur_duracao" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="tur_preco" not-null="true">
+		<type name="numeric" length="9" precision="2"/>
+	</column>
+	<column name="tur_lotacao_max">
+		<type name="smallint" length="0"/>
+	</column>
+	<constraint name="tbl_turma_pk" type="pk-constr" table="public.tbl_turma">
+		<columns names="tur_id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="cobr_id_tbl_cobranca" index="4"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="tbl_cobranca_fk" index="1"/>
+	</customidxs>
+</table>
+
+<table name="tbl_horario" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1380" y="1300"/>
+	<column name="hor_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="hor_inicio" not-null="true">
+		<type name="time" length="0"/>
+	</column>
+	<constraint name="tbl_horario_pk" type="pk-constr" table="public.tbl_horario">
+		<columns names="hor_id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="alu_id_tbl_aluguel" index="3"/>
+		<object name="tur_id_tbl_turma" index="2"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="tbl_aluguel_fk" index="2"/>
+		<object name="tbl_turma_fk" index="1"/>
+	</customidxs>
+</table>
+
+<table name="tbl_aluguel" layers="0" collapse-mode="2" max-obj-count="6" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="940" y="1080"/>
+	<column name="alu_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="alu_duracao" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="alu_preco" not-null="true">
+		<type name="numeric" length="9" precision="2"/>
+	</column>
+	<constraint name="tbl_aluguel_pk" type="pk-constr" table="public.tbl_aluguel">
+		<columns names="alu_id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="cli_id_tbl_cliente" index="3"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="tbl_cliente_fk" index="1"/>
+	</customidxs>
+</table>
+
+<relationship name="tbl__turma_has_many_tbl_horario" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#69ad5c"
+	 src-table="public.tbl_turma"
+	 dst-table="public.tbl_horario"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_aluguel_has_many_tbl_horario" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#cd98dc"
+	 src-table="public.tbl_aluguel"
+	 dst-table="public.tbl_horario"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="282.222" y="-140.282"/>
+	</label>
+</relationship>
+
+<relationship name="tbl_cliente_has_many_tbl_aluguel" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#8140d9"
+	 src-table="public.tbl_cliente"
+	 dst-table="public.tbl_aluguel"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_cliente_has_tbl_turma" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="940" y="1540"/>
+</table>
+
+<relationship name="tbl_cliente_has_many_tbl_cliente_has_tbl_turma" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#bc89ba"
+	 src-table="public.tbl_cliente"
+	 dst-table="public.tbl_cliente_has_tbl_turma"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl__turma_has_many_tbl_cliente_has_tbl_turma" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#1cf785"
+	 src-table="public.tbl_turma"
+	 dst-table="public.tbl_cliente_has_tbl_turma"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_tipo_material" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="2420" y="100"/>
+	<column name="tpmat_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="tpmat_finalidade" not-null="true">
+		<type name="varchar" length="50"/>
+	</column>
+	<constraint name="tbl_tipo_material_pk" type="pk-constr" table="public.tbl_tipo_material">
+		<columns names="tpmat_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_material" layers="0" collapse-mode="2" max-obj-count="7" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="2440" y="420"/>
+	<column name="mat_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="mat_nome" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="mat_quantidade" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="mat_preco" not-null="true">
+		<type name="numeric" length="11" precision="2"/>
+	</column>
+	<column name="mat_ultima_manutencao">
+		<type name="date" length="0"/>
+	</column>
+	<constraint name="tbl_material_pk" type="pk-constr" table="public.tbl_material">
+		<columns names="mat_id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="tpmat_id_tbl_tipo_material" index="5"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="tbl_tipo_material_fk" index="1"/>
+	</customidxs>
+</table>
+
+<relationship name="tbl_tipo_material_has_many_tbl_material" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#c9622c"
+	 src-table="public.tbl_tipo_material"
+	 dst-table="public.tbl_material"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_aula" layers="0" collapse-mode="2" max-obj-count="4" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="2400" y="1540"/>
+	<column name="aul_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<constraint name="tbl_aula_pk" type="pk-constr" table="public.tbl_aula">
+		<columns names="aul_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_aluguel_has_tbl_material" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1980" y="780"/>
+</table>
+
+<relationship name="tbl_material_has_many_tbl_aluguel_has_tbl_material" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#950b89"
+	 src-table="public.tbl_material"
+	 dst-table="public.tbl_aluguel_has_tbl_material"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_aluguel_has_many_tbl_aluguel_has_tbl_material" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#559e8d"
+	 src-table="public.tbl_aluguel"
+	 dst-table="public.tbl_aluguel_has_tbl_material"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_colaborador_has_tbl_aula" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1860" y="1340"/>
+</table>
+
+<relationship name="tbl_colaborador_has_many_tbl_colaborador_has_tbl_aula" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#637a58"
+	 src-table="public.tbl_colaborador"
+	 dst-table="public.tbl_colaborador_has_tbl_aula"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_aula_has_many_tbl_colaborador_has_tbl_aula" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#cafcc2"
+	 src-table="public.tbl_aula"
+	 dst-table="public.tbl_colaborador_has_tbl_aula"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_aula_has_tbl_material" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="2160" y="1100"/>
+</table>
+
+<relationship name="tbl_aula_has_many_tbl_aula_has_tbl_material" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#e86b83"
+	 src-table="public.tbl_aula"
+	 dst-table="public.tbl_aula_has_tbl_material"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_material_has_many_tbl_aula_has_tbl_material" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#9d7879"
+	 src-table="public.tbl_material"
+	 dst-table="public.tbl_aula_has_tbl_material"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_aula_has_one_tbl__turma" type="rel11" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#4dcab1"
+	 src-table="public.tbl_turma"
+	 dst-table="public.tbl_aula"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_tipo_quadra" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="2920" y="100"/>
+	<column name="tpqua_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="tpqua_descricao" not-null="true">
+		<type name="varchar" length="20"/>
+	</column>
+	<constraint name="tbl_tipo_quadra_pk" type="pk-constr" table="public.tbl_tipo_quadra">
+		<columns names="tpqua_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_quadra" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="2980" y="1280"/>
+	<column name="qua_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="qua_ultima_manutencao">
+		<type name="date" length="0"/>
+	</column>
+	<constraint name="tbl_quadra_pk" type="pk-constr" table="public.tbl_quadra">
+		<columns names="qua_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="tbl_tipo_quadra_has_many_tbl_quadra" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#4da15d"
+	 src-table="public.tbl_tipo_quadra"
+	 dst-table="public.tbl_quadra"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="24.6588" y="-83.253"/>
+	</label>
+</relationship>
+
+<relationship name="tbl_quadra_has_many_tbl_aula" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#e05d43"
+	 src-table="public.tbl_quadra"
+	 dst-table="public.tbl_aula"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_manutencao" layers="0" collapse-mode="2" max-obj-count="1" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1860" y="920"/>
+	<column name="manu_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<constraint name="tbl_manutencao_pk" type="pk-constr" table="public.tbl_manutencao">
+		<columns names="manu_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_manutencao_has_tbl_material" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="2640" y="760"/>
+</table>
+
+<relationship name="tbl_manutencao_has_many_tbl_manutencao_has_tbl_material" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#80c02a"
+	 src-table="public.tbl_manutencao"
+	 dst-table="public.tbl_manutencao_has_tbl_material"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_material_has_many_tbl_manutencao_has_tbl_material" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#b036bc"
+	 src-table="public.tbl_material"
+	 dst-table="public.tbl_manutencao_has_tbl_material"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_manutencao_has_many_tbl_colaborador" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#faef51"
+	 src-table="public.tbl_manutencao"
+	 dst-table="public.tbl_colaborador"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="-79.3279" y="-2.54688"/>
+	</label>
+</relationship>
+
+<table name="tbl_quadra_has_tbl_manutencao" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="2700" y="960"/>
+</table>
+
+<relationship name="tbl_manutencao_has_many_tbl_quadra_has_tbl_manutencao" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#e7731e"
+	 src-table="public.tbl_manutencao"
+	 dst-table="public.tbl_quadra_has_tbl_manutencao"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_quadra_has_many_tbl_quadra_has_tbl_manutencao" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#bfb825"
+	 src-table="public.tbl_quadra"
+	 dst-table="public.tbl_quadra_has_tbl_manutencao"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_cobranca" layers="0" collapse-mode="2" max-obj-count="8" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1300" y="1760"/>
+	<column name="cobr_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="cobr_descricao" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<column name="cobr_valor_total" not-null="true">
+		<type name="numeric" length="12" precision="2"/>
+	</column>
+	<column name="cobr_juros">
+		<type name="numeric" length="9" precision="2"/>
+	</column>
+	<column name="cobr_multa">
+		<type name="numeric" length="11" precision="2"/>
+	</column>
+	<column name="cob_data_pagamento">
+		<type name="date" length="0"/>
+	</column>
+	<constraint name="tbl_cobranca_pk" type="pk-constr" table="public.tbl_cobranca">
+		<columns names="cobr_id" ref-type="src-columns"/>
+	</constraint>
+
+	<customidxs object-type="column">
+		<object name="alu_id_tbl_aluguel" index="6"/>
+	</customidxs>
+
+	<customidxs object-type="constraint">
+		<object name="tbl_aluguel_fk" index="1"/>
+		<object name="tbl_cobranca_uq" index="2"/>
+	</customidxs>
+</table>
+
+<table name="tbl_cliente_has_tbl_cobranca" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="660" y="1800"/>
+</table>
+
+<relationship name="tbl_cobranca_has_many_tbl_cliente_has_tbl_cobranca" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#4d3b57"
+	 src-table="public.tbl_cobranca"
+	 dst-table="public.tbl_cliente_has_tbl_cobranca"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_cliente_has_many_tbl_cliente_has_tbl_cobranca" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#3bb96c"
+	 src-table="public.tbl_cliente"
+	 dst-table="public.tbl_cliente_has_tbl_cobranca"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_cobranca_has_one_tbl_aluguel" type="rel11" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#0afaf4"
+	 src-table="public.tbl_aluguel"
+	 dst-table="public.tbl_cobranca"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_cobranca_has_many_tbl__turma" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#6717a4"
+	 src-table="public.tbl_cobranca"
+	 dst-table="public.tbl_turma"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_pais" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="40" y="1220"/>
+	<column name="pais_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="pais_nome" not-null="true">
+		<type name="varchar" length="50"/>
+	</column>
+	<constraint name="tbl_pais_pk" type="pk-constr" table="public.tbl_pais">
+		<columns names="pais_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_estado" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="560" y="980"/>
+	<column name="est_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="est_nome" not-null="true">
+		<type name="varchar" length="50"/>
+	</column>
+	<constraint name="tbl_estado_pk" type="pk-constr" table="public.tbl_estado">
+		<columns names="est_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="tbl_pais_has_many_tbl_estado" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#25ac20"
+	 src-table="public.tbl_pais"
+	 dst-table="public.tbl_estado"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_cidade" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="0" y="560"/>
+	<column name="cid_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="cid_nome" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<constraint name="tbl_cidade_pk" type="pk-constr" table="public.tbl_cidade">
+		<columns names="cid_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="tbl_estado_has_many_tbl_cidade" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#19bed5"
+	 src-table="public.tbl_estado"
+	 dst-table="public.tbl_cidade"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_bairro" layers="0" collapse-mode="2" max-obj-count="3" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="480" y="420"/>
+	<column name="bair_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="bair_nome" not-null="true">
+		<type name="varchar" length="50"/>
+	</column>
+	<constraint name="tbl_bairro_pk" type="pk-constr" table="public.tbl_bairro">
+		<columns names="bair_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="tbl_cidade_has_many_tbl_bairro" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#20163e"
+	 src-table="public.tbl_cidade"
+	 dst-table="public.tbl_bairro"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_logradouro" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1000" y="20"/>
+	<column name="logra_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="logra_nome" not-null="true">
+		<type name="varchar" length="100"/>
+	</column>
+	<constraint name="tbl_logradouro_pk" type="pk-constr" table="public.tbl_logradouro">
+		<columns names="logra_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="tbl_logradouro_has_many_tbl_endereco" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#5f2fc2"
+	 src-table="public.tbl_logradouro"
+	 dst-table="public.tbl_endereco"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_bairro_has_many_tbl_endereco" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#f98a09"
+	 src-table="public.tbl_bairro"
+	 dst-table="public.tbl_endereco"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_cargo" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="880" y="460"/>
+	<column name="carg_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="carg_nome" not-null="true">
+		<type name="varchar" length="0"/>
+	</column>
+	<constraint name="tbl_cargo_pk" type="pk-constr" table="public.tbl_cargo">
+		<columns names="carg_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="tbl_cargo_has_many_tbl_colaborador" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#896841"
+	 src-table="public.tbl_cargo"
+	 dst-table="public.tbl_colaborador"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_dependente_inherits_tbl_cliente" type="relgen" layers="0"
+	 pk-pattern="{dt}_pk"
+	 custom-color="#d504ed"
+	 src-table="public.tbl_dependente"
+	 dst-table="public.tbl_cliente"/>
+
+<relationship name="tbl_cliente_has_many_tbl_dependente" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#c812bf"
+	 src-table="public.tbl_cliente"
+	 dst-table="public.tbl_dependente"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_espec_tel" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1340" y="0"/>
+	<column name="espec_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="espec_especificacao" not-null="true">
+		<type name="varchar" length="20"/>
+	</column>
+	<constraint name="tbl_espec_tel_pk" type="pk-constr" table="public.tbl_espec_tel">
+		<columns names="espec_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<relationship name="tbl_espec_tel_has_many_tbl_telefone" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#729437"
+	 src-table="public.tbl_espec_tel"
+	 dst-table="public.tbl_telefone"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_dia" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="2400" y="1860"/>
+	<column name="dia_id" not-null="true">
+		<type name="smallint" length="0"/>
+	</column>
+	<column name="dia_nome" not-null="true">
+		<type name="varchar" length="20"/>
+	</column>
+	<constraint name="tbl_dia_pk" type="pk-constr" table="public.tbl_dia">
+		<columns names="dia_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="tbl_horario_has_tbl_dia" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1820" y="1800"/>
+</table>
+
+<relationship name="tbl_horario_has_many_tbl_horario_has_tbl_dia" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#caae6e"
+	 src-table="public.tbl_horario"
+	 dst-table="public.tbl_horario_has_tbl_dia"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_dia_has_many_tbl_horario_has_tbl_dia" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#ac2f81"
+	 src-table="public.tbl_dia"
+	 dst-table="public.tbl_horario_has_tbl_dia"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_quadra_has_many_tbl_aluguel" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#cb3e0d"
+	 src-table="public.tbl_quadra"
+	 dst-table="public.tbl_aluguel"
+	 src-required="false" dst-required="false"/>
+
+<table name="tbl_cliente_has_tbl_telefone" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="420" y="680"/>
+</table>
+
+<table name="tbl_colaborador_has_tbl_telefone" layers="0" collapse-mode="2" max-obj-count="2" z-value="0">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1740" y="620"/>
+</table>
+
+<relationship name="tbl_colaborador_has_many_tbl_colaborador_has_tbl_telefone" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#28e8d8"
+	 src-table="public.tbl_colaborador"
+	 dst-table="public.tbl_colaborador_has_tbl_telefone"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_telefone_has_many_tbl_colaborador_has_tbl_telefone" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#ebc159"
+	 src-table="public.tbl_telefone"
+	 dst-table="public.tbl_colaborador_has_tbl_telefone"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_cliente_has_many_tbl_cliente_has_tbl_telefone" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#f6664f"
+	 src-table="public.tbl_cliente"
+	 dst-table="public.tbl_cliente_has_tbl_telefone"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="tbl_telefone_has_many_tbl_cliente_has_tbl_telefone" type="rel1n" layers="0"
+	 src-col-pattern="{sc}_{st}"
+	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
+	 src-fk-pattern="{st}_fk"
+	 custom-color="#4386a7"
+	 src-table="public.tbl_telefone"
+	 dst-table="public.tbl_cliente_has_tbl_telefone"
+	 src-required="false" dst-required="false"/>
+
+</dbmodel>
