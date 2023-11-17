@@ -32,7 +32,7 @@ gcd:
 	# verificando se $t1 > 1
 	bgt $t1, $t7, else
 		# se $t1 <= 0, entao continua aqui
-		move $v0, $t1	# salvando o valor de retorno em $v0
+		move $v0, $t0	# salvando o valor de retorno em $v0
 		jr $ra		# retornando o valor salvo
 	else:
 	
@@ -50,6 +50,8 @@ gcd:
 	lw $ra, 0($sp)
 	addi $sp, $sp, 4
 	
+	# salvando $t1 em $t0
+	move $t0, $t1
 	# salvando o valor de retorno em $t1
 	move $t1, $v0
 	
