@@ -1,0 +1,32 @@
+.global _start
+
+.section .data
+vetor: .word 1, 2, 3, 4, 5
+tamanho: .word 5
+
+.section .text
+_start:
+    LDR x0, =vetor		// carregando o ponteiro do vetor em x0
+    LDR w1, =tamanho	// carregando o endereco do tamanho em w1
+    LDR w1, [w1]		// salvando o valor de tamanho em w1
+    MOV w2, 0			// o registrador que vai guardar o resultado da soma  
+
+    WHILE:
+        LDR w3, [x0], #4	// iterando sobre o vetor cujo ponteiro foi salvo em x0 e incrementa o endereco para nao voltar ao comeco
+        ADD w2, w2, w3
+        SUBS w1, w1, 1		// decrementa o contador em w1
+        CBZ w1, END     	// branch para END se w1 == 0
+    	B WHILE				// Branch para WHILE
+
+    END:
+        MOV x8, 93	// argumento para realizar o syscall de saida
+        MOV x0, 0	// return 0;
+        SVC 0		// syscall
+
+    B _exit	// branch para _exit
+
+_exit:
+    MOV x8, 93	// argumento para realizar o syscall de saida
+    MOV x0, 0	// return 0;
+    SVC 0		// syscall
+

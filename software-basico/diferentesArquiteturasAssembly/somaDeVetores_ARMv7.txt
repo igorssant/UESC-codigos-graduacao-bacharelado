@@ -1,0 +1,29 @@
+.global _start
+
+.section .data
+vetor: .word 1, 2, 3, 4, 5
+tamanho: .word 5
+
+.section .text
+_start:
+    LDR r0, =vetor		@ carregando o endereco do vetor
+    LDR r1, =tamanho	@ carragando o endereco do tamanho
+    LDR r1, [r1]		@ carregando o primeiro valor do vetor
+    MOV r2, #0
+
+    WHILE:
+        LDR r3, [r0], #4 	@ iterando sobre o vetor
+        ADD r2, r2, r3		@ salvando a soma em r2
+        SUBS r1, r1, #1		@ decrementa o contador do loop
+        BNE WHILE			@ volta para WHILE se o contador do loop != 0
+
+    MOV r7, #1  @ passando argumento para o syscall
+    MOV r0, r2  @ passando o resultado como argumento de retorno
+    SWI 0		@ syscall
+    B _exit		@ branch para _exit
+
+_exit:
+    MOV r7, #1	@ argumento para syscall :: Encerrar o programa
+    MOV r0, #0	@ return 0;
+    SWI 0		@ syscall
+

@@ -1,0 +1,18 @@
+section .data
+vetor: dd 1, 2, 3, 4, 5
+tamanho: dd 4
+
+section .text
+MOV EAX, vetor
+MOV EBX, [tamanho]
+MOV ECX, 1
+MOV EDX, [EAX]
+
+FOR:
+    CMP ECX, EBX
+    	JE END
+    	ADD EDX, [EAX + ECX * 4]
+    	INC ECX
+    	JMP FOR
+END:
+
