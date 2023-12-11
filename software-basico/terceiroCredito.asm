@@ -17,14 +17,14 @@ sw $at, 16($k1)
 
 # hardware interrupt
 mfc0 $a0, $13  # Cause
-andi $v0, $a0, 0x0100
+andi $v0, $a0, 0x0100 #verifica se existe uma interrupção pendente (o 8º bit é o primeiro bit de interrupção)
 
-beq $v0, $zero, e_int_keyrecv_end
+beq $v0, $zero, e_int_keyrecv_end #senão tiver ñ tem mais dada pra se fzr kk
 	# keyboard receive interrupt
-	xor $a0, $a0, $v0
+	xor $a0, $a0, $v0 #marca o 8º bit como 0, pois a interrupção está sendo atendida
 	mtc0 $a0, $13  # Cause
-	li $a0, 0xffff0000
-	lw $a0, 4($a0) #valor digitado
+	li $a0, 0xffff0000 #registrador de controle do teclado
+	lw $a0, 4($a0) #valor digitado (registrador de controle + 4 = registrador de dados)
 	#chama funcao pra trocar tela
 	jal change_screen
 e_int_keyrecv_end:
@@ -41,39 +41,42 @@ ori $k0, 0x01  # re-enable interrupts
 mtc0 $k0, $12  # Status
 eret
 
-#$s4 --> tela atual
-#$s5 --> valor x do boneco
-#$s6 --> valor y do boneco
-change_screen:
-	#atribui ponto de retorno pra plataforma em loop
+# $s4 --> tela atual
+# $s5 --> valor x do boneco
+# $s6 --> valor y do boneco
+change_screen: # processa a entrada do jogador e calcula a nova posição.
+	# atribui ponto de retorno pra plataforma em loop
 	la $k0, plataforma_loop
 	
 	# ve qual tecla foi pressionada e qual acao tem que ser feita
 	# a0 = tecla precionada
-	beq $a0, 97, esquerda # tecla a
-	beq $a0, 65, esquerda # tecla A
-	beq $a0, 100, direita # tecla d
-	beq $a0, 68, direita # tecla D
-	beq $a0, 119, cima # tecla w
-	beq $a0, 87, cima # tecla W
-	beq $a0, 115, baixo # tecla s
-	beq $a0, 83, baixo # tecla S
+	beq $a0, 97, esquerda	# tecla a
+	beq $a0, 65, esquerda	# tecla A
+	beq $a0, 100, direita	# tecla d
+	beq $a0, 68, direita	# tecla D
+	beq $a0, 119, cima	# tecla w
+	beq $a0, 87, cima	# tecla W
+	beq $a0, 115, baixo	# tecla s
+	beq $a0, 83, baixo	# tecla S
 
 	sair:
-		mtc0 $k0, $14 #ponto de retorno eh atribuido ao EPC
+		mtc0 $k0, $14	# ponto de retorno eh atribuido ao EPC
 		jr $ra
 
 	# caso acao de ir para esquerda
 	esquerda:
 		#casos que nao podem ir pra esquerda
 		beq $s4, 0, sair
+		beq $s4, 1, sair		# parede 1
+		beq $s4, 5, sair		# parede 2
 		beq $s4, 3, sair
 		beq $s4, 6, sair
-		la $k0, boneco_plataforma #muda ponto de retorno para refazer a tela
-		sb $s4, plataforma_ant # plataforma anterior é atualizada
+		beq $s4, 7, sair		# parede 3
+		la $k0, boneco_plataforma	# muda ponto de retorno para refazer a tela
+		sb $s4, plataforma_ant		# plataforma anterior é atualizada
 	
-		#se puder ir pra esquerda 
-		#plataforma decrementa
+		# se puder ir pra esquerda 
+		# plataforma decrementa
 		# eixo x decrementa
 		addi $s4, $s4, -1
 		addi $s5, $s5, -12
@@ -81,15 +84,18 @@ change_screen:
 
 	# caso acao de ir para direita
 	direita:
-		#casos que nao podem ir pra direita
+		# casos que nao podem ir pra direita
+		beq $s4, 0, sair		# parede 1
 		beq $s4, 2, sair
+		beq $s4, 4, sair		# parede 2
 		beq $s4, 5, sair
+		beq $s4, 6, sair		# parede 3
 		beq $s4, 8, sair
-		la $k0, boneco_plataforma #muda ponto de retorno para refazer a tela
-		sb $s4, plataforma_ant # plataforma anterior é atualizada
+		la $k0, boneco_plataforma	# muda ponto de retorno para refazer a tela
+		sb $s4, plataforma_ant		# plataforma anterior é atualizada
 	
-		#se puder ir pra esquerda 
-		#plataforma incrementa
+		# se puder ir pra esquerda 
+		# plataforma incrementa
 		# eixo x incrementa
 		addi $s4, $s4, 1
 		addi $s5, $s5, 12
@@ -97,15 +103,15 @@ change_screen:
 	
 	# caso acao de ir para cima
 	cima:
-		#casos que nao podem ir pra cima
+		# casos que nao podem ir pra cima
 		beq $s4, 2, sair
 		beq $s4, 0, sair
 		beq $s4, 1, sair
-		la $k0, boneco_plataforma #muda ponto de retorno para refazer a tela
-		sb $s4, plataforma_ant # plataforma anterior é atualizada
+		la $k0, boneco_plataforma	# muda ponto de retorno para refazer a tela
+		sb $s4, plataforma_ant		# plataforma anterior é atualizada
 
-		#se puder ir pra esquerda 
-		#plataforma decrementada
+		# se puder ir pra esquerda 
+		# plataforma decrementada
 		# eixo y decrementado
 		addi $s4, $s4, -3
 		addi $s6, $s6, -10
@@ -113,15 +119,15 @@ change_screen:
 
 	# caso acao de ir para baixo			
 	baixo:
-		#casos que nao podem ir pra cima
+		# casos que nao podem ir pra cima
 		beq $s4, 6, sair
 		beq $s4, 7, sair
 		beq $s4, 8, sair
-		la $k0, boneco_plataforma #muda ponto de retorno para refazer a tela
-		sb $s4, plataforma_ant # plataforma anterior é atualizada
+		la $k0, boneco_plataforma	# muda ponto de retorno para refazer a tela
+		sb $s4, plataforma_ant		# plataforma anterior é atualizada
 	
-		#se puder ir pra esquerda 
-		#plataforma incrementada
+		# se puder ir pra esquerda 
+		# plataforma incrementada
 		# eixo y incrementado
 		addi $s4, $s4, 3
 		addi $s6, $s6, 10
@@ -141,11 +147,17 @@ change_screen:
 
 
 # Feito por: Everaldina e Alberto
-
 .data
 	displayAddress:	.word	0x10008000
-	plataforma_cor: .byte 0, 0, 0, 0, 0, 0, 0, 0, 0  #vetor com cor das plataformas
+	plataforma_cor: .byte 0, 0, 0, 0, 0, 0, 0, 0, 0  # vetor com cor das plataformas
 	plataforma_ant: .space 4
+	plataforma_mortal: .byte -1		# qual plataforma que ao pisar perde vida (vamos considerar que apenas pode ser)
+	player_vidas: .byte 3			# quantas vidas o jogador tem
+	player_vidasMax: .byte 3		# o máximo de vidas que o jogador tem
+	plataforma_mortal_cor: .word 0xff0000	# vermelho
+	invencibilidade: .byte 1		# quando 1 o dano é desabilitado
+	derrota_msg: .asciiz "morreu"
+	# estiloParede: .byte 0			# valor para determinar como as paredes irao aparecer no mapa
 .text
 
 main:
@@ -172,7 +184,6 @@ main:
 	li $s5, 2 #$s5, eixo x
 	li $s6, 8 #$s6, eixo y
 
-
 # valores boneco plataforma0: a0 = 2  | a1 = 8 
 # valores boneco plataforma1: a0 = 14 | a1 = 8
 # valores boneco plataforma2: a0 = 26 | a1 = 8
@@ -187,6 +198,11 @@ main:
 boneco_plataforma:
 	jal limpa_tela #limpa posicao anterior do boneco
 	
+	#pega sorteia uma plataforma
+	jal rand
+	la $t0, plataforma_mortal
+	sb $v0, 0($t0) #armazena o resultado do sorteio
+
 	#ativa a plataforma atual e imprime o fundo novamente
 	move $a0, $s4
 	jal ativar_plataforma
@@ -195,12 +211,16 @@ boneco_plataforma:
 	#checa se chegou ao final	
 	jal check_fim
 	beq $v0, 1, Exit
+	beq $v0, 2, Exit_Morte
 
 plataforma_loop: #imprime o boneco na plataforma repetidas vezes
         move $a0, $s5
         move $a1, $s6
         jal boneco
-	j plataforma_loop
+         		                                                      
+       foo:
+       	       	
+	j foo
 	
 Exit:
 	#imprime tela final
@@ -209,6 +229,14 @@ Exit:
 	syscall	
 #fim_main
 
+Exit_Morte:
+	la $a0, derrota_msg
+	jal print_text #possivelmente bugada
+	jal tela_fim
+	li $v0, 10
+	syscall 
+
+#calcula a posição da plataforma na tela
 linhah:	
 #a2 = cor da linha
 #a1 = linha
@@ -219,18 +247,19 @@ linhah:
 	li $t5, 0
 	sll $t6, $a1, 7  #$a1 x 128 eixo y
 	sll $t7, $a0, 2  #$a0 x 4 eixo x
-	addu $t4, $t6, $t7 #endere�o
+	addu $t4, $t6, $t7 #endereço
 	addu $t4, $t4, $s0
 	
-Linha:
-	addiu $t5,$t5, 1
-       	sw $a2, ($t4)	
-       	addiu $t4, $t4, 4
-       	
-       	bne $t5, 6, Linha
-		lw $ra, 0($sp)
-		addi $sp, $sp, 4
-		jr $ra
+	#desenha as plataformas	
+	Linha:
+		addiu $t5,$t5, 1
+       		sw $a2, ($t4)	
+ 	      	addiu $t4, $t4, 4
+       		bne $t5, 6, Linha #uma plataforma é formada por 5 pixels 
+	
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	jr $ra
 	
 boneco:
 	addi $sp, $sp, -4
@@ -240,7 +269,9 @@ boneco:
 	sll $t6, $a1, 7  # $a1 x 128 (eixo y)
 	sll $t7, $a0, 2  # $a0 x 4 (eixo x)
 	addu $t4, $t6, $t7  # endereço
-	addu $t4, $t4, $s0
+	addu $t4, $t4, $s0 #s0 é o inicio dos endereços do display
+
+	#parte laranja
 	sw $s1, 0($t4)    
 	sw $s1, 4($t4)
 	sw $s1, 8($t4)
@@ -271,17 +302,124 @@ boneco:
 	addi $sp, $sp, 4
 	jr $ra
 
-#pinta fundo (plataformas)
+# bloco de codigo para pintar as paredes
+coluna:	
+       	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+
+	li $t3, 0xff0000
+	li $t5, 0
+	sll $t6, $a1, 7  		# $a1 x 128 eixo y
+	sll $t7, $a0, 2  		# $a0 x 4 eixo x
+	addu $t4, $t6, $t7	 	# endereco
+	addiu $t4, $t4, 0x10008000	# endenreco $sp
+	
+	forInterno:
+    	   	addiu $t5, $t5, 1
+    	   	sw $t3, ($t4)	
+     	  	addiu $t4, $t4, 128
+     	  	bne $t5, 6, forInterno
+	
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4	
+	jr $ra
+	
+# imprime as vidas do jogador
+imprimeVidas:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+	
+	la $t0, player_vidas
+	lb $t0, 0($t0)
+	
+		
+		li $t3, 0x00ff00 #verde
+		li $t5, 0
+		sll $t6, $a1, 7			# $a1 x 128 eixo y
+		sll $t7, $a0, 2			# $a0 x 4 eixo x
+		addu $t4, $t6, $t7		# endereco
+		addiu $t4, $t4, 0x10008000	# endereco $sp
+	
+		la $t7, player_vidasMax #o maximo de vidas
+		lb $t7, 0($t7)
+		sub $t7, $t7, $t0 #quantas vidas o player perdeu
+		
+		#quantas é para pintar de preto (sinaliza perda de vida)
+		beq $t7, $0, pinta_vida
+		li $t6, 0x000000 #preto
+		
+		remove_vida:
+			
+			addiu $t5, $t5, 1
+			sw $t6, ($t4)
+			addiu $t4, $t4, 8
+			bne $t7, $t5, remove_vida
+			
+		pinta_vida:
+		li $t5, 0
+		beq $t0, $0, naoImprimeVida #se a quantidade de vidas for 0
+	
+		while:
+       			addiu $t5, $t5, 1
+       			sw $t3, ($t4)	
+    	   		addiu $t4, $t4, 8
+     	  		bne $t5, $t0, while
+     	  	
+     	naoImprimeVida:
+     	
+     	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	jr $ra
+	
+# gera um numero aleatorio no alcance e retorna o valor em $v0
+rangeNumber:
+	# salvando o ponteiro de retorno na pilha
+	sw $ra, 0($sp)
+	addi $sp, $sp, -4
+	
+	# $a0 == i.d. of pseudorandom number generator
+	# $a1 == upper bound of range of returned values
+	li $v0, 42
+	syscall
+	
+	# retomando da pilha o ponteiro de retorno da funcao
+	addi $sp, $sp, 4
+	lw $ra, 0($sp)
+	
+	# passando valor de retorno
+	# e retornando para main
+	move $v0, $a0
+	jr $ra
+
+# pinta fundo (plataformas)
 fundo:
 	addi $sp, $sp, -4
         sw $ra, 0($sp)
+	
+	# as vidas do jogador
+	li $a1, 2
+	li $a0, 24
+	jal imprimeVidas
+	
+	# as paredes que servem como obstaculos
+	li $a1, 2
+	li $a0, 9
+	jal coluna
+	
+	li $a1, 22
+	li $a0, 9
+	jal coluna
+	
+	li $a1, 12
+	li $a0, 21
+	jal coluna
 
 	#pinta plataforma 0
 	li $a0, 0
 	jal get_color # pega a cor que plataforma deve ser pintada
 	move $a2, $v0 #move cor resultado para paremetro de cor de linha
 	
-	#chama funcao pra implimir linha da plataforma 0
+	#chama funcao pra imprimir linha da plataforma 0
 	li $a1, 10
 	li $a0, 1
 	jal linhah
@@ -290,7 +428,7 @@ fundo:
 	li $a0, 1
 	jal get_color # pega a cor que plataforma deve ser pintada
 	move $a2, $v0 #move cor resultado para paremetro de cor de linha
-	#chama funcao pra implimir linha da plataforma 1
+	#chama funcao pra imprimir linha da plataforma 1
 	li $a1, 10
 	li $a0, 13
 	jal linhah
@@ -299,7 +437,7 @@ fundo:
 	li $a0, 2
 	jal get_color # pega a cor que plataforma deve ser pintada
 	move $a2, $v0 #move cor resultado para paremetro de cor de linha
-	#chama funcao pra implimir linha da plataforma 2
+	#chama funcao pra imprimir linha da plataforma 2
 	li $a1, 10
 	li $a0, 25
 	jal linhah
@@ -308,7 +446,7 @@ fundo:
 	li $a0, 3
 	jal get_color# pega a cor que plataforma deve ser pintada
 	move $a2, $v0 #move cor resultado para paremetro de cor de linha
-	#chama funcao pra implimir linha da plataforma 3
+	#chama funcao pra imprimir linha da plataforma 3
 	li $a1, 20
 	li $a0, 1
 	jal linhah
@@ -317,7 +455,7 @@ fundo:
 	li $a0, 4
 	jal get_color # pega a cor que plataforma deve ser pintada
 	move $a2, $v0 #move cor resultado para paremetro de cor de linha
-	#chama funcao pra implimir linha da plataforma 4
+	#chama funcao pra imprimir linha da plataforma 4
 	li $a1, 20
 	li $a0, 13
 	jal linhah
@@ -326,7 +464,7 @@ fundo:
 	li $a0, 5
 	jal get_color # pega a cor que plataforma deve ser pintada
 	move $a2, $v0 #move cor resultado para paremetro de cor de linha
-	#chama funcao pra implimir linha da plataforma 5
+	#chama funcao pra imprimir linha da plataforma 5
 	li $a1, 20
 	li $a0, 25
 	jal linhah
@@ -335,7 +473,7 @@ fundo:
 	li $a0, 6
 	jal get_color # pega a cor que plataforma deve ser pintada
 	move $a2, $v0 #move cor resultado para paremetro de cor de linha
-        #chama funcao pra implimir linha da plataforma 6
+        #chama funcao pra imprimir linha da plataforma 6
         li $a1, 30
 	li $a0, 1
 	jal linhah
@@ -344,7 +482,7 @@ fundo:
 	li $a0, 7
 	jal get_color # pega a cor que plataforma deve ser pintada
 	move $a2, $v0 #move cor resultado para paremetro de cor de linha
-	#chama funcao pra implimir linha da plataforma 7
+	#chama funcao pra imprimir linha da plataforma 7
 	li $a1, 30
 	li $a0, 13
 	jal linhah
@@ -353,7 +491,7 @@ fundo:
 	li $a0, 8
 	jal get_color # pega a cor que plataforma deve ser pintada
 	move $a2, $v0 #move cor resultado para paremetro de cor de linha
-	#chama funcao pra implimir linha da plataforma 8
+	#chama funcao pra imprimir linha da plataforma 8
 	li $a1, 30
 	li $a0, 25
 	jal linhah
@@ -454,6 +592,12 @@ check_fim:
 	li $t0, 0 # i = 0
 	la $t1, plataforma_cor # endereco base do vetor de cor
 	
+	la $t3, player_vidas
+	lb $t3, 0($t3)
+	
+	beq $t3, $0, morreu
+	
+	
 	loop:
 		beq $t0, 9, ganhou # se chegou todas as platormas foram verifica jogador ganhou
 			add $t2, $t1, $t0 #addiciona i ao endereco base
@@ -465,6 +609,11 @@ check_fim:
 	#se nao for encontrado nenhum zero saida eh verdadeira	
 	ganhou:
 		li $v0, 1
+		j exit_cf
+	
+	#se as vidas são zero, então ele morreu '-'
+	morreu:
+		li $v0, 2
 	
 	exit_cf:
 		addi $sp, $sp, -4
@@ -483,10 +632,22 @@ get_color:
         add $t0, $t0, $a0 #adiciona o numero da plataforma ao endereco base
         lb $t0, ($t0) #pega o bit de ativacao da plataforma
         
+        
+		la $t1, plataforma_mortal
+		lb $t1, 0($t1)
+        
+		beq $a0, $t1, pinta_morte
+        
         # se o bit for zero ja era na cor padrao
         # se nao for zero troca a cor para a cor de ativado
         beqz $t0, exit
-        	li $v0, 0xffff00
+	   	li $v0, 0xffff00
+		j exit
+
+		pinta_morte:			
+		la $v0, plataforma_mortal_cor
+		lw $v0, 0($v0)
+
         
         exit:
         lw $ra, 0($sp)
@@ -494,6 +655,8 @@ get_color:
 	jr $ra
 	
 #troca a cor da plataforma atual
+#verifica se a plataforma ativada é a sorteada (marcada como obstáculo)
+#se for, então sinaliza que o player perdeu uma vida (vidas - 1)
 #a0 = numero da plataform
 ativar_plataforma:
 	addi $sp, $sp, -4
@@ -505,16 +668,68 @@ ativar_plataforma:
         #inverte bit de estado da plataforma
         not $t1, $t1
         sb $t1, ($t0)
+
+		la $t2, plataforma_mortal
+		lb $t2, 0($t2)
+
+		bne $t2, $a0, nao_tira_vida
+
+		#tira vida do player
+		la $t2, player_vidas
+		lb $t3, 0($t2)
+		addi $t3, $t3, -1 #subtrai quantas vidas
+		sb $t3, 0($t2)
+
+		#addi $v0, $0, 1
+		#move $a0, $t3
+		#syscall
+
+		nao_tira_vida:
         lw $ra, 0($sp)
 	addi $sp, $sp, 4
 	jr $ra
+
+# sorteia uma plataforma para ser obstáculo
+# a não ser que o bit de invencibilidade esteja ativado
+rand:
+    
+	addi $sp, $sp, -8
+	sw $ra, 0($sp)
+	sw $s0, 4($sp)	
+
+	# verifica se a morte está habilitada:
+	la $s0, invencibilidade
+	lb $t0, 0($s0)
+	addi $v0, $0, -1		# -1 indica que não foi sorteado número
+	bne $t0, $0, rand_continue	# dano desabilitado
+			
+	pode_machucar:
+		# gera um número aleatório entre 0 e 9 (numeração das plataformas)
+		addi $a1, $0, 10 # limite superior do sorteio (não incluso)
+		addi $v0, $0, 42 # pseudo número aleatório com limite superior
+		syscall
+		addi $v0 $0 1
+		syscall
+		move $v0, $a0
+
 	
-#imprime a palavra fim nada tela	
+	rand_continue:
+		# reabilita a morte
+		sb $0, 0($s0)
+		
+		lw $ra, 0($sp)
+		lw $s0, 4($sp)
+		addi $sp, $sp, 8
+
+
+	jr $ra
+
+# imprime a palavra fim nada tela	
 tela_fim:
 	li $t0, 0x7f7f7f
 	li $t1, 0xffffffff
 	
-	#F coluna1
+	# F coluna1
 	sw    $t0,  1556($s0)
 	sw    $t0,  1684($s0)
 	sw    $t0,  1812($s0)
@@ -747,3 +962,19 @@ tela_fim:
     	sw    $t0,  2668($s0)
     	sw    $t0,  2796($s0)
 	jr $ra
+
+print_text: #a0 = string
+	
+	j ps_cond
+	
+	ps_loop:
+		#lw $v0, 0xffff0008 #registrador de controle do display do teclado
+		#andi $v0, $v0, 0x01 #verifica se ele está pronto
+		#beq $v0, $0, ps_loop #se não tiver, então solicitamos de novo
+		sw $a1, 0xffff000c #joga os dados lidos no registror de dados do display do teclado
+	
+	ps_cond:
+		lbu $a1, ($a0)
+		addiu $a0, $a0, 1
+		bne $a1, $0, ps_loop
+		jr $ra
