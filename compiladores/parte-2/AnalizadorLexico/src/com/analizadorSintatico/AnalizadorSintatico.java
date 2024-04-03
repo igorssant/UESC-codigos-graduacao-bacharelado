@@ -16,7 +16,7 @@ public class AnalizadorSintatico {
 
             while(bufferLeitura.available() > 0) {
                 caractereAtual = (char) bufferLeitura.read();
-                //automato.lerCaracterer(caractereAtual);
+                automato.lerCaractere(caractereAtual.toString());
             }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -37,7 +37,7 @@ public class AnalizadorSintatico {
 
         if(!(arquivo.isFile() && arquivo.canRead())) {
             System.out.println("Não foi possível abrir o arquivo: " + arquivo.getName() + "\n");
-            System.exit(-2);
+            System.exit(-1);
         }
 
         System.out.println("Inicializando programa...");

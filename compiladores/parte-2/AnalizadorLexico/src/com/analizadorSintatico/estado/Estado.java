@@ -1,7 +1,5 @@
 package com.analizadorSintatico.estado;
 
-import java.util.HashMap;
-
 public class Estado {
     public static Integer ultimoEstado;
     private Integer estadoAtual;
