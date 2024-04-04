@@ -29,13 +29,13 @@ public class ExpressaoRegular {
         listaDeRegex.add(Pattern.compile("<"));      /* 08 */
         listaDeRegex.add(Pattern.compile(">"));      /* 09 */
         listaDeRegex.add(Pattern.compile("-"));      /* 10 */
-        listaDeRegex.add(Pattern.compile("[+]"));    /* 11 */
-        listaDeRegex.add(Pattern.compile("[*]"));    /* 12 */
+        listaDeRegex.add(Pattern.compile("^[+]$"));    /* 11 */
+        listaDeRegex.add(Pattern.compile("^[*]$"));    /* 12 */
         listaDeRegex.add(Pattern.compile("%"));      /* 13 */
 
         /* TIPOS DE SINAIS LOGICOS */
         listaDeRegex.add(Pattern.compile("="));      /* 14 */
-        listaDeRegex.add(Pattern.compile("[|]"));    /* 15 */
+        listaDeRegex.add(Pattern.compile("^[|]$"));    /* 15 */
         listaDeRegex.add(Pattern.compile("&"));      /* 16 */
         listaDeRegex.add(Pattern.compile("~"));      /* 17 */
 
@@ -46,7 +46,7 @@ public class ExpressaoRegular {
         listaDeRegex.add(Pattern.compile(" "));     /* 21 */
 
         /* TIPOS DE USO GERAL */
-        listaDeRegex.add(Pattern.compile("[(]"));   /* 22 */
-        listaDeRegex.add(Pattern.compile("[)]"));   /* 23 */
+        listaDeRegex.add(Pattern.compile("^[(]$"));   /* 22 */
+        listaDeRegex.add(Pattern.compile("^[)]$"));   /* 23 */
     }
 }
