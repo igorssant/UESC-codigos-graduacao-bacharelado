@@ -2,6 +2,7 @@ package com.analizadorSintatico.automato;
 
 import com.analizadorSintatico.estado.Estado;
 import static com.analizadorSintatico.expressaoRegular.ExpressaoRegular.listaDeRegex;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -10,10 +11,12 @@ public class Automato {
     private String token;
 
     public Automato() {
+        this.token = "";
         this.estado = new Estado();
     }
 
-    public Automato(Character caractereAtual) {
+    public Automato(String caractereAtual) {
+        this.token = "";
         this.estado = new Estado(caractereAtual);
     }
 
@@ -31,13 +34,76 @@ public class Automato {
 
     public void lerCaractere(String caractereAtual) {
         Integer estadoAtual = this.estado.getEstadoAtual();
+        Pattern regexParaHexadecimal = Pattern.compile("[A-F]");
+        Matcher matcherParaHexadecimal = regexParaHexadecimal.matcher(caractereAtual),
+            matcher = null;
 
         switch(estadoAtual) {
             case 0:
-                Matcher matcher;
-                matcher = listaDeRegex.get(5).matcher(caractereAtual);
-                if (matcher.matches()) {
-                    System.out.println(caractereAtual);
+                ArrayList<Pattern> listaDeRegexPermitidos = (ArrayList<Pattern>) listaDeRegex.clone();
+                listaDeRegexPermitidos.remove(21);
+                listaDeRegexPermitidos.remove(20);
+                listaDeRegexPermitidos.remove(4);
+                listaDeRegexPermitidos.remove(3);
+
+                if((matcher = listaDeRegexPermitidos.get(0).matcher(caractereAtual)).matches()) { /* LEU UM NUMERO */
+                    mudarDeEstado(caractereAtual, 3);
+                } else if ((matcher = listaDeRegexPermitidos.get(1).matcher(caractereAtual)).matches()) { /* LEU UM PONTO */
+                    mudarDeEstado(caractereAtual, 35);
+                } else if ((matcher = listaDeRegexPermitidos.get(2).matcher(caractereAtual)).matches()) { /* LEU ASPAS */
+                    mudarDeEstado(caractereAtual, 1);
+                } else if ((matcher = listaDeRegexPermitidos.get(3).matcher(caractereAtual)).matches()) { /* LEU LETRA MINUSCULA */
+                    mudarDeEstado(caractereAtual, 36);
+                } else if ((matcher = listaDeRegexPermitidos.get(4).matcher(caractereAtual)).matches()) { /* LEU LETRA MAIUSCULA */
+                    if(matcherParaHexadecimal.matches()) {
+                        mudarDeEstado(caractereAtual, 14);
+                    } else {
+                        throw new RuntimeException("UNEXPECTED TOKEN");
+                    }
+                } else if ((matcher = listaDeRegexPermitidos.get(5).matcher(caractereAtual)).matches()) { /* LEU TRALHA '#' */
+                    mudarDeEstado(caractereAtual, 18);
+                } else if ((matcher = listaDeRegexPermitidos.get(6).matcher(caractereAtual)).matches()) { /* LEU MENOR QUE */
+                    mudarDeEstado(caractereAtual, 20);
+                } else if ((matcher = listaDeRegexPermitidos.get(7).matcher(caractereAtual)).matches()) { /* LEU MAIOR QUE */
+                    mudarDeEstado(caractereAtual, 44);
+                } else if ((matcher = listaDeRegexPermitidos.get(8).matcher(caractereAtual)).matches()) { /* LEU SINAL DE MENOS */
+                    mudarDeEstado(caractereAtual, 58);
+                    lerCaractere(caractereAtual);
+                } else if ((matcher = listaDeRegexPermitidos.get(9).matcher(caractereAtual)).matches()) { /* LEU SINAL DE MAIS */
+                    mudarDeEstado(caractereAtual, 57);
+                    lerCaractere(caractereAtual);
+                } else if ((matcher = listaDeRegexPermitidos.get(10).matcher(caractereAtual)).matches()) { /* LEU ASTERISCO */
+                    mudarDeEstado(caractereAtual, 59);
+                    lerCaractere(caractereAtual);
+                } else if ((matcher = listaDeRegexPermitidos.get(11).matcher(caractereAtual)).matches()) { /* LEU SINAL DE PORCENTAGEM */
+                    mudarDeEstado(caractereAtual, 60);
+                    lerCaractere(caractereAtual);
+                } else if ((matcher = listaDeRegexPermitidos.get(12).matcher(caractereAtual)).matches()) { /* LEU SINAL DE IGUAL */
+                    mudarDeEstado(caractereAtual, 49);
+                } else if ((matcher = listaDeRegexPermitidos.get(13).matcher(caractereAtual)).matches()) { /* LEU SIMBOLO PIPE '|' */
+                    mudarDeEstado(caractereAtual, 61);
+                    lerCaractere(caractereAtual);
+                } else if ((matcher = listaDeRegexPermitidos.get(14).matcher(caractereAtual)).matches()) { /* LEU 'E' COMERCIAL */
+                    mudarDeEstado(caractereAtual, 62);
+                    lerCaractere(caractereAtual);
+                } else if ((matcher = listaDeRegexPermitidos.get(15).matcher(caractereAtual)).matches()) { /* LEU ACENTO TIL */
+                    mudarDeEstado(caractereAtual, 56);
+                    lerCaractere(caractereAtual);
+                } else if ((matcher = listaDeRegexPermitidos.get(16).matcher(caractereAtual)).matches()) { /* LEU PONTO E VIRGULA */
+                    mudarDeEstado(caractereAtual, 75);
+                    lerCaractere(caractereAtual);
+                } else if ((matcher = listaDeRegexPermitidos.get(17).matcher(caractereAtual)).matches()) { /* LEU DOIS PONTOS */
+                    mudarDeEstado(caractereAtual, 73);
+                    lerCaractere(caractereAtual);
+                } else if ((matcher = listaDeRegexPermitidos.get(18).matcher(caractereAtual)).matches()) { /* LEU ABRE PARENTESE */
+                    mudarDeEstado(caractereAtual, 77);
+                    lerCaractere(caractereAtual);
+                } else if ((matcher = listaDeRegexPermitidos.get(19).matcher(caractereAtual)).matches()) { /* LEU FECHA PARENTESE */
+                    mudarDeEstado(caractereAtual, 79);
+                    lerCaractere(caractereAtual);
+                } else {
+                    System.err.println("Erro não esperado.\nEstado 0 aceitou um token não esperado: " + caractereAtual);
+                    System.exit(-1);
                 }
 
                 break;
@@ -82,6 +148,7 @@ public class Automato {
                 break;
 
             case 14:
+                System.out.println("passei pelo estado 14");
                 break;
 
             case 15:
@@ -148,18 +215,56 @@ public class Automato {
                 break;
 
             case 36:
+                System.out.println("passei pelo estado 36");
+
+                if((matcher = listaDeRegex.get(5).matcher(caractereAtual)).matches()) {
+                    mudarDeEstado(caractereAtual, 38);
+                } else if ((matcher = listaDeRegex.get(6).matcher(caractereAtual)).matches()) {
+                    mudarDeEstado(caractereAtual, 37);
+                } else {
+                    System.err.println("Erro não esperado.\nEstado 0 aceitou um token não esperado: " + caractereAtual);
+                    System.exit(-1);
+                }
+
                 break;
 
             case 37:
+                System.out.println("passei pelo estado 37");
+
+                if((matcher = listaDeRegex.get(5).matcher(caractereAtual)).matches()) {
+                    mudarDeEstado(caractereAtual, 40);
+                } else {
+                    mudarDeEstado(caractereAtual, 41);
+                    System.out.println("NO TERMINAL DE ACEITAÇÃO ALCANÇADO");
+                }
+
                 break;
 
             case 38:
+                System.out.println("passei pelo estado 38");
+
+                if((matcher = listaDeRegex.get(5).matcher(caractereAtual)).matches()) {
+                    manterEstado(caractereAtual);
+                } else {
+                    mudarDeEstado(caractereAtual, 39);
+                    System.out.println("NO TERMINAL DE ACEITAÇÃO ALCANÇADO");
+                }
+
                 break;
 
             case 39:
                 break;
 
             case 40:
+                System.out.println("passei pelo estado 40");
+
+                if((matcher = listaDeRegex.get(6).matcher(caractereAtual)).matches()) {
+                    mudarDeEstado(caractereAtual, 37);
+                } else {
+                    mudarDeEstado(caractereAtual, 41);
+                    System.out.println("NO TERMINAL DE ACEITAÇÃO ALCANÇADO");
+                }
+
                 break;
 
             case 41:
@@ -281,17 +386,19 @@ public class Automato {
                 break;
 
             default:
-                System.out.println("Não existe tal estado!\nEstado: q" + estadoAtual + ".");
+                System.err.println("Não existe tal estado!\nEstado: q" + estadoAtual + ".");
                 System.exit(-1);
         }
     }
 
-    private void manterEstado(Character caractereAtual) {
+    private void manterEstado(String caractereAtual) {
         this.estado.setCaractereAtual(caractereAtual);
     }
 
-    private void mudarDeEstado(Character caractereAtual, Integer novoEstado) {
+    private void mudarDeEstado(String caractereAtual, Integer novoEstado) {
         this.estado.setEstadoAtual(novoEstado);
+        this.estado.setCaractereAtual(caractereAtual);
+        this.token = this.token.concat(caractereAtual);
     }
 
     private void esquecerTokenAtual() {

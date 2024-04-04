@@ -1,7 +1,6 @@
 package com.analizadorSintatico;
 
 import com.analizadorSintatico.automato.Automato;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,12 +30,12 @@ public class AnalizadorSintatico {
         File arquivo = new File("src/entrada/entrada.cic");
 
         if(!arquivo.exists()) {
-            System.out.println("O caminho passado está incorreto ou não existe nenhum arquivo com este nome!");
+            System.err.println("O caminho passado está incorreto ou não existe nenhum arquivo com este nome!");
             System.exit(-1);
         }
 
         if(!(arquivo.isFile() && arquivo.canRead())) {
-            System.out.println("Não foi possível abrir o arquivo: " + arquivo.getName() + "\n");
+            System.err.println("Não foi possível abrir o arquivo: " + arquivo.getName() + "\n");
             System.exit(-1);
         }
 

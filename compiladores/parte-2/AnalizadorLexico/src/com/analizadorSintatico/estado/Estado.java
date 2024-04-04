@@ -3,8 +3,8 @@ package com.analizadorSintatico.estado;
 public class Estado {
     public static Integer ultimoEstado;
     private Integer estadoAtual;
-    private Character ultimoCaractereLido;
-    private Character caractereAtual;
+    private String ultimoCaractereLido;
+    private String caractereAtual;
 
     public Estado() {
         this.caractereAtual = null;
@@ -12,17 +12,17 @@ public class Estado {
         this.estadoAtual = 0;
     }
 
-    public Estado(Character caractereAtual) {
+    public Estado(String caractereAtual) {
         this.ultimoCaractereLido = null;
         this.caractereAtual = caractereAtual;
         this.estadoAtual = 0;
     }
 
-    public void setUltimoCaractereLido(Character ultimoCaractereLido) {
+    public void setUltimoCaractereLido(String ultimoCaractereLido) {
         this.ultimoCaractereLido = ultimoCaractereLido;
     }
 
-    public void setCaractereAtual(Character caractereAtual) {
+    public void setCaractereAtual(String caractereAtual) {
         this.ultimoCaractereLido = this.caractereAtual;
         this.caractereAtual = caractereAtual;
     }
@@ -35,11 +35,11 @@ public class Estado {
         return this.estadoAtual;
     }
 
-    public Character getUltimoCaractereLido() {
+    public String getUltimoCaractereLido() {
         return this.ultimoCaractereLido;
     }
 
-    public Character getCaractereAtual() {
+    public String getCaractereAtual() {
         return this.caractereAtual;
     }
 }
