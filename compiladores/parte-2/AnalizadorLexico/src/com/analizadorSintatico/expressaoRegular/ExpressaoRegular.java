@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class ExpressaoRegular {
-    public static final ArrayList<Pattern> listaDeRegex = new ArrayList<>(24);
+    public static final ArrayList<Pattern> listaDeRegex = new ArrayList<>(27);
 
     static {
         /* TIPOS NUMERICOS */
@@ -29,13 +29,13 @@ public class ExpressaoRegular {
         listaDeRegex.add(Pattern.compile("<"));      /* 08 */
         listaDeRegex.add(Pattern.compile(">"));      /* 09 */
         listaDeRegex.add(Pattern.compile("-"));      /* 10 */
-        listaDeRegex.add(Pattern.compile("^[+]$"));    /* 11 */
-        listaDeRegex.add(Pattern.compile("^[*]$"));    /* 12 */
+        listaDeRegex.add(Pattern.compile("^[+]$"));  /* 11 */
+        listaDeRegex.add(Pattern.compile("^[*]$"));  /* 12 */
         listaDeRegex.add(Pattern.compile("%"));      /* 13 */
 
         /* TIPOS DE SINAIS LOGICOS */
         listaDeRegex.add(Pattern.compile("="));      /* 14 */
-        listaDeRegex.add(Pattern.compile("^[|]$"));    /* 15 */
+        listaDeRegex.add(Pattern.compile("^[|]$"));  /* 15 */
         listaDeRegex.add(Pattern.compile("&"));      /* 16 */
         listaDeRegex.add(Pattern.compile("~"));      /* 17 */
 
@@ -48,5 +48,12 @@ public class ExpressaoRegular {
         /* TIPOS DE USO GERAL */
         listaDeRegex.add(Pattern.compile("^[(]$"));   /* 22 */
         listaDeRegex.add(Pattern.compile("^[)]$"));   /* 23 */
+
+        /* SEPARADOR DO HEXADECIMAL */
+        listaDeRegex.add(Pattern.compile("x"));   /* 24 */
+        listaDeRegex.add(Pattern.compile("e"));   /* 25 */
+
+        /* END OF FILE */
+        listaDeRegex.add(Pattern.compile("\\uFFFF")); /* 26 */
     }
 }

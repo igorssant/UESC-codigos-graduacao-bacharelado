@@ -5,17 +5,26 @@ public class Estado {
     private Integer estadoAtual;
     private String ultimoCaractereLido;
     private String caractereAtual;
+    private Integer linha;
+    private Integer coluna;
+    private Boolean estadoEhDeAceitacao;
+    private Boolean lerNovoCaractere;
 
     public Estado() {
-        this.caractereAtual = null;
-        this.ultimoCaractereLido = null;
+        this.caractereAtual = this.ultimoCaractereLido = null;
         this.estadoAtual = 0;
+        this.linha = this.coluna = 1;
+        this.estadoEhDeAceitacao = false;
+        this.lerNovoCaractere = true;
     }
 
     public Estado(String caractereAtual) {
         this.ultimoCaractereLido = null;
         this.caractereAtual = caractereAtual;
         this.estadoAtual = 0;
+        this.linha = this.coluna = 1;
+        this.estadoEhDeAceitacao = false;
+        this.lerNovoCaractere = true;
     }
 
     public void setUltimoCaractereLido(String ultimoCaractereLido) {
@@ -31,6 +40,18 @@ public class Estado {
         this.estadoAtual = estadoAtual;
     }
 
+    public void setEstadoEhDeAceitacaoComoVerdade() {
+        this.estadoEhDeAceitacao = true;
+    }
+
+    public void setEstadoEhDeAceitacaoComoFalso() {
+        this.estadoEhDeAceitacao = false;
+    }
+
+    public void setLerNovoCaractere(Boolean lerNovoCaractere) {
+        this.lerNovoCaractere = lerNovoCaractere;
+    }
+
     public Integer getEstadoAtual() {
         return this.estadoAtual;
     }
@@ -41,5 +62,49 @@ public class Estado {
 
     public String getCaractereAtual() {
         return this.caractereAtual;
+    }
+
+    public Integer getColuna() {
+        return this.coluna;
+    }
+
+    public Integer getLinha() {
+        return this.linha;
+    }
+
+    public Boolean getEstadoEhDeAceitacao() {
+        return this.estadoEhDeAceitacao;
+    }
+
+    public Boolean getLerNovoCaractere() {
+        return lerNovoCaractere;
+    }
+
+    public void inverteEstadoDeAceitacao() {
+        this.estadoEhDeAceitacao = !this.estadoEhDeAceitacao;
+    }
+
+    public void  inverteLerNovoCaractere() {
+        this.lerNovoCaractere = !lerNovoCaractere;
+    }
+
+    public void resetarColuna() {
+        this.coluna = 1;
+    }
+
+    public void resetarLinha() {
+        this.linha = 1;
+    }
+
+    public void incrementarColuna() {
+        this.coluna++;
+    }
+
+    public void incrementarLinha() {
+        this.linha++;
+    }
+
+    public void voltarAoEstadoInicial() {
+        this.estadoAtual = 0;
     }
 }
