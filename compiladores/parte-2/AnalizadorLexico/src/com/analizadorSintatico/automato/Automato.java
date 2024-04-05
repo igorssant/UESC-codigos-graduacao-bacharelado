@@ -1,5 +1,6 @@
 package com.analizadorSintatico.automato;
 
+import com.analizadorSintatico.erro.UnexpectedTokenException;
 import com.analizadorSintatico.estado.Estado;
 
 import static com.analizadorSintatico.palavrasReservadas.PalavrasReservadas.palavrasReservadas;
@@ -51,6 +52,8 @@ public class Automato {
         Pattern regexParaHexadecimal = Pattern.compile("^[A-F]$");
         Matcher matcherParaHexadecimal = regexParaHexadecimal.matcher(caractereAtual),
             matcher = null;
+
+        this.estado.adicionarTokenAoConteudoDaLinha(caractereAtual);
 
         switch(estadoAtual) {
             case 0:
@@ -118,11 +121,15 @@ public class Automato {
                         this.estado.setEstadoEhDeAceitacaoComoVerdade();
                         manterEstado("\n");
                         this.estado.setLerNovoCaractere(true);
+                        this.estado.limparConteudoDaLinha();
                 } else if ((matcher = listaDeRegex.get(26).matcher(caractereAtual)).matches()) { /* FINALIZANDO O PROGRAMA LENDO 'EOF' */
                     System.exit(0);
                 } else {
-                    System.err.println("Erro não esperado.\nEstado 0 aceitou um valorDoToken não esperado: " + caractereAtual);
-                    System.exit(0);
+                    throw new UnexpectedTokenException(
+                        this.estado.getLinha(),
+                        this.estado.getColuna(),
+                        this.estado.getConteudoDaLinha()
+                    );
                 }
 
                 break;
@@ -279,6 +286,12 @@ public class Automato {
 
                 if((matcher = listaDeRegex.get(24).matcher(caractereAtual)).matches()) {  /* LEU O CARACTERE 'x' */
                     mudarDeEstado(caractereAtual, 15);
+                } else {                                                              /* LEU QUALQUER OUTRA COISA */
+                    throw new UnexpectedTokenException(
+                        this.estado.getLinha(),
+                        this.estado.getColuna(),
+                        this.estado.getConteudoDaLinha()
+                    );
                 }
 
                 break;
@@ -290,6 +303,12 @@ public class Automato {
                     mudarDeEstado(caractereAtual, 16);
                 } else if (matcherParaHexadecimal.matches()) {              /* LEU UMA LETRA MAIUSCULA ENTRE [A-F] */
                     mudarDeEstado(caractereAtual, 16);
+                } else {                                                    /* LEU QUALQUER OUTRA COISA */
+                    throw new UnexpectedTokenException(
+                        this.estado.getLinha(),
+                        this.estado.getColuna(),
+                        this.estado.getConteudoDaLinha()
+                    );
                 }
 
                 break;
@@ -356,6 +375,12 @@ public class Automato {
 
                 if((matcher = listaDeRegex.get(8).matcher(caractereAtual)).matches()) { /* LEU MENOR QUE */
                     mudarDeEstado(caractereAtual, 22);
+                } else {                                                              /* LEU QUALQUER OUTRA COISA */
+                    throw new UnexpectedTokenException(
+                        this.estado.getLinha(),
+                        this.estado.getColuna(),
+                        this.estado.getConteudoDaLinha()
+                    );
                 }
 
                 break;
@@ -386,6 +411,12 @@ public class Automato {
 
                 if((matcher = listaDeRegex.get(0).matcher(caractereAtual)).matches()) { /* LEU UM NUMERO */
                     mudarDeEstado(caractereAtual, 25);
+                } else {                                                              /* LEU QUALQUER OUTRA COISA */
+                    throw new UnexpectedTokenException(
+                        this.estado.getLinha(),
+                        this.estado.getColuna(),
+                        this.estado.getConteudoDaLinha()
+                    );
                 }
 
                 break;
@@ -395,6 +426,12 @@ public class Automato {
 
                 if((matcher = listaDeRegex.get(0).matcher(caractereAtual)).matches()) { /* LEU UM NUMERO */
                     mudarDeEstado(caractereAtual, 26);
+                } else {                                                              /* LEU QUALQUER OUTRA COISA */
+                    throw new UnexpectedTokenException(
+                        this.estado.getLinha(),
+                        this.estado.getColuna(),
+                        this.estado.getConteudoDaLinha()
+                    );
                 }
 
                 break;
@@ -404,6 +441,12 @@ public class Automato {
 
                 if((matcher = listaDeRegex.get(4).matcher(caractereAtual)).matches()) { /* LEU O CARACTERE UNDERSCORE */
                     mudarDeEstado(caractereAtual, 27);
+                } else {                                                              /* LEU QUALQUER OUTRA COISA */
+                    throw new UnexpectedTokenException(
+                        this.estado.getLinha(),
+                        this.estado.getColuna(),
+                        this.estado.getConteudoDaLinha()
+                    );
                 }
 
                 break;
@@ -413,6 +456,12 @@ public class Automato {
 
                 if((matcher = listaDeRegex.get(0).matcher(caractereAtual)).matches()) { /* LEU UM NUMERO */
                     mudarDeEstado(caractereAtual, 28);
+                } else {                                                              /* LEU QUALQUER OUTRA COISA */
+                    throw new UnexpectedTokenException(
+                        this.estado.getLinha(),
+                        this.estado.getColuna(),
+                        this.estado.getConteudoDaLinha()
+                    );
                 }
 
                 break;
@@ -422,6 +471,12 @@ public class Automato {
 
                 if((matcher = listaDeRegex.get(0).matcher(caractereAtual)).matches()) { /* LEU UM NUMERO */
                     mudarDeEstado(caractereAtual, 32);
+                } else {                                                              /* LEU QUALQUER OUTRA COISA */
+                    throw new UnexpectedTokenException(
+                        this.estado.getLinha(),
+                        this.estado.getColuna(),
+                        this.estado.getConteudoDaLinha()
+                    );
                 }
 
                 break;
@@ -431,6 +486,12 @@ public class Automato {
 
                 if((matcher = listaDeRegex.get(0).matcher(caractereAtual)).matches()) { /* LEU UM NUMERO */
                     mudarDeEstado(caractereAtual, 30);
+                } else {                                                              /* LEU QUALQUER OUTRA COISA */
+                    throw new UnexpectedTokenException(
+                        this.estado.getLinha(),
+                        this.estado.getColuna(),
+                        this.estado.getConteudoDaLinha()
+                    );
                 }
 
                 break;
@@ -440,6 +501,12 @@ public class Automato {
 
                 if((matcher = listaDeRegex.get(0).matcher(caractereAtual)).matches()) { /* LEU UM NUMERO */
                     mudarDeEstado(caractereAtual, 31);
+                } else {                                                              /* LEU QUALQUER OUTRA COISA */
+                    throw new UnexpectedTokenException(
+                        this.estado.getLinha(),
+                        this.estado.getColuna(),
+                        this.estado.getConteudoDaLinha()
+                    );
                 }
 
                 break;
@@ -449,6 +516,12 @@ public class Automato {
 
                 if((matcher = listaDeRegex.get(0).matcher(caractereAtual)).matches()) { /* LEU UM NUMERO */
                     mudarDeEstado(caractereAtual, 27);
+                } else {                                                              /* LEU QUALQUER OUTRA COISA */
+                    throw new UnexpectedTokenException(
+                        this.estado.getLinha(),
+                        this.estado.getColuna(),
+                        this.estado.getConteudoDaLinha()
+                    );
                 }
 
                 break;
@@ -458,6 +531,12 @@ public class Automato {
 
                 if((matcher = listaDeRegex.get(0).matcher(caractereAtual)).matches()) { /* LEU UM NUMERO */
                     mudarDeEstado(caractereAtual, 33);
+                } else {                                                              /* LEU QUALQUER OUTRA COISA */
+                    throw new UnexpectedTokenException(
+                        this.estado.getLinha(),
+                        this.estado.getColuna(),
+                        this.estado.getConteudoDaLinha()
+                    );
                 }
 
                 break;
@@ -467,6 +546,12 @@ public class Automato {
 
                 if((matcher = listaDeRegex.get(0).matcher(caractereAtual)).matches()) { /* LEU UM NUMERO */
                     mudarDeEstado(caractereAtual, 34);
+                } else {                                                              /* LEU QUALQUER OUTRA COISA */
+                    throw new UnexpectedTokenException(
+                        this.estado.getLinha(),
+                        this.estado.getColuna(),
+                        this.estado.getConteudoDaLinha()
+                    );
                 }
 
                 break;
@@ -483,6 +568,12 @@ public class Automato {
 
                 if((matcher = listaDeRegex.get(0).matcher(caractereAtual)).matches()) { /* LEU UM NUMERO */
                     mudarDeEstado(caractereAtual, 4);
+                } else {                                                              /* LEU QUALQUER OUTRA COISA */
+                    throw new UnexpectedTokenException(
+                        this.estado.getLinha(),
+                        this.estado.getColuna(),
+                        this.estado.getConteudoDaLinha()
+                    );
                 }
 
                 break;
@@ -494,6 +585,12 @@ public class Automato {
                     mudarDeEstado(caractereAtual, 38);
                 } else if ((matcher = listaDeRegex.get(6).matcher(caractereAtual)).matches()) { /* LEU UMA LETRA MAIUSCULA */
                     mudarDeEstado(caractereAtual, 37);
+                } else {                                                              /* LEU QUALQUER OUTRA COISA */
+                    throw new UnexpectedTokenException(
+                        this.estado.getLinha(),
+                        this.estado.getColuna(),
+                        this.estado.getConteudoDaLinha()
+                    );
                 }
 
                 break;
@@ -594,6 +691,12 @@ public class Automato {
 
                 if((matcher = listaDeRegex.get(14).matcher(caractereAtual)).matches()) { /* LEU UM SINAL DE IGUAL */
                     mudarDeEstado(caractereAtual, 50);
+                } else {                                                              /* LEU QUALQUER OUTRA COISA */
+                    throw new UnexpectedTokenException(
+                        this.estado.getLinha(),
+                        this.estado.getColuna(),
+                        this.estado.getConteudoDaLinha()
+                    );
                 }
 
                 break;

@@ -9,6 +9,7 @@ public class Estado {
     private Integer coluna;
     private Boolean estadoEhDeAceitacao;
     private Boolean lerNovoCaractere;
+    private String conteudoDaLinha;
 
     public Estado() {
         this.caractereAtual = this.ultimoCaractereLido = null;
@@ -16,6 +17,7 @@ public class Estado {
         this.linha = this.coluna = 1;
         this.estadoEhDeAceitacao = false;
         this.lerNovoCaractere = true;
+        this.conteudoDaLinha = null;
     }
 
     public Estado(String caractereAtual) {
@@ -25,6 +27,7 @@ public class Estado {
         this.linha = this.coluna = 1;
         this.estadoEhDeAceitacao = false;
         this.lerNovoCaractere = true;
+        this.conteudoDaLinha = null;
     }
 
     public void setUltimoCaractereLido(String ultimoCaractereLido) {
@@ -80,6 +83,10 @@ public class Estado {
         return lerNovoCaractere;
     }
 
+    public String getConteudoDaLinha() {
+        return conteudoDaLinha;
+    }
+
     public void inverteEstadoDeAceitacao() {
         this.estadoEhDeAceitacao = !this.estadoEhDeAceitacao;
     }
@@ -106,5 +113,13 @@ public class Estado {
 
     public void voltarAoEstadoInicial() {
         this.estadoAtual = 0;
+    }
+
+    public void adicionarTokenAoConteudoDaLinha(String token) {
+        this.conteudoDaLinha = this.caractereAtual.concat(token);
+    }
+
+    public void limparConteudoDaLinha() {
+        this.conteudoDaLinha = "";
     }
 }
