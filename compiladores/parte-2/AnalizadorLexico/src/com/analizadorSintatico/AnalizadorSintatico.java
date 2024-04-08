@@ -4,6 +4,14 @@ import com.analizadorSintatico.automato.Automato;
 import java.io.*;
 
 public class AnalizadorSintatico {
+    /**
+     * Metodo principal do
+     * analisador sintatico
+     * Ele recebe como entrada
+     * um ponteiro para o
+     * arquivo de entrada .cic
+     * @param arquivo File
+     */
     private static void analizadorSintatico(File arquivo) {
         Automato automato = new Automato();
 
@@ -33,6 +41,15 @@ public class AnalizadorSintatico {
         }
     }
 
+    /**
+     * Metodo usado para imprimir os tokens
+     * no arquivo transpilado, ou seja,
+     * o arquivo de saida
+     * O metodo recebe como entrada
+     * o automato que está lendo
+     * o arquivo de entrada .cic
+     * @param automato Automato
+     */
     private static void imprimeArquivoTranspilado(Automato automato){
         String caminho = "src/saida/entradaModificada",
             extensao = ".bon";
@@ -57,28 +74,73 @@ public class AnalizadorSintatico {
         }
     }
 
+    /**
+     * Metodo usado para imprimir,
+     * no arquivo de saida, os
+     * tokens que possuem valores variaveis
+     * @param chave String
+     * @param valor String
+     * @param bufferEscrita FileWriter
+     * @throws IOException
+     */
     private static void escreverTokenVariavel(String chave, String valor, FileWriter bufferEscrita) throws IOException {
         bufferEscrita.write(chave);
         separadorTokenVariavel(bufferEscrita);
         bufferEscrita.write(valor);
     }
 
+    /**
+     * Metodo usado para imprimir,
+     * no arquivo de saida, os
+     * tokens que <b>NÃO</b> possuem valores variaveis
+     * @param chave String
+     * @param bufferEscrita FileWriter
+     * @throws IOException
+     */
     private static void escreverTokenInvariavel(String chave, FileWriter bufferEscrita) throws IOException {
         bufferEscrita.write(chave);
     }
 
+    /**
+     * Metodo utilitario usado
+     * para imprimir o caractere
+     * '<' no arquivo de saida
+     * @param bufferEscrita FileWriter
+     * @throws IOException
+     */
     private static void abrirToken(FileWriter bufferEscrita) throws IOException {
         bufferEscrita.write("<");
     }
 
+    /**
+     * Metodo utilitario usado
+     * para imprimir o caractere
+     * ',' no arquivo de saida
+     * @param bufferEscrita FileWriter
+     * @throws IOException
+     */
     private static void separadorTokenVariavel(FileWriter bufferEscrita) throws IOException {
         bufferEscrita.write(", ");
     }
 
+    /**
+     * Metodo utilitario usado
+     * para imprimir o caractere
+     * '>' no arquivo de saida
+     * @param bufferEscrita FileWriter
+     * @throws IOException
+     */
     private static void fechaToken(FileWriter bufferEscrita) throws IOException {
         bufferEscrita.write(">");
     }
 
+    /**
+     * Metodo inicial do
+     * projeto
+     * Ele vai iniciar todo
+     * o processo do automato
+     * @param args String[] | null
+     */
     public static void main(String[] args) {
         File arquivo = new File("src/entrada/entrada.cic");
 

@@ -15,38 +15,92 @@ public class Automato {
     private String valorDoToken;
     private Boolean tokenPossuiValor;
 
+    /**
+     * Contrutor de classe vazio
+     * Ele inicializa as variaveis
+     * - valorDoToken String,
+     * - nomeDoToken String,
+     * - estado Estado;
+     */
     public Automato() {
         this.valorDoToken = "";
         this.nomeDoToken = "";
         this.estado = new Estado();
     }
 
+    /**
+     * Contrutor de classe que
+     * recebe um parametro:
+     * @param caractereAtual String
+     * Além disso ele inicializa as variaveis:
+     * - valorDoToken String,
+     * - nomeDoToken String,
+     */
     public Automato(String caractereAtual) {
         this.valorDoToken = "";
         this.nomeDoToken = "";
         this.estado = new Estado(caractereAtual);
     }
 
+    /**
+     * Metodo getter para retornar o ultimo
+     * estado visitado pelo automato
+     * @return ultimoEstado Integer
+     */
     public Integer getUltimoEstado() {
         return Estado.ultimoEstado;
     }
 
+    /**
+     * Metodo getter para retornar o
+     * nome chave do token, ou seja,
+     * ele retorna o token cujo valor
+     * é representado pelo que ele
+     * lê no arquivo de entrada .cic
+     * @return nomeDoToken String
+     */
     public String getNomeDoToken() {
         return this.nomeDoToken;
     }
 
+    /**
+     * Metodo getter para retornar o estado
+     * onde o automato se encontra atualmente
+     * @return estadoAtual Estado
+     */
     public Integer getEstadoAtual() {
         return this.estado.getEstadoAtual();
     }
 
+    /**
+     * Metodo getter para retornar o
+     * valor do token, ou seja,
+     * ele retorna o que foi
+     * lido no arquivo de entrada .cic
+     * @return valorDoToken String
+     */
     public String getValorDoToken() {
         return this.valorDoToken;
     }
 
+    /**
+     * Metodo getter para retornar
+     * se o token a ser escrito no arquivo
+     * de saida é único ou possui vários valores
+     * @return tokenPossuiValor Boolean
+     */
     public Boolean getTokenPossuiValor() {
         return this.tokenPossuiValor;
     }
 
+    /**
+     * Metodo principal do automato
+     * ele recebe o caracterer lido do
+     * arquivo de entrada e processa
+     * para verificar qual será o próximo
+     * estado que o automato irá
+     * @param caractereAtual String
+     */
     public void lerCaractere(String caractereAtual) {
         Integer estadoAtual = this.estado.getEstadoAtual();
         Pattern regexParaHexadecimal = Pattern.compile("^[A-F]$");
@@ -839,30 +893,76 @@ public class Automato {
         this.estado.incrementarColuna();
     }
 
+    /**
+     * Metodo getter para retornar
+     * em qual coluna o caractere
+     * atual está
+     * @return colunaAtual Integer
+     */
     public Integer getColunaAtual() {
         return this.estado.getColuna();
     }
 
+    /**
+     * Metodo getter para retornar
+     * em qual linha o caractere
+     * atual está
+     * @return linhaAtual Integer
+     */
     public Integer getLinhaAtual() {
         return this.estado.getLinha();
     }
 
+    /**
+     * Metodo de controle para
+     * evitar que o automato leia um novo
+     * token e mude de estado
+     * Ele serve para travar a leitura
+     * quanto um token lido faz
+     * com que o automato mude de estado
+     * para outro estado de aceitação (principalmente)
+     * @param caractereAtual String
+     */
     private void manterEstado(String caractereAtual) {
         this.estado.setCaractereAtual(caractereAtual);
         this.valorDoToken = this.valorDoToken.concat(caractereAtual);
     }
 
+    /**
+     * Metodo de controle para
+     * forçar o automato a ler o
+     * token atual, processá-lo
+     * e passar para o próximo
+     * estado
+     * @param caractereAtual
+     * @param novoEstado
+     */
     private void mudarDeEstado(String caractereAtual, Integer novoEstado) {
         this.estado.setEstadoAtual(novoEstado);
         this.estado.setCaractereAtual(caractereAtual);
         this.valorDoToken = this.valorDoToken.concat(caractereAtual);
     }
 
+    /**
+     * Metodo utilitário
+     * para limpar a "memoria"
+     * do automato
+     * Ele é mais usado quando o automato
+     * atinge um estado de aceitação e
+     * volta ao estado inicial
+     */
     public void esquecerTokenAtual() {
         this.nomeDoToken = "";
         this.valorDoToken = "";
     }
 
+    /**
+     * Metodo de controle para
+     * evitar que o automato passe
+     * batido por um estado de aceitação
+     * e não retorne ao estado inicial
+     * @return estadoEhAceitacao Boolean
+     */
     public Boolean estadoEhAceitacao() {
         Boolean estadoTemporario = false;
 
@@ -874,10 +974,23 @@ public class Automato {
         return estadoTemporario;
     }
 
+    /**
+     * Metodo de controler para
+     * forçar o automato a ler
+     * um novo caractere do arquivo
+     * de entrada .cic
+     * @return lerNovoCaractere? Boolean
+     */
     public boolean lerNovoCaractere() {
         return this.estado.getLerNovoCaractere();
     }
 
+    /**
+     * Metodo utilitário para
+     * forçar o automato a
+     * retornar ao estado inicial
+     * Ele é utilizado em estados finais
+     */
     public void voltarAoEstadoInicial() {
         this.estado.voltarAoEstadoInicial();
     }
