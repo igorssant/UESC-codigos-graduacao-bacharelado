@@ -181,7 +181,7 @@ public class Automato {
                     this.estado.setLerNovoCaractere(true);
                     this.estado.limparConteudoDaLinha();
                 } else if ((matcher = listaDeRegex.get(26).matcher(caractereAtual)).matches()) { /* FINALIZANDO O PROGRAMA LENDO 'EOF' */
-                    this.mudarDeEstado("", 63);
+                    this.mudarDeEstado("", 47);
                     this.estado.setLerNovoCaractere(false);
                 } else {
                     this.errosNoCodigoFonte.adicionarErro(
@@ -791,6 +791,11 @@ public class Automato {
                 this.tokenPossuiValor = false;
                 break;
 
+            case 47:
+                this.estado.setEstadoAtual(-1);
+                this.errosNoCodigoFonte.gerarRelatorioDeErros();
+                break;
+
             case 49:
                 this.estado.setEstadoEhDeAceitacaoComoFalso();
 
@@ -887,11 +892,6 @@ public class Automato {
                 this.estado.setEstadoEhDeAceitacaoComoVerdade();
                 this.tokenPossuiValor = false;
                 this.estado.setLerNovoCaractere(true);
-                break;
-
-            case 63:
-                this.estado.setEstadoAtual(-1);
-                this.errosNoCodigoFonte.gerarRelatorioDeErros();
                 break;
 
             case 70:

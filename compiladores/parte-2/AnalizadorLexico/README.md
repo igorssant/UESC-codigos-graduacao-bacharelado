@@ -71,7 +71,7 @@
 - `q44`: **estado de aceitação** para o token `TK_DIFERENTE_DE`;
 - `q45`: **estado de aceitação** para o token `TK_ATRIBUICAO`;
 - `q46`: **estado de aceitação** para o token `TK_MENOR_IGUAL`;
-- `q47`: **não existe**;
+- `q47`: **estado de aceitação** para o token `EOF`, ou seja, finaliza toda a execução do autômato;
 - `q48`: **não existe**;
 - `q49`: estado de espera pelo token `=`*(igual)*. Caso seja lido, será realizada a transição para o estado `q50`;
 - `q50`: **estado de aceitação** para o token `TK_EH_IGUAL_A`;
@@ -113,6 +113,7 @@
 - `q0` -> `q20`: leitura do caractere `<`*(menor que)*;
 - `q0` -> `q35`: leitura do caractere `.`*(ponto)*;
 - `q0` -> `q36`: leitura do caractere `#`*(tralha)*;
+- `q0` -> `q47`: leitura do caractere `EOF`*(Fim do Arquivo - End Of File)*;
 - `q0` -> `q49`: leitura de um caractere da expressão regular `[a-z]`;
 - `q0` -> `q52`: leitura do caractere `>`*(maior que)*;
 - `q0` -> `q56`: leitura do caractere `~`*(til)*;
@@ -194,4 +195,4 @@
 - `q70` -> `q71`: leitura do caractere `>`*(maior que)*;
 
 ## Versao atualizada do automato
-![novo_automato_finito_deterministico](dev_files/parte1TrabalhoCompiladores-ver03.png)
+![novo_automato_finito_deterministico](dev_files/parte1TrabalhoCompiladores-ver04.png)
