@@ -28,7 +28,7 @@ public class Estado {
         this.linha = this.coluna = 1;
         this.estadoEhDeAceitacao = false;
         this.lerNovoCaractere = true;
-        this.conteudoDaLinha = null;
+        this.conteudoDaLinha = this.caractereAtual = "";
     }
 
     /**
@@ -51,7 +51,7 @@ public class Estado {
         this.linha = this.coluna = 1;
         this.estadoEhDeAceitacao = false;
         this.lerNovoCaractere = true;
-        this.conteudoDaLinha = null;
+        this.conteudoDaLinha = "";
     }
 
     /**

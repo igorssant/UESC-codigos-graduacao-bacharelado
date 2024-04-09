@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 public class ExpressaoRegular {
-    public static final ArrayList<Pattern> listaDeRegex = new ArrayList<>(27);
+    public static final ArrayList<Pattern> listaDeRegex = new ArrayList<>(28);
 
     static {
         /* TIPOS NUMERICOS */
@@ -55,5 +55,8 @@ public class ExpressaoRegular {
 
         /* END OF FILE */
         listaDeRegex.add(Pattern.compile("\\uFFFF")); /* 26 */
+
+        /* TIPO DE DADOS DE ENDERECO */
+        listaDeRegex.add(Pattern.compile("^[A-F]$")); /* 27 */
     }
 }
