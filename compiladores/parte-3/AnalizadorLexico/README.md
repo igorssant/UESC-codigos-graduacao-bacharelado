@@ -1,11 +1,13 @@
 # Os estados e as transições
 
 ## Indice
-- [Explicacao do automato](#explicacao-do-automato)
-- [Versão desatualizada do autômato](#versao-desatualizada-do-automato)
-- [Os Estados](#os-estados)
-- [As Transições](#as-transições)
-- [Nova Versão do Automato](#versao-atualizada-do-automato)
+- [Os estados e as transições](#os-estados-e-as-transições)
+  - [Indice](#indice)
+  - [Explicacao do automato:](#explicacao-do-automato)
+  - [Versao desatualizada do automato](#versao-desatualizada-do-automato)
+  - [Os Estados](#os-estados)
+  - [As Transições](#as-transições)
+  - [Versao atualizada do automato](#versao-atualizada-do-automato)
 
 ## Explicacao do automato:
 - Resalvas:
@@ -14,7 +16,7 @@
   - Desconsidere o estado q72, pois não é necessário a transição de q71 -> q72 para chegar ao estado de aceitação.  
 
 ## Versao desatualizada do automato
-![automato_finito_deterministico](dev_files/parte1TrabalhoCompiladores-ver02.png)
+![automato_finito_deterministico](dev_files/parte1TrabalhoCompiladores-ver04.png)
 
 ## Os Estados
 - `q0`: estado inicial do autômato;
@@ -129,16 +131,16 @@
 - `q0` -> `q79`: leitura do caractere `)`*(fecha parêntese)*;
 - `q1` -> `q1`: leitura de qualquer caractere que não seja `"`;
 - `q1` -> `q2`: leitura do caractere `"`;
-- `q3` -> `q4`: leitura do caractere `.`*(ponto)*;
+- `q3` -> `q10`: leitura do caractere `.`*(ponto)*;
 - `q3` -> `q6`: leitura de um caractere da expressão regular `[0-9]`;
 - `q3` -> `q8`: leitura de um caractere que não seja `x`, ou `.`*(ponto)* e não está contido na expressão regular `[0-9]`; 
 - `q3` -> `q15`: leitura do caractere `x`;
 - `q4` -> `q9`: leitura de um caractere que não esteja contido na expressão regular `[0-9]`;
 - `q4` -> `q10`: leitura de um caractere da expressão regular `[0-9]`;
-- `q5` -> `q4`: leitura do caractere `.`*(ponto)*;
+- `q5` -> `q10`: leitura do caractere `.`*(ponto)*;
 - `q5` -> `q7`: leitura de um caractere da expressão regular `[0-9]`;
 - `q5` -> `q8`: leitura de um caractere diferente de `.`*(ponto)* e que também não esteja contido na expressão regular `[0-9]`;
-- `q6` -> `q4`: leitura do caractere `.`*(ponto)*;
+- `q6` -> `q10`: leitura do caractere `.`*(ponto)*;
 - `q6` -> `q5`: leitura de um caractere da expressão regular `[0-9]`;
 - `q6` -> `q8`: leitura de um caractere que não seja `.`*(ponto)*, `_`*(underscore)*, ou `/`*(barra)* e que também não esteja contido na expressão regular `[0-9]`; 
 - `q6` -> `q24`: leitura do caractere `_`*(underscore)*;
@@ -195,4 +197,4 @@
 - `q70` -> `q71`: leitura do caractere `>`*(maior que)*;
 
 ## Versao atualizada do automato
-![novo_automato_finito_deterministico](dev_files/parte1TrabalhoCompiladores-ver04.png)
+![novo_automato_finito_deterministico](dev_files/parte1TrabalhoCompiladores-ver05.png)
