@@ -23,7 +23,8 @@ public class Estado {
     public Estado() {
         this.caractereAtual = null;
         this.estadoAtual = 0;
-        this.linha = this.coluna = 1;
+        this.linha = 1;
+        this.coluna = 0;
         this.estadoEhDeAceitacao = false;
         this.lerNovoCaractere = true;
         this.conteudoDaLinha = this.caractereAtual = "";
@@ -45,7 +46,8 @@ public class Estado {
     public Estado(String caractereAtual) {
         this.caractereAtual = caractereAtual;
         this.estadoAtual = 0;
-        this.linha = this.coluna = 1;
+        this.linha = 1;
+        this.coluna = 0;
         this.estadoEhDeAceitacao = false;
         this.lerNovoCaractere = true;
         this.conteudoDaLinha = "";
@@ -186,7 +188,7 @@ public class Estado {
      * o inicio da linha
      */
     public void resetarColuna() {
-        this.coluna = 1;
+        this.coluna = 0;
     }
 
     /**

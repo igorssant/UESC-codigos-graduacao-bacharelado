@@ -1,13 +1,14 @@
 +-----------------------+-----------------------+
 |               TOKEN	|                USOS	|
 +-----------------------+-----------------------+
-|   TK_ABRE_PARENTESE	|                   3	|
+|   TK_ABRE_PARENTESE	|                   2	|
 |              TK_INT	|                   1	|
-|       TK_ATRIBUICAO	|                   1	|
 |            TK_FLOAT	|                   1	|
-|    TK_IDENTIFICADOR	|                   3	|
+|        TK_SUBTRACAO	|                   1	|
+|    TK_IDENTIFICADOR	|                   1	|
+|      TK_MENOR_IGUAL	|                   1	|
 |           TK_STRING	|                   1	|
-|TK_PALAVRA_RESERVADA	|                   5	|
-|     TK_DIFERENTE_DE	|                   1	|
-|  TK_FECHA_PARENTESE	|                   3	|
+|TK_PALAVRA_RESERVADA	|                   4	|
+|      TK_DOIS_PONTOS	|                   1	|
+|  TK_FECHA_PARENTESE	|                   1	|
 +-----------------------+-----------------------+

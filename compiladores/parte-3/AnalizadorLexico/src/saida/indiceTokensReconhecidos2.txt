@@ -1,0 +1,14 @@
++-----------------------+-----------------------+
+|               TOKEN	|                USOS	|
++-----------------------+-----------------------+
+|             TK_SOMA	|                   1	|
+|   TK_ABRE_PARENTESE	|                   2	|
+|             TK_DATA	|                   1	|
+|              TK_INT	|                   3	|
+|       TK_ATRIBUICAO	|                   1	|
+|        TK_SUBTRACAO	|                   2	|
+|    TK_IDENTIFICADOR	|                   1	|
+|         TK_ENDERECO	|                   1	|
+|TK_PALAVRA_RESERVADA	|                   4	|
+|  TK_FECHA_PARENTESE	|                   1	|
++-----------------------+-----------------------+

@@ -1,13 +1,11 @@
 # Os estados e as transições
 
 ## Indice
-- [Os estados e as transições](#os-estados-e-as-transições)
-  - [Indice](#indice)
-  - [Explicacao do automato:](#explicacao-do-automato)
-  - [Versao desatualizada do automato](#versao-desatualizada-do-automato)
-  - [Os Estados](#os-estados)
-  - [As Transições](#as-transições)
-  - [Versao atualizada do automato](#versao-atualizada-do-automato)
+- [Explicacao do automato](#explicacao-do-automato)
+- [Versão desatualizada do autômato](#versao-desatualizada-do-automato)
+- [Os Estados](#os-estados)
+- [As Transições](#as-transições)
+- [Nova Versão do Automato](#versao-atualizada-do-automato)
 
 ## Explicacao do automato:
 - Resalvas:
@@ -16,7 +14,7 @@
   - Desconsidere o estado q72, pois não é necessário a transição de q71 -> q72 para chegar ao estado de aceitação.  
 
 ## Versao desatualizada do automato
-![automato_finito_deterministico](dev_files/parte1TrabalhoCompiladores-ver04.png)
+![automato_finito_deterministico](dev_files/parte1TrabalhoCompiladores-ver02.png)
 
 ## Os Estados
 - `q0`: estado inicial do autômato;
@@ -61,7 +59,7 @@
 - `q32`: estado de espera por um token `[0-9]` para o terceiro digito do ano;
 - `q33`: estado de espera por um token `[0-9]` para o quarto digito do ano;
 - `q34`: **estado de aceitação** para o tipo de dados Data;
-- `q35`:
+- `q35`: estado de espera por um token `[0-9]` para a casa decimal do tipo de dado float;
 - `q36`: estado de decisão onde são esperados os tokens `[a-z]` para a confirmação que será lida uma palavra reservada, ou o token `[A-Z]` para a confirmação que será lido um token identificador(nome de variável);
 - `q37`: estado de decisão onde são esperados os tokens `[A-Z]` para o desenvolvimento do token identificador(nome de variável), se caso algo diferente disso for lido, será concluida a leitura do token identificador;
 - `q38`: estado de leitura dos tokens do tipo de dado Palavra Reservada. A leitura tem tamanho indefinido e termina ao ler o qualquer caractere que não seja um letra minúscula;
@@ -77,7 +75,7 @@
 - `q48`: **não existe**;
 - `q49`: estado de espera pelo token `=`*(igual)*. Caso seja lido, será realizada a transição para o estado `q50`;
 - `q50`: **estado de aceitação** para o token `TK_EH_IGUAL_A`;
-- `q51`: **não existe**;
+- `q51`: estado de decisão, onde, após ter lido dois tokens `>`*(maior que)* o próximo token pode decidir se o que foi lido é apenas uma parte do comentário, e será retornado ao `q22`, ou se o comentário está sendo finalizado, progredindo para o `q71`;
 - `q52`: estado de decisão onde é esperado o token `=`*(igual)* para realizar a transição para o estado `q53`. Caso qualquer outro token seja lido, será realizada a transição para o estado `q55`;
 - `q53`: **estado de aceitação** para o token `TK_MAIOR_IGUAL`;
 - `q54`: **não existe**;
@@ -96,7 +94,7 @@
 - `q67`: **não existe**;
 - `q68`: **não existe**;
 - `q69`: **não existe**;
-- `q70`: estado de decisão, onde, após ter lido dois tokens `>`*(maior que)* o próximo token pode decidir se o que foi lido é apenas uma parte do comentário, e será retornado ao `q22`, ou se o comentário está sendo finalizado, progredindo para o `q71`;
+- `q70`: estado de decisão, onde, após ter lido dois tokens `>`*(maior que)* o próximo token pode decidir se o que foi lido é apenas uma parte do comentário, e será retornado ao `q22`, ou se o comentário está sendo finalizado, progredindo para o `q51`;
 - `q71`: **estado de aceitação** para o comentário monolinha;
 - `q72`: **não existe**;
 - `q73`: **estado de aceitação** para o token `TK_DOIS_PONTOS`;
@@ -131,16 +129,16 @@
 - `q0` -> `q79`: leitura do caractere `)`*(fecha parêntese)*;
 - `q1` -> `q1`: leitura de qualquer caractere que não seja `"`;
 - `q1` -> `q2`: leitura do caractere `"`;
-- `q3` -> `q10`: leitura do caractere `.`*(ponto)*;
+- `q3` -> `q4`: leitura do caractere `.`*(ponto)*;
 - `q3` -> `q6`: leitura de um caractere da expressão regular `[0-9]`;
 - `q3` -> `q8`: leitura de um caractere que não seja `x`, ou `.`*(ponto)* e não está contido na expressão regular `[0-9]`; 
 - `q3` -> `q15`: leitura do caractere `x`;
 - `q4` -> `q9`: leitura de um caractere que não esteja contido na expressão regular `[0-9]`;
 - `q4` -> `q10`: leitura de um caractere da expressão regular `[0-9]`;
-- `q5` -> `q10`: leitura do caractere `.`*(ponto)*;
+- `q5` -> `q4`: leitura do caractere `.`*(ponto)*;
 - `q5` -> `q7`: leitura de um caractere da expressão regular `[0-9]`;
 - `q5` -> `q8`: leitura de um caractere diferente de `.`*(ponto)* e que também não esteja contido na expressão regular `[0-9]`;
-- `q6` -> `q10`: leitura do caractere `.`*(ponto)*;
+- `q6` -> `q4`: leitura do caractere `.`*(ponto)*;
 - `q6` -> `q5`: leitura de um caractere da expressão regular `[0-9]`;
 - `q6` -> `q8`: leitura de um caractere que não seja `.`*(ponto)*, `_`*(underscore)*, ou `/`*(barra)* e que também não esteja contido na expressão regular `[0-9]`; 
 - `q6` -> `q24`: leitura do caractere `_`*(underscore)*;
@@ -191,10 +189,12 @@
 - `q42` -> `q45`: leitura do caractere `=`*(igual)*;
 - `q42` -> `q46`: leitura de qualquer caractere que não seja o caractere `=`*(igual)*;
 - `q49` -> `q50`: leitura do caractere `=`*(igual)*;
+- `q51` -> `q22`: leitura qualquer caractere que não seja `>`*(maior que)*;
+- `q51` -> `q71`: leitura do caractere `>`*(maior que)*;
 - `q52` -> `q53`: leitura do caractere `=`*(igual)*;
 - `q52` -> `q55`: leitura de qualquer caractere que não seja o caractere `=`*(igual)*;
 - `q70` -> `q22`: leitura qualquer caractere que não seja `>`*(maior que)*;
-- `q70` -> `q71`: leitura do caractere `>`*(maior que)*;
+- `q70` -> `q51`: leitura do caractere `>`*(maior que)*;
 
 ## Versao atualizada do automato
-![novo_automato_finito_deterministico](dev_files/parte1TrabalhoCompiladores-ver05.png)
+![novo_automato_finito_deterministico](dev_files/parte1TrabalhoCompiladores-ver04.png)

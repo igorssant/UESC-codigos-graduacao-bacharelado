@@ -7,6 +7,7 @@ import java.util.HashMap;
 import static com.analizadorSintatico.escritaEmArquivo.ImprimeEmArquivoTranspilado.imprimeArquivoTranspilado;
 import static com.analizadorSintatico.escritaEmArquivo.ImprimeListaDeTokensReconhecidos.imprimirListaDeTokensReconhecidos;
 import static com.analizadorSintatico.escritaEmArquivo.ImprimeSomatorioDeTokens.imprimirSomatorioDeTokesReconhecidos;
+import static com.analizadorSintatico.token.Token.mapaDeTokens;
 
 public class AnalizadorSintatico {
     /**
@@ -25,7 +26,7 @@ public class AnalizadorSintatico {
     ) {
         ArrayList<ArrayList<String>> listaDeTokensReconhecidos = new ArrayList<>();
         HashMap<String, Integer> somatorioDosTokensReconhecidos = new HashMap<>();
-        Automato automato = new Automato();
+        Automato automato = new Automato(arquivoDeEntrada.getPath());
 
         try(FileInputStream bufferLeitura = new FileInputStream(arquivoDeEntrada)) {
             int posicaoAtualDoIndiceNaListaDeTokens = 0;
@@ -47,53 +48,58 @@ public class AnalizadorSintatico {
 
                 /* VERIFICANDO SE O ESTADO ATUAL EH DE ACEITACAO */
                 if(automato.estadoEhAceitacao()) {
-                    listaDeTokensReconhecidos.add(new ArrayList<>(4));
-                    imprimeArquivoTranspilado(automato, arquivoDeSaida);
-                    listaDeTokensReconhecidos
+                    if(
+                        !automato.getNomeDoToken().equals(mapaDeTokens.get("comentarioMonolinha"))
+                        &&
+                        !automato.getNomeDoToken().equals(mapaDeTokens.get("comentarioMultilinha"))
+                    ) {
+                        listaDeTokensReconhecidos.add(new ArrayList<>(4));
+                        imprimeArquivoTranspilado(automato, arquivoDeSaida);
+                        listaDeTokensReconhecidos
                         .get(posicaoAtualDoIndiceNaListaDeTokens)
                         .add(
                             automato
-                                .getLinhaAtual()
-                                .toString()
+                            .getLinhaAtual()
+                            .toString()
                         );
-                    listaDeTokensReconhecidos
+                        listaDeTokensReconhecidos
                         .get(posicaoAtualDoIndiceNaListaDeTokens)
                         .add(
                             automato
-                                .getColunaAtual()
-                                .toString()
+                            .getColunaAtual()
+                            .toString()
                         );
-                    listaDeTokensReconhecidos
+                        listaDeTokensReconhecidos
                         .get(posicaoAtualDoIndiceNaListaDeTokens)
                         .add(
                             automato.getNomeDoToken()
                         );
 
-                    /* FAZENDO A VERIFICACAO DOS LEXEMAS
-                     * SE HOUVER VARIACAO, SALVE NA LISTA
-                     * SENAO, APENAS DEIXE UM ESPACO EM BRANCO
-                     */
-                    if(automato.getTokenPossuiValor()){
-                        listaDeTokensReconhecidos
+                        /* FAZENDO A VERIFICACAO DOS LEXEMAS
+                         * SE HOUVER VARIACAO, SALVE NA LISTA
+                         * SENAO, APENAS DEIXE UM ESPACO EM BRANCO
+                         */
+                        if (automato.getTokenPossuiValor()) {
+                            listaDeTokensReconhecidos
                             .get(posicaoAtualDoIndiceNaListaDeTokens)
-                            .add(automato.getValorDoToken()
-                        );
-                    } else {    /* DEIXANDO O ESPACO EM BRANCO */
-                        listaDeTokensReconhecidos
+                            .add(automato.getValorDoToken());
+                        } else {    /* DEIXANDO O ESPACO EM BRANCO */
+                            listaDeTokensReconhecidos
                             .get(posicaoAtualDoIndiceNaListaDeTokens)
                             .add(" ");
-                    }
+                        }
 
-                    posicaoAtualDoIndiceNaListaDeTokens++;
+                        posicaoAtualDoIndiceNaListaDeTokens++;
 
-                    /* VERIFICANDO SE O TOKEN GERADO JA EXISTE NO HASHMAP */
-                    if(!somatorioDosTokensReconhecidos.containsKey(automato.getNomeDoToken())) {
-                        somatorioDosTokensReconhecidos.put(automato.getNomeDoToken(), 1);
-                    } else { /* SE JA EXISTIR, INCREMENTA O CONTADOR */
-                        somatorioDosTokensReconhecidos.put(
-                            automato.getNomeDoToken(),
-                            (somatorioDosTokensReconhecidos.get(automato.getNomeDoToken()) + 1)
-                        );
+                        /* VERIFICANDO SE O TOKEN GERADO JA EXISTE NO HASHMAP */
+                        if (!somatorioDosTokensReconhecidos.containsKey(automato.getNomeDoToken())) {
+                            somatorioDosTokensReconhecidos.put(automato.getNomeDoToken(), 1);
+                        } else { /* SE JA EXISTIR, INCREMENTA O CONTADOR */
+                            somatorioDosTokensReconhecidos.put(
+                                automato.getNomeDoToken(),
+                                (somatorioDosTokensReconhecidos.get(automato.getNomeDoToken()) + 1)
+                            );
+                        }
                     }
 
                     automato.esquecerTokenAtual();
@@ -117,12 +123,32 @@ public class AnalizadorSintatico {
      * @param args String[] | null
      */
     public static void main(String[] args) {
-        String pastaEntrada = "src/entrada/",
-            pastaSaida = "src/saida/",
+        /*String pastaEntrada = "AnalizadorLexico/src/entrada/",
+            pastaSaida = "AnalizadorLexico/src/saida/",
             nomeDoArquivoDeEntrada = "entrada1.cic",
             nomeDoArquivoTranspiladoDeSaida = "entradaModificada1.bon",
             nomeDoArquivoDeIndices = "indiceTokensReconhecidos1.txt",
             nomeDoArquivoDeSomatorios = "somatorioDeTokensReconhecidos1.txt";
+        File arquivoDeEntrada = new File(pastaEntrada + nomeDoArquivoDeEntrada),
+            arquivoDeSaida = new File(pastaSaida + nomeDoArquivoTranspiladoDeSaida),
+            arquivoDeSomatorio = new File(pastaSaida + nomeDoArquivoDeSomatorios),
+            arquivoDeIndices = new File(pastaSaida + nomeDoArquivoDeIndices);*/
+        /*String pastaEntrada = "AnalizadorLexico/src/entrada/",
+            pastaSaida = "AnalizadorLexico/src/saida/",
+            nomeDoArquivoDeEntrada = "entrada2.cic",
+            nomeDoArquivoTranspiladoDeSaida = "entradaModificada2.bon",
+            nomeDoArquivoDeIndices = "indiceTokensReconhecidos2.txt",
+            nomeDoArquivoDeSomatorios = "somatorioDeTokensReconhecidos2.txt";
+        File arquivoDeEntrada = new File(pastaEntrada + nomeDoArquivoDeEntrada),
+            arquivoDeSaida = new File(pastaSaida + nomeDoArquivoTranspiladoDeSaida),
+            arquivoDeSomatorio = new File(pastaSaida + nomeDoArquivoDeSomatorios),
+            arquivoDeIndices = new File(pastaSaida + nomeDoArquivoDeIndices);*/
+        String pastaEntrada = "AnalizadorLexico/src/entrada/",
+            pastaSaida = "AnalizadorLexico/src/saida/",
+            nomeDoArquivoDeEntrada = "entrada3.cic",
+            nomeDoArquivoTranspiladoDeSaida = "entradaModificada3.bon",
+            nomeDoArquivoDeIndices = "indiceTokensReconhecidos3.txt",
+            nomeDoArquivoDeSomatorios = "somatorioDeTokensReconhecidos3.txt";
         File arquivoDeEntrada = new File(pastaEntrada + nomeDoArquivoDeEntrada),
             arquivoDeSaida = new File(pastaSaida + nomeDoArquivoTranspiladoDeSaida),
             arquivoDeSomatorio = new File(pastaSaida + nomeDoArquivoDeSomatorios),

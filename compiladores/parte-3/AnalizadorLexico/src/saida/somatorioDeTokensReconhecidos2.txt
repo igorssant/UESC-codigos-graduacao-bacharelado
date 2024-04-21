@@ -5,22 +5,20 @@
 |                   2	|                   9	|TK_PALAVRA_RESERVADA	|              rotina	|
 |                   3	|                  13	|TK_PALAVRA_RESERVADA	|             imprima	|
 |                   3	|                  15	|   TK_ABRE_PARENTESE	|                    	|
-|                   3	|                  31	|           TK_STRING	|     "Digite um nro"	|
-|                   3	|                  33	|  TK_FECHA_PARENTESE	|                    	|
 |                   4	|                   1	|                    	|                    	|
-|                   4	|                  10	|TK_PALAVRA_RESERVADA	|                leia	|
-|                   4	|                  12	|   TK_ABRE_PARENTESE	|                    	|
-|                   4	|                  20	|    TK_IDENTIFICADOR	|              nUmErO	|
-|                   4	|                  22	|  TK_FECHA_PARENTESE	|                    	|
 |                   5	|                   1	|                    	|                    	|
-|                   5	|                   9	|    TK_IDENTIFICADOR	|                 nUm	|
-|                   5	|                  14	|       TK_ATRIBUICAO	|                    	|
-|                   5	|                  19	|    TK_IDENTIFICADOR	|                 nUm	|
-|                   5	|                  23	|     TK_DIFERENTE_DE	|                    	|
-|                   5	|                  29	|              TK_INT	|                 123	|
+|                   5	|                   9	|    TK_IDENTIFICADOR	|                  uM	|
+|                   5	|                  13	|       TK_ATRIBUICAO	|                    	|
+|                   5	|                  24	|             TK_DATA	|          11/11/2000	|
+|                   5	|                  26	|             TK_SOMA	|                    	|
+|                   5	|                  31	|              TK_INT	|                  11	|
+|                   5	|                  33	|        TK_SUBTRACAO	|                    	|
+|                   5	|                  37	|              TK_INT	|                  11	|
+|                   5	|                  39	|        TK_SUBTRACAO	|                    	|
+|                   5	|                  43	|              TK_INT	|                  20	|
 |                   6	|                  13	|TK_PALAVRA_RESERVADA	|             imprima	|
 |                   6	|                  15	|   TK_ABRE_PARENTESE	|                    	|
-|                   6	|                  24	|            TK_FLOAT	|             123.e10	|
+|                   6	|                  24	|         TK_ENDERECO	|            Ax23423)	|
 |                   6	|                  26	|  TK_FECHA_PARENTESE	|                    	|
 |                   7	|                   1	|                    	|                    	|
 |                   7	|                  13	|TK_PALAVRA_RESERVADA	|          fim_rotina	|

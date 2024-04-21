@@ -10,11 +10,11 @@ import java.io.FileNotFoundException;
 import java.util.regex.Matcher;
 
 public class Automato {
-    private Estado estado;
+    private final Estado estado;
     private String nomeDoToken;
     private String valorDoToken;
     private Boolean tokenPossuiValor;
-    private ErrosNoCodigoFonte errosNoCodigoFonte;
+    private final ErrosNoCodigoFonte errosNoCodigoFonte;
 
     /**
      * Contrutor de classe vazio
@@ -34,17 +34,17 @@ public class Automato {
     /**
      * Contrutor de classe que
      * recebe um parametro:
-     * @param caractereAtual String
+     * @param arquivoDeErros String
      * Além disso ele inicializa as variaveis:
      * - valorDoToken String,
      * - nomeDoToken String,
      * - ErrosNoCodigoFonte ArrayList(Erro);
      */
-    public Automato(String caractereAtual) {
+    public Automato(String arquivoDeErros) {
         this.valorDoToken = "";
         this.nomeDoToken = "";
-        this.estado = new Estado(caractereAtual);
-        errosNoCodigoFonte = new ErrosNoCodigoFonte();
+        this.estado = new Estado();
+        errosNoCodigoFonte = new ErrosNoCodigoFonte(arquivoDeErros);
     }
 
     /**
@@ -118,6 +118,7 @@ public class Automato {
                     mudarDeEstado(caractereAtual, 35);
                 } else if ((matcher = listaDeRegex.get(2).matcher(caractereAtual)).matches()) { /* LEU ASPAS */
                     mudarDeEstado(caractereAtual, 1);
+                    this.estado.setLerNovoCaractere(true);
                 } else if ((matcher = listaDeRegex.get(5).matcher(caractereAtual)).matches()) { /* LEU LETRA MINUSCULA */
                     mudarDeEstado(caractereAtual, 36);
                 } else if ((matcher = listaDeRegex.get(27).matcher(caractereAtual)).matches()) { /* LEU LETRA MAIUSCULA ENTRE [A-F] */
@@ -175,12 +176,12 @@ public class Automato {
                     this.estado.setLerNovoCaractere(false);
                 } else {
                     this.errosNoCodigoFonte.adicionarErro(
-                        this.estado.getLinha(),
                         this.estado.getColuna(),
+                        this.estado.getLinha(),
                         "Um token inesperado foi lido."
                     );
                     voltarAoEstadoInicial();
-                    this.estado.setLerNovoCaractere(false);
+                    this.estado.setLerNovoCaractere(true);
                 }
 
                 break;
@@ -188,27 +189,31 @@ public class Automato {
             case 1:
                 this.estado.setEstadoEhDeAceitacaoComoFalso();
 
-                if(!(matcher = listaDeRegex.get(2).matcher(caractereAtual)).matches()) {   /* NAO LEU UM CARACTERE ASPAS */
-                    manterEstado(caractereAtual);
-                } else if ((matcher = listaDeRegex.get(20).matcher(caractereAtual)).matches()) { /* LEU UM CARACTERE '\n' */
+                if((matcher = listaDeRegex.get(20).matcher(caractereAtual)).matches()) { /* LEU UM CARACTERE '\n' */
                     this.errosNoCodigoFonte.adicionarErro(
-                        this.estado.getLinha(),
                         this.estado.getColuna(),
+                        this.estado.getLinha(),
                         "Cadeia não fechada."
                     );
+                    esquecerTokenAtual();
                     voltarAoEstadoInicial();
                     this.estado.setLerNovoCaractere(false);
-                } else {                                                                    /* LEU UM CARACTERE ASPAS */
-                    mudarDeEstado("", 2);
+                } else if (
+                    !(matcher = listaDeRegex.get(2).matcher(caractereAtual)).matches()
+                ) {                                                             /* NAO LEU UM CARACTERE ASPAS */
+                    manterEstado(caractereAtual);
+                } else {                                                        /* LEU UM CARACTERE ASPAS */
+                    mudarDeEstado(caractereAtual, 2);
                     this.estado.setLerNovoCaractere(false);
                 }
 
                 break;
 
             case 2:
-                this.nomeDoToken = mapaDeTokens.get("string");
                 this.estado.setEstadoEhDeAceitacaoComoVerdade();
                 this.tokenPossuiValor = true;
+                this.nomeDoToken = mapaDeTokens.get("string");
+                this.estado.setLerNovoCaractere(true);
                 break;
 
             case 3:
@@ -217,7 +222,7 @@ public class Automato {
                 if((matcher = listaDeRegex.get(0).matcher(caractereAtual)).matches()) { /* LEU UM NUMERO */
                     mudarDeEstado(caractereAtual, 6);
                 } else if((matcher = listaDeRegex.get(1).matcher(caractereAtual)).matches()) { /* LEU UM PONTO */
-                    mudarDeEstado(caractereAtual, 4);
+                    mudarDeEstado(caractereAtual, 10);
                 } else if ((matcher = listaDeRegex.get(24).matcher(caractereAtual)).matches()) {  /* LEU O CARACTERE 'x' */
                     mudarDeEstado(caractereAtual, 15);
                 } else {                                                                        /* LEU QUALQUER OUTRA COISA */
@@ -244,7 +249,7 @@ public class Automato {
                 if((matcher = listaDeRegex.get(0).matcher(caractereAtual)).matches()) { /* LEU UM NUMERO */
                     mudarDeEstado(caractereAtual, 7);
                 } else if ((matcher = listaDeRegex.get(1).matcher(caractereAtual)).matches()) { /* LEU UM PONTO */
-                    mudarDeEstado(caractereAtual, 4);
+                    mudarDeEstado(caractereAtual, 10);
                 } else {                                                                /* LEU QUALQUER OUTRA COISA */
                     mudarDeEstado("", 8);
                     this.estado.setLerNovoCaractere(false);
@@ -258,7 +263,7 @@ public class Automato {
                 if((matcher = listaDeRegex.get(0).matcher(caractereAtual)).matches()) { /* LEU UM NUMERO */
                     mudarDeEstado(caractereAtual, 5);
                 } else if ((matcher = listaDeRegex.get(1).matcher(caractereAtual)).matches()) { /* LEU UM PONTO */
-                    mudarDeEstado(caractereAtual, 4);
+                    mudarDeEstado(caractereAtual, 10);
                 } else if ((matcher = listaDeRegex.get(4).matcher(caractereAtual)).matches()) { /* LEU UM UNDERSCORE */
                     mudarDeEstado(caractereAtual, 24);
                 } else if ((matcher = listaDeRegex.get(3).matcher(caractereAtual)).matches()) { /* LEU UMA BARRA */
@@ -347,8 +352,8 @@ public class Automato {
                     mudarDeEstado(caractereAtual, 15);
                 } else {                                                              /* LEU QUALQUER OUTRA COISA */
                     this.errosNoCodigoFonte.adicionarErro(
-                        this.estado.getLinha(),
                         this.estado.getColuna(),
+                        this.estado.getLinha(),
                         "Formato incorreto para um endereço de memória."
                     );
                     voltarAoEstadoInicial();
@@ -366,8 +371,8 @@ public class Automato {
                     mudarDeEstado(caractereAtual, 16);
                 } else {                                                    /* LEU QUALQUER OUTRA COISA */
                     this.errosNoCodigoFonte.adicionarErro(
-                        this.estado.getLinha(),
                         this.estado.getColuna(),
+                        this.estado.getLinha(),
                         "Formato incorreto para um endereço de memória."
                     );
                     voltarAoEstadoInicial();
@@ -394,7 +399,7 @@ public class Automato {
                 this.nomeDoToken = mapaDeTokens.get("endereco");
                 this.estado.setEstadoEhDeAceitacaoComoVerdade();
                 this.tokenPossuiValor = true;
-                this.estado.setLerNovoCaractere(true);
+                this.estado.setLerNovoCaractere(false);
                 break;
 
             case 18:
@@ -410,10 +415,10 @@ public class Automato {
                 break;
 
             case 19:
-                esquecerTokenAtual();
-                this.nomeDoToken = mapaDeTokens.get("comentarioMonoLinha");
+                this.nomeDoToken = mapaDeTokens.get("comentarioMonolinha");
                 this.estado.setEstadoEhDeAceitacaoComoVerdade();
-                this.tokenPossuiValor = true;
+                this.tokenPossuiValor = false;
+                this.estado.setLerNovoCaractere(true);
                 break;
 
             case 20:
@@ -440,8 +445,8 @@ public class Automato {
                     mudarDeEstado(caractereAtual, 22);
                 } else {                                                              /* LEU QUALQUER OUTRA COISA */
                     this.errosNoCodigoFonte.adicionarErro(
-                        this.estado.getLinha(),
                         this.estado.getColuna(),
+                        this.estado.getLinha(),
                         "Má formação de um comentário multilinha."
                     );
                     voltarAoEstadoInicial();
@@ -465,7 +470,7 @@ public class Automato {
                 this.estado.setEstadoEhDeAceitacaoComoFalso();
 
                 if((matcher = listaDeRegex.get(9).matcher(caractereAtual)).matches()) { /* LEU MAIOR QUE */
-                    mudarDeEstado(caractereAtual, 23);
+                    mudarDeEstado(caractereAtual, 70);
                 } else  {                                                               /* LEU QUALQUER OUTRA COISA */
                     mudarDeEstado(caractereAtual, 22);
                 }
@@ -478,8 +483,8 @@ public class Automato {
                     mudarDeEstado(caractereAtual, 25);
                 } else {                                                              /* LEU QUALQUER OUTRA COISA */
                     this.errosNoCodigoFonte.adicionarErro(
-                        this.estado.getLinha(),
                         this.estado.getColuna(),
+                        this.estado.getLinha(),
                       "Data mal formatada. Um número é esperado."
                     );
                     voltarAoEstadoInicial();
@@ -495,8 +500,8 @@ public class Automato {
                     mudarDeEstado(caractereAtual, 26);
                 } else {                                                              /* LEU QUALQUER OUTRA COISA */
                     this.errosNoCodigoFonte.adicionarErro(
-                        this.estado.getLinha(),
                         this.estado.getColuna(),
+                        this.estado.getLinha(),
                         "Data mal formatada. Um número é esperado."
                     );
                     voltarAoEstadoInicial();
@@ -512,8 +517,8 @@ public class Automato {
                     mudarDeEstado(caractereAtual, 27);
                 } else {                                                              /* LEU QUALQUER OUTRA COISA */
                     this.errosNoCodigoFonte.adicionarErro(
-                        this.estado.getLinha(),
                         this.estado.getColuna(),
+                        this.estado.getLinha(),
                         "Data mal formatada. Um ' _ ' é esperado."
                     );
                     voltarAoEstadoInicial();
@@ -529,8 +534,8 @@ public class Automato {
                     mudarDeEstado(caractereAtual, 28);
                 } else {                                                              /* LEU QUALQUER OUTRA COISA */
                     this.errosNoCodigoFonte.adicionarErro(
-                        this.estado.getLinha(),
                         this.estado.getColuna(),
+                        this.estado.getLinha(),
                         "Data mal formatada. Um número é esperado."
                     );
                     voltarAoEstadoInicial();
@@ -546,8 +551,8 @@ public class Automato {
                     mudarDeEstado(caractereAtual, 32);
                 } else {                                                              /* LEU QUALQUER OUTRA COISA */
                     this.errosNoCodigoFonte.adicionarErro(
-                        this.estado.getLinha(),
                         this.estado.getColuna(),
+                        this.estado.getLinha(),
                         "Data mal formatada. Um número é esperado."
                     );
                     voltarAoEstadoInicial();
@@ -563,8 +568,8 @@ public class Automato {
                     mudarDeEstado(caractereAtual, 30);
                 } else {                                                              /* LEU QUALQUER OUTRA COISA */
                     this.errosNoCodigoFonte.adicionarErro(
-                        this.estado.getLinha(),
                         this.estado.getColuna(),
+                        this.estado.getLinha(),
                         "Data mal formatada. Um número é esperado."
                     );
                     voltarAoEstadoInicial();
@@ -580,8 +585,8 @@ public class Automato {
                     mudarDeEstado(caractereAtual, 31);
                 } else {                                                              /* LEU QUALQUER OUTRA COISA */
                     this.errosNoCodigoFonte.adicionarErro(
-                        this.estado.getLinha(),
                         this.estado.getColuna(),
+                        this.estado.getLinha(),
                         "Data mal formatada. Um número é esperado."
                     );
                     voltarAoEstadoInicial();
@@ -593,12 +598,12 @@ public class Automato {
             case 31:
                 this.estado.setEstadoEhDeAceitacaoComoFalso();
 
-                if((matcher = listaDeRegex.get(0).matcher(caractereAtual)).matches()) { /* LEU UM NUMERO */
+                if((matcher = listaDeRegex.get(3).matcher(caractereAtual)).matches()) { /* LEU UMA BARRA ' / ' */
                     mudarDeEstado(caractereAtual, 27);
                 } else {                                                              /* LEU QUALQUER OUTRA COISA */
                     this.errosNoCodigoFonte.adicionarErro(
-                        this.estado.getLinha(),
                         this.estado.getColuna(),
+                        this.estado.getLinha(),
                         "Data mal formatada. Um ' / ' é esperado."
                     );
                     voltarAoEstadoInicial();
@@ -614,8 +619,8 @@ public class Automato {
                     mudarDeEstado(caractereAtual, 33);
                 } else {                                                              /* LEU QUALQUER OUTRA COISA */
                     this.errosNoCodigoFonte.adicionarErro(
-                        this.estado.getLinha(),
                         this.estado.getColuna(),
+                        this.estado.getLinha(),
                         "Data mal formatada. Um número é esperado."
                     );
                     voltarAoEstadoInicial();
@@ -631,8 +636,8 @@ public class Automato {
                     mudarDeEstado(caractereAtual, 34);
                 } else {                                                              /* LEU QUALQUER OUTRA COISA */
                     this.errosNoCodigoFonte.adicionarErro(
-                        this.estado.getLinha(),
                         this.estado.getColuna(),
+                        this.estado.getLinha(),
                         "Data mal formatada. Um número é esperado."
                     );
                     voltarAoEstadoInicial();
@@ -655,8 +660,8 @@ public class Automato {
                     mudarDeEstado(caractereAtual, 4);
                 } else {                                                              /* LEU QUALQUER OUTRA COISA */
                     this.errosNoCodigoFonte.adicionarErro(
-                        this.estado.getLinha(),
                         this.estado.getColuna(),
+                        this.estado.getLinha(),
                         "Formato incorreto de ponto flutuante. Um número é esperado."
                     );
                     voltarAoEstadoInicial();
@@ -674,8 +679,8 @@ public class Automato {
                     mudarDeEstado(caractereAtual, 37);
                 } else {                                                              /* LEU QUALQUER OUTRA COISA */
                     this.errosNoCodigoFonte.adicionarErro(
-                        this.estado.getLinha(),
                         this.estado.getColuna(),
+                        this.estado.getLinha(),
                         "Formação incorreta de uma variável/palavra reservada. Só letras são esperadas"
                     );
                     voltarAoEstadoInicial();
@@ -699,27 +704,32 @@ public class Automato {
             case 38:
                 this.estado.setEstadoEhDeAceitacaoComoFalso();
 
-                if((matcher = listaDeRegex.get(5).matcher(caractereAtual)).matches()) { /* LEU UMA LETRA MINUSCULA */
+                if(
+                    (matcher = listaDeRegex.get(5).matcher(caractereAtual)).matches() /* LEU UMA LETRA MINUSCULA OU */
+                    ||
+                    (matcher = listaDeRegex.get(4).matcher(caractereAtual)).matches() /* LEU UM UNDERSCORE '_' */
+                ) {
                     manterEstado(caractereAtual);
                 } else {                                                            /* LEU QUALQUER OUTRA COISA */
-                    mudarDeEstado(caractereAtual, 39);
+                    mudarDeEstado("", 39);
                     this.estado.setLerNovoCaractere(false);
                 }
 
                 break;
 
             case 39:
-                if(palavrasReservadas.contains(this.valorDoToken)) {        /* VERIFICANDO SE A PALAVRA RESERVADA EXISTE */
+                if(palavrasReservadas.contains(this.valorDoToken)) {    /* VERIFICANDO SE A PALAVRA RESERVADA EXISTE */
                     this.nomeDoToken = mapaDeTokens.get("palavraReservada");
                     this.estado.setEstadoEhDeAceitacaoComoVerdade();
-                } else {                                                    /* PALAVRA RESERVADA ESCRITA DE FORMA INCORRETA */
+                    this.tokenPossuiValor = true;
+                } else {                                             /* PALAVRA RESERVADA ESCRITA DE FORMA INCORRETA */
                     this.errosNoCodigoFonte.adicionarErro(
-                        this.estado.getLinha(),
                         this.estado.getColuna(),
+                        this.estado.getLinha(),
                         "Palavra reservada não encontrada."
                     );
                     voltarAoEstadoInicial();
-                    this.estado.setLerNovoCaractere(false);
+                    esquecerTokenAtual();
                 }
 
                 break;
@@ -740,7 +750,7 @@ public class Automato {
                 this.nomeDoToken = mapaDeTokens.get("identificador");
                 this.estado.setEstadoEhDeAceitacaoComoVerdade();
                 this.tokenPossuiValor = true;
-                this.estado.setLerNovoCaractere(true);
+                this.estado.setLerNovoCaractere(false);
                 break;
 
             case 42:
@@ -793,8 +803,8 @@ public class Automato {
                     mudarDeEstado(caractereAtual, 50);
                 } else {                                                              /* LEU QUALQUER OUTRA COISA */
                     this.errosNoCodigoFonte.adicionarErro(
-                        this.estado.getLinha(),
                         this.estado.getColuna(),
+                        this.estado.getLinha(),
                         "Operador lógico não existente."
                     );
                     voltarAoEstadoInicial();
@@ -808,6 +818,19 @@ public class Automato {
                 this.estado.setEstadoEhDeAceitacaoComoVerdade();
                 this.tokenPossuiValor = false;
                 this.estado.setLerNovoCaractere(true);
+                break;
+
+            case 51:
+                this.estado.setEstadoEhDeAceitacaoComoFalso();
+
+                if((matcher = listaDeRegex.get(9).matcher(caractereAtual)).matches()) { /* LEU UM SINAL DE MAIOR QUE */
+                    mudarDeEstado(caractereAtual, 71);
+                    this.estado.setLerNovoCaractere(false);
+                } else {                                                          /* LEU QUALQUER OUTRA COISA */
+                    mudarDeEstado(caractereAtual, 22);
+                    this.estado.setLerNovoCaractere(false);
+                }
+
                 break;
 
             case 52:
@@ -888,7 +911,7 @@ public class Automato {
                 this.estado.setEstadoEhDeAceitacaoComoFalso();
 
                 if((matcher = listaDeRegex.get(9).matcher(caractereAtual)).matches()) { /* LEU UM SINAL DE MAIOR QUE */
-                    mudarDeEstado(caractereAtual, 71);
+                    mudarDeEstado(caractereAtual, 51);
                     this.estado.setLerNovoCaractere(false);
                 } else {                                                          /* LEU QUALQUER OUTRA COISA */
                     mudarDeEstado(caractereAtual, 22);
@@ -898,10 +921,9 @@ public class Automato {
                 break;
 
             case 71:
-                esquecerTokenAtual();
                 this.nomeDoToken = mapaDeTokens.get("comentarioMultilinha");
                 this.estado.setEstadoEhDeAceitacaoComoVerdade();
-                this.tokenPossuiValor = true;
+                this.tokenPossuiValor = false;
                 this.estado.setLerNovoCaractere(true);
                 break;
 
@@ -982,8 +1004,8 @@ public class Automato {
      * token atual, processá-lo
      * e passar para o próximo
      * estado
-     * @param caractereAtual
-     * @param novoEstado
+     * @param caractereAtual String
+     * @param novoEstado Integer
      */
     private void mudarDeEstado(String caractereAtual, Integer novoEstado) {
         this.estado.setEstadoAtual(novoEstado);

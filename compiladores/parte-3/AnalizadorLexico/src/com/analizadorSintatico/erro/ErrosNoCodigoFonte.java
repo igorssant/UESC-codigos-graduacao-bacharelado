@@ -7,14 +7,28 @@ import java.util.Objects;
 
 public class ErrosNoCodigoFonte {
     private ArrayList<Erro> listaDeErros;
+    private String caminhoParaArquivoOriginal;
 
     /**
      * Construtor de classe vazio
-     * Intancia o ArrayList de erros
+     * Instancia o ArrayList de erros
      * com um valor inicial de 5
      */
     public ErrosNoCodigoFonte() {
         this.listaDeErros = new ArrayList<>(5);
+        this.caminhoParaArquivoOriginal = null;
+    }
+
+    /**
+     * Construtor de classe que recebe uma String
+     * contendo o caminho para o arquivo .cic original
+     * e instancia o ArrayList de erros
+     * com um valor inicial de 5
+     * @param caminhoParaArquivoOriginal String
+     */
+    public ErrosNoCodigoFonte(String caminhoParaArquivoOriginal) {
+        this.listaDeErros = new ArrayList<>(5);
+        this.caminhoParaArquivoOriginal = caminhoParaArquivoOriginal;
     }
 
     /**
@@ -25,6 +39,7 @@ public class ErrosNoCodigoFonte {
      */
     public ErrosNoCodigoFonte(ArrayList<Erro> listaDeErros) {
         this.listaDeErros = listaDeErros;
+        this.caminhoParaArquivoOriginal = null;
     }
 
     /**
@@ -99,15 +114,18 @@ public class ErrosNoCodigoFonte {
     }
 
     public void gerarRelatorioDeErros() throws FileNotFoundException {
+        File arquivoDeErros = new File("AnalizadorLexico/src/saida/errosEncontrados.txt");
+        FileReader arquivoOrginal = null;
+
         if(this.listaDeErros.isEmpty()) {
             return;
         }
 
-        String caminhoDeEscrita = "src/saida/errosEncontrados.txt",
-            caminhoDeLeitura = "src/entrada/entrada1.cic";
-        File arquivoDeErros = new File(caminhoDeEscrita);
-
-        FileReader arquivoOrginal = new FileReader(caminhoDeLeitura);
+        if(this.caminhoParaArquivoOriginal == null) {
+            arquivoOrginal = new FileReader("AnalizadorLexico/src/entrada/entrada1.cic");
+        } else {
+            arquivoOrginal = new FileReader(this.caminhoParaArquivoOriginal);
+        }
 
         try(PrintWriter bufferDeEscrita = new PrintWriter(arquivoDeErros)) {
             Integer linhaAtual = 0;
@@ -118,17 +136,20 @@ public class ErrosNoCodigoFonte {
                 while((linhaLida = bufferDeLeitura.readLine()) != null) {
                     bufferDeEscrita.printf("[%3s]\t", (1 + linhaAtual));
                     bufferDeEscrita.printf("%s\n", linhaLida);
+                    final Integer finalLinhaAtual = linhaAtual;
                     listaDeErros.forEach((erro) -> {
                         /* VERIFICA SE A LINHA ATUAL POSSUI ERROS */
-                        if(Objects.equals(erro.getLinha(), linhaAtual)) {
-                            for(int i = 0; i < (erro.getColuna() - 1); i++) {
+                        if(Objects.equals(erro.getLinha(), finalLinhaAtual)) {
+                            for(int i = 0; i < (erro.getColuna() + 2); i++) {
                                 bufferDeEscrita.printf("-");
                             }
 
                             bufferDeEscrita.printf("/\\\n");
-                            bufferDeEscrita.printf("Erro linha %3d coluna %3d: %s\n", erro.getLinha(), erro.getColuna(), erro.getCausa());
+                            bufferDeEscrita.printf("Erro linha %3d coluna %3d: %s\n", erro.getLinha() , erro.getColuna(), erro.getCausa());
                         }
                     });
+
+                    linhaAtual++;
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);

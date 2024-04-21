@@ -1,0 +1,16 @@
+[  1]	# Ex-02-incorreto.cic
+[  2]
+[  3]	rotina
+[  4]	   imprima("Digite um
+----------------------------/\
+Erro linha   3 coluna  26: Cadeia não fechada.
+[  5]	   nro")
+----------/\
+Erro linha   4 coluna   8: Palavra reservada não encontrada.
+-------------/\
+Erro linha   4 coluna  11: Cadeia não fechada.
+[  6]	   NuM <== 11/11/2000 + 11-11-20
+------/\
+Erro linha   5 coluna   4: Um token inesperado foi lido.
+[  7]	   imprima(Ax23423)
+[  8]	fim_rotina
