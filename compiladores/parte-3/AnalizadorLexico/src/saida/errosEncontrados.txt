@@ -2,14 +2,14 @@
 [  2]	
 [  3]	rotina
 [  4]	   leia(<a>)
--------------------------/\
-Erro linha   3 coluna  23: Data mal formatada. Um ' / ' é esperado.
 [  5]	>>>
----------------------------------/\
-Erro linha   4 coluna  31: Palavra reservada não encontrada.
---------------------------------------/\
-Erro linha   4 coluna  36: Cadeia não fechada.
 [  6]	   enquanto nUm <= .09e-123:
 [  7]	      imprima(99/12-1999)
+-------------------------/\
+Erro linha   6 coluna  23: Data mal formatada. Um ' / ' é esperado.
 [  8]	   imprima("Fim prog"rama") 	
+---------------------------------/\
+Erro linha   7 coluna  31: Palavra reservada não encontrada.
+--------------------------------------/\
+Erro linha   7 coluna  36: Cadeia não fechada.
 [  9]	fim_rotina

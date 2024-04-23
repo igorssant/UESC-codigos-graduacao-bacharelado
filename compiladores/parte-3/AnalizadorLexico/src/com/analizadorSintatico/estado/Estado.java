@@ -223,6 +223,19 @@ public class Estado {
 
     /**
      * Metodo usado para
+     * decrementar, em 1,
+     * o valor da variavel]
+     * linha. Foi criado com o
+     * proprosito de corrigir
+     * um bug durante a leitura
+     * de comentarios multilinha
+     */
+    public void decrementaLinha() {
+        this.linha--;
+    }
+
+    /**
+     * Metodo usado para
      * resetar os estados
      * do automato, ou seja,
      * retornar ao estado q0

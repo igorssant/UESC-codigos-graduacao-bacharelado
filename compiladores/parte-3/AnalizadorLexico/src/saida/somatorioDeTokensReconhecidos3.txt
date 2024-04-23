@@ -1,21 +1,21 @@
 +-----------------------+-----------------------+-----------------------+-----------------------+
 |               LINHA	|              COLUNA	|               TOKEN	|                USOS	|
 +-----------------------+-----------------------+-----------------------+-----------------------+
-|                   2	|                   1	|                    	|                    	|
-|                   2	|                  14	|TK_PALAVRA_RESERVADA	|            enquanto	|
-|                   2	|                  20	|    TK_IDENTIFICADOR	|                 nUm	|
-|                   2	|                  25	|      TK_MENOR_IGUAL	|                    	|
-|                   2	|                  36	|            TK_FLOAT	|            .09e-123	|
-|                   2	|                  38	|      TK_DOIS_PONTOS	|                    	|
-|                   3	|                   1	|                    	|                    	|
-|                   3	|                  16	|TK_PALAVRA_RESERVADA	|             imprima	|
-|                   3	|                  18	|   TK_ABRE_PARENTESE	|                    	|
-|                   3	|                  26	|        TK_SUBTRACAO	|                    	|
-|                   3	|                  32	|              TK_INT	|                1999	|
-|                   3	|                  34	|  TK_FECHA_PARENTESE	|                    	|
-|                   4	|                   1	|                    	|                    	|
-|                   4	|                  13	|TK_PALAVRA_RESERVADA	|             imprima	|
-|                   4	|                  15	|   TK_ABRE_PARENTESE	|                    	|
-|                   4	|                  26	|           TK_STRING	|          "Fim prog"	|
-|                   5	|                  13	|TK_PALAVRA_RESERVADA	|          fim_rotina	|
+|                   5	|                   1	|                    	|                    	|
+|                   5	|                  14	|TK_PALAVRA_RESERVADA	|            enquanto	|
+|                   5	|                  20	|    TK_IDENTIFICADOR	|                 nUm	|
+|                   5	|                  25	|      TK_MENOR_IGUAL	|                    	|
+|                   5	|                  36	|            TK_FLOAT	|            .09e-123	|
+|                   5	|                  38	|      TK_DOIS_PONTOS	|                    	|
+|                   6	|                   1	|                    	|                    	|
+|                   6	|                  16	|TK_PALAVRA_RESERVADA	|             imprima	|
+|                   6	|                  18	|   TK_ABRE_PARENTESE	|                    	|
+|                   6	|                  26	|        TK_SUBTRACAO	|                    	|
+|                   6	|                  32	|              TK_INT	|                1999	|
+|                   6	|                  34	|  TK_FECHA_PARENTESE	|                    	|
+|                   7	|                   1	|                    	|                    	|
+|                   7	|                  13	|TK_PALAVRA_RESERVADA	|             imprima	|
+|                   7	|                  15	|   TK_ABRE_PARENTESE	|                    	|
+|                   7	|                  26	|           TK_STRING	|          "Fim prog"	|
+|                   8	|                  13	|TK_PALAVRA_RESERVADA	|          fim_rotina	|
 +-----------------------+-----------------------+-----------------------+-----------------------+

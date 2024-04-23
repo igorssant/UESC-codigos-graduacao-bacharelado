@@ -460,7 +460,7 @@ public class Automato {
 
                 if((matcher = listaDeRegex.get(9).matcher(caractereAtual)).matches()) { /* LEU MAIOR QUE */
                     mudarDeEstado(caractereAtual, 23);
-                } else  {                                                               /* LEU QUALQUER OUTRA COISA */
+                } else {                                                               /* LEU QUALQUER OUTRA COISA */
                     manterEstado(caractereAtual);
                 }
 
@@ -925,6 +925,9 @@ public class Automato {
                 this.estado.setEstadoEhDeAceitacaoComoVerdade();
                 this.tokenPossuiValor = false;
                 this.estado.setLerNovoCaractere(true);
+                this.estado.incrementarLinha();
+                this.estado.incrementarLinha();
+                this.estado.incrementarLinha();
                 break;
 
             case 73:
