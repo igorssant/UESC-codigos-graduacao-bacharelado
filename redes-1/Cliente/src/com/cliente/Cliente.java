@@ -26,7 +26,7 @@ public class Cliente {
     private static void pedirAcaoAoJogador() {
         System.out.println(
             "Não é possível disparar o revólver vazio.\n" +
-            "[ LEMBRETE ] Um revólver guarda, no máximo, 6 balas.\n" +
+            "[ LEMBRETE ] Um revólver guarda, no máximo, 6 balas.\n\n" +
             "Digite sua ação:"
         );
         System.out.printf(
@@ -82,26 +82,26 @@ public class Cliente {
 
         if(acaoDoAtacante.equals(acaoDoDefensor)) {
             while(parteAtacante != null) {
-                System.out.print(
+                System.out.println(
                     parteAtacante +
                     "\t\t" +
-                    parteAtacante +
-                    "\n"
+                    parteAtacante
                 );
                 parteAtacante = leituraDoAtacante.readLine();
             }
         } else {
             while(parteAtacante != null) {
-                System.out.print(
+                System.out.println(
                     parteAtacante +
                     "\t\t" +
-                    parteDefensor +
-                    "\n"
+                    parteDefensor
                 );
                 parteAtacante = leituraDoAtacante.readLine();
                 parteDefensor = leituraDoDefensor.readLine();
             }
         }
+
+        System.out.println("\n");
 
         /* FECHANDO O QUE PRECISA SER FECHADO */
         leituraDoAtacante.close();
@@ -182,11 +182,13 @@ public class Cliente {
                 return;
             }
 
-            pedirAcaoAoJogador();
             System.out.printf(
+                "Pontos de vida: [%2d ]\n" +
                 "Quantidade de balas: [%2d ]\n",
+                atacanteController.getPontosDeVida(),
                 revolverController.getQuantidadeDeBalasAtual()
             );
+            pedirAcaoAoJogador();
             jogadaDoAtacante = new Jogada(Short.parseShort(leituraAssincrona.readLine()));
             atacanteController.realizarAcao(jogadaDoAtacante.jogada());
 
@@ -213,7 +215,6 @@ public class Cliente {
              */
             limparTelaConsole();
             imprimeArteDasAcoes(jogadaDoAtacante.jogada(), jogadaDoDefensor.jogada());
-
         } while(true);
     }
 
@@ -246,6 +247,7 @@ public class Cliente {
             receberDoServidor = new ObjectInputStream(socketDoCliente.getInputStream());
 
             /* ESCOPO DE JOGO */
+            limparTelaConsole();
             jogo(leituraAssincrona, receberDoServidor, enviarObjetoParaServidor);
 
             /* ENCERRAR E FECHAR TODAS AS CONEXÕES */
