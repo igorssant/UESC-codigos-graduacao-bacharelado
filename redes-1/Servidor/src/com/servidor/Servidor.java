@@ -45,7 +45,7 @@ public class Servidor {
                 throw new IOException(
                     "Jogada inválida: " +
                     jogadaDoAtacante.jogada() +
-                    "\nAs jogadas devem ser: 0 [RECARREGAR], 1 [DEFENDER] ou 2 [RECARREGAR]."
+                    "\nAs jogadas devem ser: 0 [ RECARREGAR ], 1 [ DEFENDER ] ou 2 [ RECARREGAR ]."
                 );
             }
 
@@ -93,8 +93,8 @@ public class Servidor {
             enviarObjetoParaAtacante.writeObject(jogadaDoDefensor);
 
             System.out.println(
-                "Jogada do Cliente: " + jogadaDoAtacante.jogada() +
-                "\nJogada do Servidor: " + jogadaDoDefensor.jogada()
+                "[ Jogada do Cliente ]:\t" + jogadaDoAtacante.jogada() +
+                "\n[ Jogada do Servidor ]:\t" + jogadaDoDefensor.jogada()
             );
         } while(true);
     }
