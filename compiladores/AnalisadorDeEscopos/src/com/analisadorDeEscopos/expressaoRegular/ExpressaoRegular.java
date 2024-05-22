@@ -20,7 +20,7 @@ public class ExpressaoRegular {
 
         /* ABAIXO USADO SOMENTE EM CADEIAS ENCONTRADA DENTRO DE ASPAS DUPLAS  */
         listaDeRegex.add(                                 /* 08 */
-            Pattern.compile("[a-z]|[A-Z]|[*]|_|[0-9]|\\s|-|[|]|&|~|<|>|%|;|:|[(]|[)]|#|[$]|\\^")
+            Pattern.compile("[a-z]|[A-Z]|[*]|_|[0-9]|\\s|-|[|]|&|~|<|>|%|;|:|[(]|[)]|#|[$]|\\^|\n")
         );
 
         /* ABAIXO USADO SOMENTE PARA PALAVRAS RESERVADAS */
