@@ -7,7 +7,7 @@ public class ExpressaoRegular {
     public static final ArrayList<Pattern> listaDeRegex;
 
     static {
-        listaDeRegex = new ArrayList<>(14);
+        listaDeRegex = new ArrayList<>(15);
 
         listaDeRegex.add(Pattern.compile("-"));     /* 00 */
         listaDeRegex.add(Pattern.compile("[+]"));   /* 01 */
@@ -37,5 +37,7 @@ public class ExpressaoRegular {
 
         /* END OF FILE */
         listaDeRegex.add(Pattern.compile("\\uFFFF"));/* 13 */
+
+        listaDeRegex.add(Pattern.compile(","));     /* 14 */
     }
 }

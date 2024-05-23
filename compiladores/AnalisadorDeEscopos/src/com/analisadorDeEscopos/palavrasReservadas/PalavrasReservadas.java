@@ -7,10 +7,10 @@ public class PalavrasReservadas {
 
     static {
         listaDePalavrasReservadas = new ArrayList<>(5);
-        listaDePalavrasReservadas.add("BLOCO");
-        listaDePalavrasReservadas.add("FIM");
-        listaDePalavrasReservadas.add("NUMERO");
-        listaDePalavrasReservadas.add("CADEIA");
-        listaDePalavrasReservadas.add("PRINT");
+        listaDePalavrasReservadas.add("BLOCO");     /* 0 */
+        listaDePalavrasReservadas.add("FIM");       /* 1 */
+        listaDePalavrasReservadas.add("NUMERO");    /* 2 */
+        listaDePalavrasReservadas.add("CADEIA");    /* 3 */
+        listaDePalavrasReservadas.add("PRINT");     /* 4 */
     }
 }

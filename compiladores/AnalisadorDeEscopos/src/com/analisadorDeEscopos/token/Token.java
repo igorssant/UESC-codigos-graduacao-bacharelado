@@ -6,7 +6,7 @@ public class Token {
     public static final HashMap<String, String> dicionarioDeTokens;
 
     static {
-        dicionarioDeTokens = new HashMap<>(5);
+        dicionarioDeTokens = new HashMap<>(7);
 
         /* Identificadores */
         dicionarioDeTokens.put("identificador", "tk_identificador");
@@ -20,5 +20,10 @@ public class Token {
 
         /* Sinal de soma */
         dicionarioDeTokens.put("soma", "tk_soma");
+
+        /* Tokens utilitários */
+        dicionarioDeTokens.put("atribuicao", "tk_atribuicao");
+        dicionarioDeTokens.put("separador", "tk_separador");
+        dicionarioDeTokens.put("palavraReservada", "tk_palavra_reservada");
     }
 }

@@ -192,7 +192,7 @@ public class Automato {
      * atinge um estado de aceitação e
      * volta ao estado inicial.
      */
-    private void esquecerTokenAtual() {
+    public void esquecerTokenAtual() {
         this.nomeToken = "";
         this.valorToken = "";
     }
@@ -225,19 +225,34 @@ public class Automato {
         this.valorToken = this.valorToken.concat(caractereAtual);
     }
 
+    /**
+     * Método utilitário usado para
+     * salvar o nome do token baseado
+     * no dicionário dicionarioDeTokens.
+     * @param token String
+     */
     private void gerarNomeDoToken(String token) {
-        if(token.equals("palavraReservada")) {
-            if(listaDePalavrasReservadas.contains(token)) {
-                this.nomeToken = listaDePalavrasReservadas.get(listaDePalavrasReservadas.indexOf(token));
-            } else {
-                System.err.println(
-                    "Palavra reservada mal formada na linha " +
-                    this.estado.getLinha() + ".\n" +
-                    token + " não existe!"
-                );
-            }
+        this.nomeToken = dicionarioDeTokens.get(token);
+    }
+
+    /**
+     * Método utilitário usado para
+     * salvar o nome do token baseado
+     * no dicionário dicionarioDeTokens.
+     * Esta variação verifica se o token
+     * gerado é, de fato, uma palavra
+     * reservada no conjunto de palavras
+     * reservadas.
+     */
+    private void gerarNomeDoToken() {
+        if(listaDePalavrasReservadas.contains(this.valorToken)) {
+            this.nomeToken = dicionarioDeTokens.get("palavraReservada");
         } else {
-            this.nomeToken = dicionarioDeTokens.get(token);
+            System.err.println(
+                "Palavra reservada mal formada na linha " +
+                this.estado.getLinha() + ".\n" +
+                this.valorToken + " não existe!"
+            );
         }
     }
 
@@ -252,11 +267,15 @@ public class Automato {
 
                 if((matcher = listaDeRegex.get(12).matcher(caractere)).matches()) {     /* Leu quebra de linha (\n) */
                     this.estado.avancarLinha();
+                    this.estado.marcarEstadoAtualComoFinal();
+                    this.nomeToken = "";
+                    this.valorToken = caractere;
                     break;
                 } else if ((matcher = listaDeRegex.get(11).matcher(caractere)).matches()) { /* leu espaço em branco */
+                    this.lerNovoCaractere = true;
                     break;
-                } else if((matcher = listaDeRegex.get(5).matcher(caractere)).matches()) { /* Leu aspas duplas */
-                    mudarDeEstado(caractere, 5);
+                } else if((matcher = listaDeRegex.get(5).matcher(caractere)).matches()) { /* Leu aspas duplas (\") */
+                    mudarDeEstado("", 5);
                 } else if((matcher = listaDeRegex.get(4).matcher(caractere)).matches()) { /* Leu um número */
                     mudarDeEstado(caractere, 8);
                 } else if(
@@ -271,6 +290,12 @@ public class Automato {
                     mudarDeEstado(caractere, 16);
                 } else if((matcher = listaDeRegex.get(9).matcher(caractere)).matches()) { /* Leu letra maiúscula */
                     mudarDeEstado(caractere, 1);
+                } else if ((matcher = listaDeRegex.get(2).matcher(caractere)).matches()) { /* Leu sinal de igual */
+                    this.lerNovoCaractere = false;
+                    mudarDeEstado("", 21);
+                } else if((matcher = listaDeRegex.get(14).matcher(caractere)).matches()) { /* Leu uma vírgula (,) */
+                    this.lerNovoCaractere = false;
+                    mudarDeEstado("", 6);
                 } else if((matcher = listaDeRegex.get(13).matcher(caractere)).matches()) { /* Alcançou EOF */
                     mudarDeEstado(caractere, 20);
                 } else {
@@ -307,7 +332,7 @@ public class Automato {
 
             case 3: /* caminho palavra reservada */
                 if(!(matcher = listaDeRegex.get(9).matcher(caractere)).matches()) { /* Não leu letra maiúscula */
-                    mudarDeEstado(caractere, 4);
+                    mudarDeEstado("", 4);
                     this.lerNovoCaractere = false;
                 } else {
                     manterEstado(caractere);
@@ -317,7 +342,7 @@ public class Automato {
 
             case 4: /* caminho palavra reservada - aceitação */
                 this.estado.marcarEstadoAtualComoFinal();
-                gerarNomeDoToken("palavraReservada");
+                gerarNomeDoToken();
                 break; /* FIM CASE 4 */
 
             case 5: /* caminho cadeia */
@@ -329,13 +354,19 @@ public class Automato {
 
                 break; /* FIM CASE 5 */
 
+            case 6:
+                this.estado.marcarEstadoAtualComoFinal();
+                gerarNomeDoToken("separador");
+                this.lerNovoCaractere = true;
+                break; /* FIM CASE 5 */
+
             case 7: /* caminho cadeia - aceitação */
                 this.estado.marcarEstadoAtualComoFinal();
                 gerarNomeDoToken("string");
                 break; /* FIM CASE 7 */
 
             case 8: /* caminho número */
-                if((matcher = listaDeRegex.get(11).matcher(caractere)).matches()) { /* Leu um número */
+                if((matcher = listaDeRegex.get(4).matcher(caractere)).matches()) { /* Leu um número */
                     manterEstado(caractere);
                 } else if ((matcher = listaDeRegex.get(3).matcher(caractere)).matches()) { /* Leu o caractere (.) */
                     mudarDeEstado(caractere, 9);
@@ -347,7 +378,7 @@ public class Automato {
                 break; /* FIM CASE 8 */
 
             case 9: /* caminho número */
-                if((matcher = listaDeRegex.get(11).matcher(caractere)).matches()) { /* Leu um número */
+                if((matcher = listaDeRegex.get(4).matcher(caractere)).matches()) { /* Leu um número */
                     mudarDeEstado(caractere, 10);
                 } else {                                                            /* Leu qualquer outra coisa */
                     System.err.println("Número mal formado na linha " + this.estado.getLinha());
@@ -358,7 +389,7 @@ public class Automato {
                 break; /* FIM CASE 9 */
 
             case 10: /* caminho número */
-                if((matcher = listaDeRegex.get(11).matcher(caractere)).matches()) { /* Leu um número */
+                if((matcher = listaDeRegex.get(4).matcher(caractere)).matches()) { /* Leu um número */
                     manterEstado(caractere);
                 } else {                                                           /* Leu qualquer outra coisa */
                     mudarDeEstado("", 12);
@@ -368,7 +399,7 @@ public class Automato {
                 break; /* FIM CASE 10 */
 
             case 11: /* caminho número */
-                if((matcher = listaDeRegex.get(11).matcher(caractere)).matches()) { /* Leu um número */
+                if((matcher = listaDeRegex.get(4).matcher(caractere)).matches()) { /* Leu um número */
                     mudarDeEstado(caractere, 8);
                 } else {                                                           /* Leu qualquer outra coisa */
                     System.err.println("Número mal formado na linha " + this.estado.getLinha());
@@ -384,7 +415,10 @@ public class Automato {
                 break; /* FIM CASE 12 */
 
             case 13: /* caminho identificador de bloco */
-                if((matcher = listaDeRegex.get(10).matcher(caractere)).matches()) { /* Leu letra minúscula */
+                if(
+                    (matcher = listaDeRegex.get(4).matcher(caractere)).matches() ||
+                    (matcher = listaDeRegex.get(10).matcher(caractere)).matches()
+                ) {                                             /* Leu um número ou leu uma letra minúscula */
                     mudarDeEstado(caractere, 14);
                 } else {                                                        /* Leu qualquer outra coisa */
                     System.err.println("Palavra reservada mal formada na linha " + this.estado.getLinha());
@@ -395,7 +429,10 @@ public class Automato {
                 break; /* FIM CASE 13 */
 
             case 14: /* caminho identificador de bloco */
-                if((matcher = listaDeRegex.get(10).matcher(caractere)).matches()) { /* Leu letra minúscula */
+                if(
+                    (matcher = listaDeRegex.get(4).matcher(caractere)).matches() ||
+                    (matcher = listaDeRegex.get(10).matcher(caractere)).matches()
+                ) {                                             /* Leu um número ou leu uma letra minúscula */
                     manterEstado(caractere);
                 } else if((matcher = listaDeRegex.get(7).matcher(caractere)).matches()) { /* Leu underscore (_) */
                     mudarDeEstado(caractere, 15);
@@ -451,6 +488,12 @@ public class Automato {
                 mudarDeEstado("", -1);
                 this.lerNovoCaractere = false;
                 break; /* FIM CASE 20 */
+
+            case 21:
+                this.lerNovoCaractere = false;
+                this.estado.marcarEstadoAtualComoFinal();
+                gerarNomeDoToken("atribuicao");
+                break; /* FIM CASE 21 */
 
             default:
                 System.err.println("Estado não pertence ao autômato!!!\n[ " + this.estado.getEstadoAtual() + "]\n");

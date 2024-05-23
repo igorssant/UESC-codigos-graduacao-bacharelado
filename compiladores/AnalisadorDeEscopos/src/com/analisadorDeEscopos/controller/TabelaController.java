@@ -16,14 +16,26 @@ public class TabelaController {
     }
 
     /**
+     * Construtor unitário de classe.
+     * Recebe o identificador de bloco
+     * como parâmetro e inicializa uma
+     * nova Tabela com este identificador.
+     * @param identificadorDeBloco String
+     */
+    public TabelaController(String identificadorDeBloco) {
+        this.tabela = new Tabela(identificadorDeBloco);
+    }
+
+    /**
      * Contrutor secundário de classe.
      * Recebe uma Linha como parâmetro
-     * e iniciliza uma nova Tabela
+     * e inicializa uma nova Tabela
      * com esta Linha.
-     * @param linha
+     * @param identificadorDeBloco String
+     * @param linha Linha
      */
-    public TabelaController(Linha linha) {
-        this.tabela = new Tabela(linha);
+    public TabelaController(String identificadorDeBloco, Linha linha) {
+        this.tabela = new Tabela(identificadorDeBloco, linha);
     }
 
     /**
@@ -33,6 +45,25 @@ public class TabelaController {
      */
     public TabelaController(Tabela tabela) {
         this.tabela = tabela;
+    }
+
+    /**
+     * Método getter para
+     * retornar toda o identificador
+     * de bloco.
+     * @return identificadorDeBloco String
+     */
+    public String getIdentificadorDeBloco() {
+        return this.tabela.getIdentificadorDeBloco();
+    }
+
+    /**
+     * Método setter que atualiza o
+     * identificador de bloco.
+     * @param identificadorDeBloco LinkedList(Linha)
+     */
+    public void setIdentificadorDeBloco(String identificadorDeBloco) {
+        this.tabela.setIdentificadorDeBloco(identificadorDeBloco);
     }
 
     /**

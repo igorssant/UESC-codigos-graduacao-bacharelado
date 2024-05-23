@@ -1,9 +1,11 @@
 package com.analisadorDeEscopos.model;
 
+import static com.analisadorDeEscopos.palavrasReservadas.PalavrasReservadas.listaDePalavrasReservadas;
+
 public class Linha {
-    private String nomeToken;
-    private String valorToken;
-    private String tokenGerado;
+    private String tipoDaVariavel;
+    private String nomeDaVariavel;
+    private String valorDaVariavel;
 
     /**
      * Construtor vazio de classe
@@ -13,79 +15,94 @@ public class Linha {
     /**
      * Construtor de classe de dois parâmetros.
      * Recebe como argumentos:
-     * @param nomeToken String
-     * @param valorToken String
+     * - tipoDaVariavel;
+     * - nomeDaVariavel.
+     * Vale ressaltar que valorDaVariavel
+     * será inicializado com o valor 0.
+     * @param tipoDaVariavel String
+     * @param nomeDaVariavel String
      */
-    public Linha(String nomeToken, String valorToken) {
-        this.nomeToken = nomeToken;
-        this.valorToken = valorToken;
+    public Linha(String tipoDaVariavel, String nomeDaVariavel) {
+        this.tipoDaVariavel = tipoDaVariavel;
+        this.nomeDaVariavel = nomeDaVariavel;
+
+        /* O tipo da variável foi declarada como `NUMERO` ??? */
+        if(tipoDaVariavel.equals(listaDePalavrasReservadas.get(2))) {
+            this.valorDaVariavel = "0";
+        } else {
+            this.valorDaVariavel = "";
+        }
+
     }
 
     /**
      * Constror completo de classe.
      * Ele recebe 3 parâmetros.
      * Os parâmetros são:
-     * @param nomeToken String
-     * @param valorToken String
-     * @param tokenGerado String
+     * @param tipoDaVariavel String
+     * @param nomeDaVariavel String
+     * @param valorDaVariavel String
      */
-    public Linha(String nomeToken, String valorToken, String tokenGerado) {
-        this.nomeToken = nomeToken;
-        this.valorToken = valorToken;
-        this.tokenGerado = tokenGerado;
+    public Linha(String tipoDaVariavel, String nomeDaVariavel, String valorDaVariavel) {
+        this.tipoDaVariavel = tipoDaVariavel;
+        this.nomeDaVariavel = nomeDaVariavel;
+        this.valorDaVariavel = valorDaVariavel;
     }
 
     /**
-     * Método getter para
-     * o atributo nomeToken
-     * @return nomeToken String
+     * Método getter usado para
+     * retornar o tipo da variável.
+     * @return tipoDaVariavel String
      */
-    public String getNomeToken() {
-        return this.nomeToken;
+    public String getTipoDaVariavel() {
+        return this.tipoDaVariavel;
     }
 
     /**
-     * Método setter para
-     * o atributo nomeToken
-     * @param nomeToken String
+     * Método setter usado para
+     * atualizar o valor do variável
+     * tipoDaVariavel.
+     * @param tipoDaVariavel String
      */
-    public void setNomeToken(String nomeToken) {
-        this.nomeToken = nomeToken;
+    public void setTipoDaVariavel(String tipoDaVariavel) {
+        this.tipoDaVariavel = tipoDaVariavel;
     }
 
     /**
-     * Método getter para
-     * o atributo nomeToken
-     * @return nomeToken String
+     * Método getter usado para
+     * retornar o nome da variável.
+     * @return nomeDaVariavel String
      */
-    public String getValorToken() {
-        return this.valorToken;
+    public String getNomeDaVariavel() {
+        return this.nomeDaVariavel;
     }
 
     /**
-     * Método setter para
-     * o atributo valorToken
-     * @param valorToken String
+     * Método setter usado para
+     * atualizar o valor do variável
+     * nomeDaVariavel.
+     * @param nomeDaVariavel String
      */
-    public void setValorToken(String valorToken) {
-        this.valorToken = valorToken;
+    public void setNomeDaVariavel(String nomeDaVariavel) {
+        this.nomeDaVariavel = nomeDaVariavel;
     }
 
     /**
-     * Método getter para
-     * o atributo tokenGerado
-     * @return tokenGerado String
+     * Método getter usado para
+     * retornar o nome da variável.
+     * @return valorDaVariavel String
      */
-    public String getTokenGerado() {
-        return this.tokenGerado;
+    public String getValorDaVariavel() {
+        return this.valorDaVariavel;
     }
 
     /**
-     * Método setter para
-     * o atributo tokenGerado
-     * @param tokenGerado String
+     * Método setter usado para
+     * atualizar o valor do variável
+     * valorDaVariavel.
+     * @param valorDaVariavel String
      */
-    public void setTokenGerado(String tokenGerado) {
-        this.tokenGerado = tokenGerado;
+    public void setValorDaVariavel(String valorDaVariavel) {
+        this.valorDaVariavel = valorDaVariavel;
     }
 }

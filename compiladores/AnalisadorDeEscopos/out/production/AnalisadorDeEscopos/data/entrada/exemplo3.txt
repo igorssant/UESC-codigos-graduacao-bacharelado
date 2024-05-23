@@ -1,0 +1,34 @@
+BLOCO _principal_ 
+	NUMERO a = 12345
+	PRINT a
+
+	BLOCO _n1_ 
+		a=45
+		NUMERO a=25
+		PRINT a
+
+		BLOCO _n2_
+			CADEIA a="Compiladores"
+			PRINT a
+		FIM _n2_
+
+		PRINT a
+
+		BLOCO _n3_
+			a="Compiladores"
+			PRINT a
+			BLOCO _n4_
+				CADEIA a
+				PRINT a
+				a="Hello"
+				PRINT a
+				a=10
+				PRINT a
+			FIM _n4_
+		FIM _n3_
+
+	FIM _n1_
+
+	PRINT a
+
+FIM _principal_

@@ -42,56 +42,59 @@ public class LinhaController {
     }
 
     /**
-     * Método getter para
-     * o atributo nomeToken
-     * @return nomeToken String
+     * Método getter usado para
+     * retornar o tipo da variável.
+     * @return tipoDaVariavel String
      */
-    public String getNomeToken() {
-        return this.linha.getNomeToken();
+    public String getTipoDaVariavel() {
+        return this.linha.getTipoDaVariavel();
     }
 
     /**
-     * Método setter para
-     * o atributo nomeToken
-     * @param nomeToken String
+     * Método setter usado para
+     * atualizar o valor do variável
+     * tipoDaVariavel.
+     * @param tipoDaVariavel String
      */
-    public void setNomeToken(String nomeToken) {
-        this.linha.setNomeToken(nomeToken);
+    public void setTipoDaVariavel(String tipoDaVariavel) {
+        this.linha.setTipoDaVariavel(tipoDaVariavel);
     }
 
     /**
-     * Método getter para
-     * o atributo nomeToken
-     * @return nomeToken String
+     * Método getter usado para
+     * retornar o nome da variável.
+     * @return nomeDaVariavel String
      */
-    public String getValorToken() {
-        return this.linha.getValorToken();
+    public String getNomeDaVariavel() {
+        return this.linha.getNomeDaVariavel();
     }
 
     /**
-     * Método setter para
-     * o atributo valorToken
-     * @param valorToken String
+     * Método setter usado para
+     * atualizar o valor do variável
+     * nomeDaVariavel.
+     * @param nomeDaVariavel String
      */
-    public void setValorToken(String valorToken) {
-        this.linha.setValorToken(valorToken);
+    public void setNomeDaVariavel(String nomeDaVariavel) {
+        this.linha.setNomeDaVariavel(nomeDaVariavel);
     }
 
     /**
-     * Método getter para
-     * o atributo tokenGerado
-     * @return tokenGerado String
+     * Método getter usado para
+     * retornar o nome da variável.
+     * @return valorDaVariavel String
      */
-    public String getTokenGerado() {
-        return this.linha.getTokenGerado();
+    public String getValorDaVariavel() {
+        return this.linha.getValorDaVariavel();
     }
 
     /**
-     * Método setter para
-     * o atributo tokenGerado
-     * @param tokenGerado String
+     * Método setter usado para
+     * atualizar o valor do variável
+     * valorDaVariavel.
+     * @param valorDaVariavel String
      */
-    public void setTokenGerado(String tokenGerado) {
-        this.linha.setTokenGerado(tokenGerado);
+    public void setValorDaVariavel(String valorDaVariavel) {
+        this.linha.setValorDaVariavel(valorDaVariavel);
     }
 }

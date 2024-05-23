@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 public class Tabela {
     private LinkedList<Linha> linhasDaTabela;
+    private String identificadorDeBloco;
 
     /**
      * Construtor vazio de classe.
@@ -16,24 +17,62 @@ public class Tabela {
 
     /**
      * Construtor unitário de classe.
-     * Recebe uma Linha como parâmetro
+     * Recebe o identificador de bloco.
+     * Além disso inicializa a variável
+     * linhasDaTabela.
+     * @param identificadorDeBloco String
+     */
+    public Tabela(String identificadorDeBloco) {
+        this.linhasDaTabela = new LinkedList<>();
+        this.identificadorDeBloco = identificadorDeBloco;
+    }
+
+    /**
+     * Construtor de classe que recebe
+     * duas variáveis.
+     * Recebe o identificador de bloco
+     * e uma Linha como parâmetro
      * para inicializar a tabela já com
      * uma linha.
+     * @param identificadorDeBloco  String
      * @param linha Linha
      */
-    public Tabela(Linha linha) {
+    public Tabela(String identificadorDeBloco, Linha linha) {
+        this.identificadorDeBloco = identificadorDeBloco;
         this.linhasDaTabela = new LinkedList<>();
         this.linhasDaTabela.add(linha);
     }
 
     /**
      * Construtor completo de classe.
-     * Recebe como parâmetro uma lista
-     * de linha e inicializa uma tabela.
+     * Recebe como parâmetros o identificador
+     * do bloco e uma lista de linhas e
+     * inicializa uma tabela.
+     * @param identificadorDeBloco String
      * @param linhasDaTabela LinkedList(Linha)
      */
-    public Tabela(LinkedList<Linha> linhasDaTabela) {
+    public Tabela(String identificadorDeBloco, LinkedList<Linha> linhasDaTabela) {
+        this.identificadorDeBloco = identificadorDeBloco;
         this.linhasDaTabela = linhasDaTabela;
+    }
+
+    /**
+     * Método getter para
+     * retornar toda o identificador
+     * de bloco.
+     * @return identificadorDeBloco String
+     */
+    public String getIdentificadorDeBloco() {
+        return this.identificadorDeBloco;
+    }
+
+    /**
+     * Método setter que atualiza o
+     * identificador de bloco.
+     * @param identificadorDeBloco LinkedList(Linha)
+     */
+    public void setIdentificadorDeBloco(String identificadorDeBloco) {
+        this.identificadorDeBloco = identificadorDeBloco;
     }
 
     /**
