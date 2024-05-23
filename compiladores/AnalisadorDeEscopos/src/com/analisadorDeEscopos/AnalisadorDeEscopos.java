@@ -1,6 +1,7 @@
 package com.analisadorDeEscopos;
 
 import com.analisadorDeEscopos.controller.Automato;
+import com.analisadorDeEscopos.utils.escopo.Escopo;
 import com.analisadorDeEscopos.utils.escritaEmArquivo.EscritaEmArquivoTranspilado;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -69,6 +70,8 @@ public class AnalisadorDeEscopos {
     }
 
     public static void analisadorDeEscopos(String arquivoTranspilado) {
+        Escopo escopo = new Escopo();
+
         System.out.println("Inicializando o Analisador de Escopos...");
 
         /*
@@ -79,7 +82,11 @@ public class AnalisadorDeEscopos {
         try(Scanner leitura = new Scanner(arquivoTranspilado)) {
             while(leitura.hasNext()) {
                 String linha = leitura.nextLine();
+                escopo.pilhaDeEscopo(linha);
 
+                if(escopo.getPossuiValorParaImpressao()) {
+                    System.out.println(escopo.getValorParaImprimir());
+                }
             }
         } catch(Exception e) {
             throw new RuntimeException("Alguma exceção não tratada foi lançada: " + e);

@@ -48,6 +48,15 @@ public class TabelaController {
     }
 
     /**
+     * Método getter usado para
+     * retornar a tabela salva
+     * @return tabela Tabela
+     */
+    public Tabela getTabela() {
+        return this.tabela;
+    }
+
+    /**
      * Método getter para
      * retornar toda o identificador
      * de bloco.
@@ -112,5 +121,15 @@ public class TabelaController {
      */
     public void removerLinhaDaTabela(int indice) {
         this.tabela.removerLinhaDaTabela(indice);
+    }
+
+    /**
+     * Método utilitário usado
+     * para matar a tabela em
+     * uso e iniciar uma nova
+     * tabela.
+     */
+    public void limparTabela() {
+        this.tabela = new Tabela();
     }
 }
