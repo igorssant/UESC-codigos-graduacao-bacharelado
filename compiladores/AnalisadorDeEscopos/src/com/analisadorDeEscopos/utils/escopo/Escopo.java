@@ -69,21 +69,25 @@ public class Escopo {
                     linhaLida.lastIndexOf("_")
                 )
             );
-        } else {
-            /* sdas sdasd */
+        } else if(linhaLida.contains(listaDePalavrasReservadas.get(1))) { /* Linha possui `FIM` */
+            /* POP */
+        } else if(linhaLida.contains(listaDePalavrasReservadas.getLast())) { /* Linha possui `PRINT` */
+            /* VERIFICAR SE VARIAVEL EXISTE NO ESCOPO */
+        } else {                                           /* Linha não possui nenhum dos anteriores */
+            /* TRATAMENTO PESADO PARA SEPARADORES E ATRIBUICOES */
         }
     }
 
     /*
-     * 1. Ler linha
-     * 2. Verificar se linha possui `BLOCO`
-     * 3. Se sim, salvar ISTO && PUSH na pilha
-     * 4. Se não, continue normal
-     * 5. Verificar se linha possui `FIM`
-     * 6. Se sim, verificar se bloco existe
-     * 7. Se sim, POP na pilha
-     * 8. Se bloco não existir, subir erro
-     * 9. Se não, continue normal
+     *  1. Ler linha
+     *  2. Verificar se linha possui `BLOCO`
+     *  3. Se sim, salvar ISTO && PUSH na pilha
+     *  4. Se não, continue normal
+     *  5. Verificar se linha possui `FIM`
+     *  6. Se sim, verificar se bloco existe
+     *  7. Se sim, POP na pilha
+     *  8. Se bloco não existir, subir erro
+     *  9. Se não, continue normal
      * 10. Verificar se linha possui `PRINT`
      * 11. Verificar se linha possui `tk_separador`
      * 12. Se tiver, separar em dois comandos

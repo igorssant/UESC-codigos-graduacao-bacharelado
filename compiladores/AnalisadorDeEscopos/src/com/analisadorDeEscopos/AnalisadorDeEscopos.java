@@ -2,6 +2,7 @@ package com.analisadorDeEscopos;
 
 import com.analisadorDeEscopos.controller.Automato;
 import com.analisadorDeEscopos.utils.escopo.Escopo;
+import com.analisadorDeEscopos.utils.escritaEmArquivo.EscritaEmArquivoDeSaida;
 import com.analisadorDeEscopos.utils.escritaEmArquivo.EscritaEmArquivoTranspilado;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -69,7 +70,21 @@ public class AnalisadorDeEscopos {
         }
     }
 
-    public static void analisadorDeEscopos(String arquivoTranspilado) {
+    /**
+     * Método analisadorDeEscopos.
+     * Recebe como parâmetros o caminho
+     * para o arquivo transpilado, como String
+     * e o caminho para o arquivo de saída
+     * como String.
+     * O método utiliza de outro método,
+     * com.analisadorDeEscopos.utils.escopo.Escopo,
+     * para auxiliar a manipulação do programa -
+     * variáveis, comandos, blocos, etc - separados
+     * por linha do código transpilado que foi lido.
+     * @param arquivoTranspilado String
+     * @param arquivoDeSaida String
+     */
+    public static void analisadorDeEscopos(String arquivoTranspilado, String arquivoDeSaida) {
         Escopo escopo = new Escopo();
 
         System.out.println("Inicializando o Analisador de Escopos...");
@@ -80,14 +95,26 @@ public class AnalisadorDeEscopos {
          * após finalização do bloco try-catch
          */
         try(Scanner leitura = new Scanner(arquivoTranspilado)) {
+            FileWriter bufferEscrita = new FileWriter(arquivoDeSaida);
+
             while(leitura.hasNext()) {
                 String linha = leitura.nextLine();
                 escopo.pilhaDeEscopo(linha);
 
+                /*
+                * verificando se há algo para imprimir.
+                * se não houver, parte para a próxima linha
+                */
                 if(escopo.getPossuiValorParaImpressao()) {
-                    System.out.println(escopo.getValorParaImprimir());
+                    EscritaEmArquivoDeSaida.escrevarLinhaEmArquivo(
+                        escopo.getValorParaImprimir(),
+                        bufferEscrita
+                    );
                 }
             }
+
+            /* fechando buffer de escrita em arquivo */
+            bufferEscrita.close();
         } catch(Exception e) {
             throw new RuntimeException("Alguma exceção não tratada foi lançada: " + e);
         } finally {
@@ -103,10 +130,11 @@ public class AnalisadorDeEscopos {
      * @param args String
      */
     public static void main(String[] args) {
-        String arquivoDeEntrada = "src/data/entrada/exemplo1.txt",
-            arquivoTranspilado = "src/data/transpilado/arquivoTranspilado.bon";
+        final String arquivoDeEntrada = "src/data/entrada/exemplo1.txt",
+            arquivoTranspilado = "src/data/transpilado/arquivoTranspilado.bon",
+            arquivoDeSaida = "src/data/saida/saida.txt";
 
         transpilarArquivoOriginal(arquivoDeEntrada, arquivoTranspilado);
-        analisadorDeEscopos(arquivoTranspilado);
+        analisadorDeEscopos(arquivoTranspilado, arquivoDeSaida);
     }
 }
