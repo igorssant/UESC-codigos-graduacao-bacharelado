@@ -23,7 +23,7 @@ public class AnalisadorDeEscopos {
      * @param arquivoDeEntrada String
      * @param arquivoTranspilado String
      */
-    public static void transpilarArquivoOriginal(String arquivoDeEntrada, String arquivoTranspilado) {
+    public static void transpilarArquivoOriginal(final String arquivoDeEntrada, final String arquivoTranspilado) {
         Automato automato = new Automato();
         String caractereAtual = "";
 
@@ -84,8 +84,8 @@ public class AnalisadorDeEscopos {
      * @param arquivoTranspilado String
      * @param arquivoDeSaida String
      */
-    public static void analisadorDeEscopos(String arquivoTranspilado, String arquivoDeSaida) {
-        Escopo escopo = new Escopo();
+    public static void analisadorDeEscopos(final String arquivoTranspilado, final String arquivoDeSaida) {
+        final Escopo escopo = new Escopo();
 
         System.out.println("Inicializando o Analisador de Escopos...");
 

@@ -132,4 +132,17 @@ public class TabelaController {
     public void limparTabela() {
         this.tabela = new Tabela();
     }
+
+    /**
+     * Método utilitário getIndiceDeUmaLinhaPorNomeDaVariavel.
+     * Recebe como parâmetro o nome do uma variável.
+     * Retorna o primeiro índice da linha onde se encontra
+     * este nome de variável. Pode retornar -1 caso
+     * a variável não exista na tabela.
+     * @param nomeDaVariavel String
+     * @return indice do objeto (existe tal objeto) | -1 (erro. Objeto não existe!!!)
+     */
+    public Integer getIndiceDeUmaLinhaPorNomeDaVariavel(String nomeDaVariavel) {
+        return this.tabela.getIndiceDeUmaLinhaPorNomeDaVariavel(nomeDaVariavel);
+    }
 }

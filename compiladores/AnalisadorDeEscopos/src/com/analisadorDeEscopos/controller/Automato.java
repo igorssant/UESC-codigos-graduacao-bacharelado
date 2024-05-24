@@ -256,7 +256,7 @@ public class Automato {
         }
     }
 
-    public void lerCaractere(String caractere) {
+    public void lerCaractere(final String caractere) {
         Matcher matcher = null;
 
         this.estado.setCaractereAtual(caractere);
