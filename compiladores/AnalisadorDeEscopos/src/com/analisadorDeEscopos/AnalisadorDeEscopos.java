@@ -99,6 +99,18 @@ public class AnalisadorDeEscopos {
 
             while(leitura.hasNext()) {
                 String linha = leitura.nextLine();
+
+                /*
+                 * Verificação de linhas em branco.
+                 * Se a linha não possuir nenhuma
+                 * informação, apenas passe para
+                 * a próxima iteração (sem realizar
+                 * nenhuma outra instrução).
+                 */
+                if(linha.isBlank() || linha.isEmpty()) {
+                    continue;
+                }
+
                 escopo.pilhaDeEscopo(linha);
 
                 /*

@@ -1,16 +1,20 @@
 package com.analisadorDeEscopos.model;
 
 import static com.analisadorDeEscopos.palavrasReservadas.PalavrasReservadas.listaDePalavrasReservadas;
+import static com.analisadorDeEscopos.token.Token.dicionarioDeTokens;
 
 public class Linha {
     private String tipoDaVariavel;
     private String nomeDaVariavel;
     private String valorDaVariavel;
+    private String tokenResultante;
 
     /**
      * Construtor vazio de classe
      */
-    public Linha() {}
+    public Linha() {
+        this.tokenResultante = dicionarioDeTokens.get("identificador");
+    }
 
     /**
      * Construtor de classe de dois parâmetros.
@@ -25,6 +29,7 @@ public class Linha {
     public Linha(String tipoDaVariavel, String nomeDaVariavel) {
         this.tipoDaVariavel = tipoDaVariavel;
         this.nomeDaVariavel = nomeDaVariavel;
+        this.tokenResultante = dicionarioDeTokens.get("identificador");
 
         /* O tipo da variável foi declarada como `NUMERO` ??? */
         if(tipoDaVariavel.equals(listaDePalavrasReservadas.get(2))) {
@@ -47,6 +52,23 @@ public class Linha {
         this.tipoDaVariavel = tipoDaVariavel;
         this.nomeDaVariavel = nomeDaVariavel;
         this.valorDaVariavel = valorDaVariavel;
+        this.tokenResultante = dicionarioDeTokens.get("identificador");
+    }
+
+    /**
+     * Constror completo de classe.
+     * Ele recebe todos os parâmetros.
+     * Os parâmetros são:
+     * @param tipoDaVariavel String
+     * @param nomeDaVariavel String
+     * @param valorDaVariavel String
+     * @param tokenResultante String
+     */
+    public Linha(String tipoDaVariavel, String nomeDaVariavel, String valorDaVariavel, String tokenResultante) {
+        this.tipoDaVariavel = tipoDaVariavel;
+        this.nomeDaVariavel = nomeDaVariavel;
+        this.valorDaVariavel = valorDaVariavel;
+        this.tokenResultante = tokenResultante;
     }
 
     /**
@@ -104,5 +126,24 @@ public class Linha {
      */
     public void setValorDaVariavel(String valorDaVariavel) {
         this.valorDaVariavel = valorDaVariavel;
+    }
+
+    /**
+     * Método getter usado para
+     * retornar o o token formado.
+     * @return tokenResultante String
+     */
+    public String getTokenResultante() {
+        return this.tokenResultante;
+    }
+
+    /**
+     * Método setter usado para
+     * atualizar o valor do variável
+     * tokenResultante.
+     * @param tokenResultante String
+     */
+    public void setTokenResultante(String tokenResultante) {
+        this.tokenResultante = tokenResultante;
     }
 }

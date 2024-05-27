@@ -141,4 +141,34 @@ public class Tabela {
 
         return -1;
     }
+
+    /**
+     * Método utilitário atualizarLinha.
+     * Usado para atualizar dada linha de
+     * uma tabela.
+     * Ele recebe todas as colunas da
+     * tabela como parâmetros, mas
+     * esses parâmetros podem ser
+     * nulos caso queira atualizar
+     * somente um das campos.
+     * A atualização depende do índice
+     * passado.
+     * @param indice Integer
+     * @param tipoDaVariavel String | null
+     * @param nomeDaVariavel String | null
+     * @param valorDaVariavel String | null
+     */
+    public void atualizarLinha(Integer indice, String tipoDaVariavel, String nomeDaVariavel, String valorDaVariavel) {
+        if(tipoDaVariavel != null){
+            this.linhasDaTabela.get(indice).setTipoDaVariavel(tipoDaVariavel);
+        }
+
+        if(nomeDaVariavel != null) {
+           this.linhasDaTabela.get(indice).setNomeDaVariavel(nomeDaVariavel);
+        }
+
+        if(valorDaVariavel != null) {
+            this.linhasDaTabela.get(indice).setValorDaVariavel(valorDaVariavel);
+        }
+    }
 }

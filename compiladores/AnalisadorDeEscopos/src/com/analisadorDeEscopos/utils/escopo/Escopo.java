@@ -3,8 +3,9 @@ package com.analisadorDeEscopos.utils.escopo;
 import com.analisadorDeEscopos.controller.TabelaController;
 import com.analisadorDeEscopos.model.Linha;
 import com.analisadorDeEscopos.model.Tabela;
-import java.util.Stack;
+import com.analisadorDeEscopos.utils.verificarTipo.VerificarTipo;
 
+import java.util.Stack;
 import static com.analisadorDeEscopos.palavrasReservadas.PalavrasReservadas.listaDePalavrasReservadas;
 
 public class Escopo {
@@ -82,8 +83,111 @@ public class Escopo {
                 .get(indice);
         }
 
-        atribuirValorParaImpressao("Erro linha" + this.linha + " Variável não declarada.");
+        atribuirValorParaImpressao("Erro linha " + this.linha + ". Variável não declarada.");
         return null;
+    }
+
+    private Tabela retornarEscopo(String nomeDaVariavel) {
+        Stack<Tabela> pilhaTemporaria = (Stack<Tabela>) this.pilha.clone();
+        Tabela tabela = null;
+
+        while(!pilhaTemporaria.empty()) {
+            TabelaController novoEscopo = new TabelaController(pilhaTemporaria.pop());
+
+            if(!variavelExisteNoEscopoAtual(nomeDaVariavel, novoEscopo.getTabela())) {
+                continue;
+            }
+
+            tabela = tabelaController.getTabela();
+        }
+
+        if(tabela == null) {
+            atribuirValorParaImpressao("Erro linha " + this.linha + ". Variável não declarada.");
+            return null;
+        }
+
+        return tabela;
+    }
+
+    private void atribuicaoDeVariavelDuranteCriacao(
+            String nomeDaVariavel,
+            String valorDaVariavel,
+            String tipoDaVariavel
+    ) {
+        if(
+            tipoDaVariavel.equals(listaDePalavrasReservadas.get(2)) &&
+            !VerificarTipo.variavelEhNumerico(valorDaVariavel)
+        ) {                                 /* variável é declarada como `NUMERO` e seu valor não é numérico */
+            atribuirValorParaImpressao("Erro linha " + this.linha + ", tipos não compatíveis.");
+            return;
+        }
+
+        if(
+            tipoDaVariavel.equals(listaDePalavrasReservadas.get(3)) &&
+            VerificarTipo.variavelEhNumerico(valorDaVariavel)
+        ) {                                     /* variável é declarada como `CADEIA` é, de fato, é numérico */
+            atribuirValorParaImpressao("Erro linha " + this.linha + ", tipos não compatíveis.");
+            return;
+        }
+
+        if(valorDaVariavel == null) {
+            if(tipoDaVariavel.equals(listaDePalavrasReservadas.get(2))) {
+                valorDaVariavel = "0";
+            } else {
+                valorDaVariavel = "";
+            }
+        }
+
+        this.tabelaController.adicionarLinhaNaTabela(
+            new Linha(tipoDaVariavel, nomeDaVariavel, valorDaVariavel)
+        );
+    }
+
+    private void atribuicaoDeVariavelPosCriacao(String variavel, String valor, Boolean valorEhUmaVariavel) {
+        if(!valorEhUmaVariavel) {
+            this.tabelaController.atualizarLinha(
+                this.tabelaController.getIndiceDeUmaLinhaPorNomeDaVariavel(variavel),
+                null,
+                null,
+                valor
+            );
+        } else {
+            Integer indiceDaVariavel;
+            String tipoDaVariavel = null,
+                valorDaVariavel = null;
+
+            if(variavelExisteNoEscopoAtual(valor, this.tabelaController.getTabela())) {
+                indiceDaVariavel = this.tabelaController.getIndiceDeUmaLinhaPorNomeDaVariavel(variavel);
+                tipoDaVariavel = this.tabelaController.getLinhasDaTabela().get(indiceDaVariavel).getTipoDaVariavel();
+                valorDaVariavel = this.tabelaController.getLinhasDaTabela().get(indiceDaVariavel).getValorDaVariavel();
+            } else {
+                Tabela escopoDaVariavel = retornarEscopo(valor);
+
+                if(escopoDaVariavel != null) {
+                    Linha linhaDaTabela = extrairLinhaDeUmaTabela(valor, escopoDaVariavel);
+
+                    if(linhaDaTabela == null) {
+                        return;
+                    }
+
+                    tipoDaVariavel = linhaDaTabela.getTipoDaVariavel();
+                    valorDaVariavel = linhaDaTabela.getValorDaVariavel();
+                }
+            }
+
+            if(!this.tabelaController.getLinhasDaTabela()
+                .get(this.tabelaController.getIndiceDeUmaLinhaPorNomeDaVariavel(variavel))
+                .getTipoDaVariavel()
+                .equals(tipoDaVariavel)
+            ) {
+                atribuirValorParaImpressao("Erro linha" + linha + ", tipos não compatíveis.");
+                return;
+            }
+
+            this.tabelaController.getLinhasDaTabela()
+                .get(this.tabelaController.getIndiceDeUmaLinhaPorNomeDaVariavel(variavel))
+                .setValorDaVariavel(valorDaVariavel);
+        }
     }
 
     public void pilhaDeEscopo(String linhaLida) {
@@ -110,34 +214,27 @@ public class Escopo {
                 linhaLida.lastIndexOf(",") + 2,
                 linhaLida.lastIndexOf(">")
             );
-            Linha linha = null;
+            Linha informacoesDaTabela = null;
 
 
             if(variavelExisteNoEscopoAtual(variavel, tabelaController.getTabela())) {
-                linha = extrairLinhaDeUmaTabela(variavel, this.tabelaController.getTabela());
+                informacoesDaTabela = extrairLinhaDeUmaTabela(variavel, this.tabelaController.getTabela());
             } else {
-                Stack<Tabela> pilhaTemporaria = (Stack<Tabela>) this.pilha.clone();
-
-                while(!pilhaTemporaria.empty()) {
-                    TabelaController novoEscopo = new TabelaController(pilhaTemporaria.pop());
-
-                    if(!variavelExisteNoEscopoAtual(variavel, novoEscopo.getTabela())) {
-                        continue;
-                    }
-
-                    linha = extrairLinhaDeUmaTabela(variavel, tabelaController.getTabela());
-                }
-
-                /* abaixo força o garbage collector a fazer o trabalho dele */
-                pilhaTemporaria = null;
+                informacoesDaTabela = extrairLinhaDeUmaTabela(variavel, retornarEscopo(variavel));
             }
 
-            if(linha != null) {
-                atribuirValorParaImpressao(linha.getValorDaVariavel());
+            if(informacoesDaTabela != null) {
+                atribuirValorParaImpressao(informacoesDaTabela.getValorDaVariavel());
             }
-        } else {                                           /* Linha não possui nenhum dos anteriores */
-            /* TRATAMENTO PESADO PARA SEPARADORES E ATRIBUICOES */
+        } else if(linhaLida.contains(listaDePalavrasReservadas.get(2))) {   /* Linha possui `NUMERO` */
+            /* sdwadsad */
+        } else if(linhaLida.contains(listaDePalavrasReservadas.get(3))) {   /* Linha possui `CADEIA` */
+            /* dadwasd */
+        } else {                                                            /* atribuição simples */
+            /* sdawdwd */
         }
+
+        this.linha++;
     }
 }
 /*

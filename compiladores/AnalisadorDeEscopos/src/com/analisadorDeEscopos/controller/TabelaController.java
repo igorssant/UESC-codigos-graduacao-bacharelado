@@ -145,4 +145,24 @@ public class TabelaController {
     public Integer getIndiceDeUmaLinhaPorNomeDaVariavel(String nomeDaVariavel) {
         return this.tabela.getIndiceDeUmaLinhaPorNomeDaVariavel(nomeDaVariavel);
     }
+
+    /**
+     * Método utilitário atualizarLinha.
+     * Usado para atualizar dada linha de
+     * uma tabela.
+     * Ele recebe todas as colunas da
+     * tabela como parâmetros, mas
+     * esses parâmetros podem ser
+     * nulos caso queira atualizar
+     * somente um das campos.
+     * A atualização depende do índice
+     * passado.
+     * @param indice Integer
+     * @param tipoDaVariavel String | null
+     * @param nomeDaVariavel String | null
+     * @param valorDaVariavel String | null
+     */
+    public void atualizarLinha(Integer indice, String tipoDaVariavel, String nomeDaVariavel, String valorDaVariavel) {
+        this.tabela.atualizarLinha(indice, tipoDaVariavel, nomeDaVariavel, valorDaVariavel);
+    }
 }

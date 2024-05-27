@@ -97,4 +97,23 @@ public class LinhaController {
     public void setValorDaVariavel(String valorDaVariavel) {
         this.linha.setValorDaVariavel(valorDaVariavel);
     }
+
+    /**
+     * Método getter usado para
+     * retornar o o token formado.
+     * @return tokenResultante String
+     */
+    public String getTokenResultante() {
+        return this.linha.getTokenResultante();
+    }
+
+    /**
+     * Método setter usado para
+     * atualizar o valor do variável
+     * tokenResultante.
+     * @param tokenResultante String
+     */
+    public void setTokenResultante(String tokenResultante) {
+        this.linha.setTokenResultante(tokenResultante);
+    }
 }
