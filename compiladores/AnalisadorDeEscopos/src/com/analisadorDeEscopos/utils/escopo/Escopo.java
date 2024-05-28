@@ -5,8 +5,10 @@ import com.analisadorDeEscopos.model.Linha;
 import com.analisadorDeEscopos.model.Tabela;
 import com.analisadorDeEscopos.utils.verificarTipo.VerificarTipo;
 
+import java.util.HashMap;
 import java.util.Stack;
 import static com.analisadorDeEscopos.palavrasReservadas.PalavrasReservadas.listaDePalavrasReservadas;
+import static com.analisadorDeEscopos.token.Token.dicionarioDeTokens;
 
 public class Escopo {
     private TabelaController tabelaController;
@@ -190,6 +192,42 @@ public class Escopo {
         }
     }
 
+    private HashMap<String, String> destrincharStringDeEntrada(String linhaLida) {
+        HashMap<String, String> hashmap = new HashMap<>(5);
+        String parteQueInteressa = linhaLida.substring(linhaLida.indexOf(">") + 1);
+
+        do {
+            String valorDaVariavel = null,
+                    nomeDaVariavel = parteQueInteressa.substring(
+                parteQueInteressa.indexOf(",") + 2,
+                parteQueInteressa.indexOf(">")
+            );
+            parteQueInteressa = parteQueInteressa.substring(4 + nomeDaVariavel.length());
+
+            if(parteQueInteressa.substring(0, 16).equals("<" + dicionarioDeTokens.get("atribuicao") + ">")) {
+                parteQueInteressa = parteQueInteressa.substring(16);
+                valorDaVariavel = parteQueInteressa.substring(
+                    parteQueInteressa.indexOf(","),
+                    parteQueInteressa.indexOf(">")
+                );
+
+                hashmap.put(nomeDaVariavel, valorDaVariavel);
+            } else {
+                hashmap.put(nomeDaVariavel, valorDaVariavel);
+            }
+
+            if(!parteQueInteressa.contains(dicionarioDeTokens.get("separador"))){
+                break;
+            }
+
+            parteQueInteressa = parteQueInteressa.substring(
+                parteQueInteressa.indexOf(dicionarioDeTokens.get("separador"))
+            );
+        } while(linhaLida.contains(dicionarioDeTokens.get("separador")));
+
+        return hashmap;
+    }
+
     public void pilhaDeEscopo(String linhaLida) {
         if(linhaLida.contains(listaDePalavrasReservadas.getFirst())) { /* Linha possui `BLOCO` */
             if(!pilha.empty()) {
@@ -228,6 +266,7 @@ public class Escopo {
             }
         } else if(linhaLida.contains(listaDePalavrasReservadas.get(2))) {   /* Linha possui `NUMERO` */
             /* sdwadsad */
+            linhaLida.
         } else if(linhaLida.contains(listaDePalavrasReservadas.get(3))) {   /* Linha possui `CADEIA` */
             /* dadwasd */
         } else {                                                            /* atribuição simples */
