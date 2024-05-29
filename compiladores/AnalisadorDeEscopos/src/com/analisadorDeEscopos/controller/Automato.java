@@ -275,7 +275,7 @@ public class Automato {
                     this.lerNovoCaractere = true;
                     break;
                 } else if((matcher = listaDeRegex.get(5).matcher(caractere)).matches()) { /* Leu aspas duplas (\") */
-                    mudarDeEstado("", 5);
+                    mudarDeEstado(caractere, 5);
                 } else if((matcher = listaDeRegex.get(4).matcher(caractere)).matches()) { /* Leu um número */
                     mudarDeEstado(caractere, 8);
                 } else if(
@@ -349,7 +349,7 @@ public class Automato {
                 if((matcher = listaDeRegex.get(8).matcher(caractere)).matches()) { /* Leu um caractere != \" */
                     manterEstado(caractere);
                 } else {                                                           /* Leu aspas duplas */
-                    mudarDeEstado("", 7);
+                    mudarDeEstado(caractere, 7);
                 }
 
                 break; /* FIM CASE 5 */

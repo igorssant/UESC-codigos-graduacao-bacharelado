@@ -1,0 +1,18 @@
+20
+10
+Erro linha 8, tipos não compatíveis.
+"Ola mundo"
+20
+-0.45
+10
+"Compiladores"
+"Bloco2"
+Erro linha 25. Variável não declarada.
+-0.28
+20
+0
+-0.28
+40
+Erro linha 35. Variável não declarada.
+Erro linha 38. Variável não declarada.
+11

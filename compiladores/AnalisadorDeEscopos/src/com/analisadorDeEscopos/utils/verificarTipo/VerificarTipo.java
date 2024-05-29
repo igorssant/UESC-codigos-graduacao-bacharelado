@@ -1,7 +1,9 @@
 package com.analisadorDeEscopos.utils.verificarTipo;
 
 import com.analisadorDeEscopos.palavrasReservadas.PalavrasReservadas;
-import java.util.IllegalFormatConversionException;
+import java.util.regex.Matcher;
+
+import static com.analisadorDeEscopos.expressaoRegular.ExpressaoRegular.listaDeRegex;
 
 public class VerificarTipo {
     public static Boolean palavraEhReservada(String palavraCandidata){
@@ -9,18 +11,14 @@ public class VerificarTipo {
     }
 
     public static Boolean variavelEhNumerico(String possivelNumero) {
-        try {
-            Integer numerointeiro = Integer.parseInt(possivelNumero);
-            return true;
-        } catch(IllegalFormatConversionException ignored) {}
+        Matcher matcher = null;
 
-        try {
-            Double numeroFlutuante = Double.parseDouble(possivelNumero);
+        /* VERIFICA SE É NÚMERO INTEIRO */
+        if((matcher = listaDeRegex.get(15).matcher(possivelNumero)).matches()) {
             return true;
-        } catch(IllegalFormatConversionException e) {
-            System.err.println("O valor " + possivelNumero + " não é do tipo númérico.");
         }
 
-        return false;
+        /* VERIFICA SE É PONTO FLUTUANTE */
+        return (matcher = listaDeRegex.get(16).matcher(possivelNumero)).matches();
     }
 }

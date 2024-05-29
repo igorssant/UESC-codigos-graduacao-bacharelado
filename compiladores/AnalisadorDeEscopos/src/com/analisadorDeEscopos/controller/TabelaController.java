@@ -130,6 +130,7 @@ public class TabelaController {
      * tabela.
      */
     public void limparTabela() {
+        this.tabela = null;
         this.tabela = new Tabela();
     }
 

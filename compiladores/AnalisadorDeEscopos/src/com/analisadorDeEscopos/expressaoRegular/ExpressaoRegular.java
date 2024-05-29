@@ -7,7 +7,7 @@ public class ExpressaoRegular {
     public static final ArrayList<Pattern> listaDeRegex;
 
     static {
-        listaDeRegex = new ArrayList<>(15);
+        listaDeRegex = new ArrayList<>(17);
 
         listaDeRegex.add(Pattern.compile("-"));     /* 00 */
         listaDeRegex.add(Pattern.compile("[+]"));   /* 01 */
@@ -39,5 +39,11 @@ public class ExpressaoRegular {
         listaDeRegex.add(Pattern.compile("\\uFFFF"));/* 13 */
 
         listaDeRegex.add(Pattern.compile(","));     /* 14 */
+
+        /* REGEX PARA IDENTIFICAR NUMEROS INTEIROS */
+        listaDeRegex.add(Pattern.compile("^\\-?[0-9]+$"));              /* 15 */
+
+        /* REGEX PARA IDENTIFICAR NUMEROS PONTO FLUTUANTE */
+        listaDeRegex.add(Pattern.compile("^\\-?\\d+\\.\\d+$"));     /* 16 */
     }
 }
