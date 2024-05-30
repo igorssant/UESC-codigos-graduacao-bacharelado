@@ -190,12 +190,19 @@ public class Escopo {
                 this.pilha.set(escopo, novoEscopo.getTabela());
             }
         } else {
-            Integer indiceDaVariavel = -1;
+            Integer indiceDaVariavel = -1,
+                    indiceDaVariavelEsquerda = this.tabelaController.getIndiceDeUmaLinhaPorNomeDaVariavel(variavel);
             String tipoDaVariavel = null,
-                valorDaVariavel = null;
+                    valorDaVariavel = null;
+
+            if(indiceDaVariavelEsquerda < 0) {
+                atribuirValorParaImpressao("Erro linha " + this.linha + ". Variável não declarada.");
+                return;
+            }
+
             String tipoDaVariavelDaEsquerda = this.tabelaController
                     .getLinhasDaTabela()
-                    .get(this.tabelaController.getIndiceDeUmaLinhaPorNomeDaVariavel(variavel))
+                    .get(indiceDaVariavelEsquerda)
                     .getTipoDaVariavel();
 
             if(variavelExisteNoEscopoAtual(valor, this.tabelaController.getTabela())) {
@@ -217,7 +224,7 @@ public class Escopo {
                 }
             }
 
-            if(!tipoDaVariavel.equals(tipoDaVariavelDaEsquerda)) {
+            if(tipoDaVariavel == null || !tipoDaVariavel.equals(tipoDaVariavelDaEsquerda)) {
                 atribuirValorParaImpressao("Erro linha " + this.linha + ", tipos não compatíveis.");
                 return;
             }
