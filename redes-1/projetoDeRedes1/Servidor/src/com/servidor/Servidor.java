@@ -7,7 +7,6 @@ import com.servidor.enums.Acoes;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.rmi.RemoteException;
 import java.util.Random;
 
 public class Servidor {
