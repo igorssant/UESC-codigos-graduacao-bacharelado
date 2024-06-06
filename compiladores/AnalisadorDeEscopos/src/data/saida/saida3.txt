@@ -1,9 +1,0 @@
-12345
-25
-"Compiladores"
-25
-"Compiladores"
-
-"Hello"
-10
-"Compiladores"
