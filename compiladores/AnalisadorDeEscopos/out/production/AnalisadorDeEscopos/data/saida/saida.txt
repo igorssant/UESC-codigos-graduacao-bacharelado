@@ -1,0 +1,17 @@
+20
+10
+Ola mundo
+Erro linha 12, tipos não compatíveis.
+20
+-0.45
+10
+Erro linha 18. Variável não declarada.
+"Compiladores"
+"Bloco2"
+"Compiladores"
+0
+-0,28
+40
+-0.28
+Erro linha 37. Variável não declarada.
+11

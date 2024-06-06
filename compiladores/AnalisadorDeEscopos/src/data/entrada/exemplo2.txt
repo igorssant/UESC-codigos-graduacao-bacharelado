@@ -1,0 +1,49 @@
+BLOCO _principal_ 
+	NUMERO a_1 = 12345, b, c=0.2345
+	CADEIA x=""
+	x=a
+
+	BLOCO _n1_ 
+		a_1=45
+		b=55
+		c=25
+		x=15
+
+		NUMERO nova=10
+	FIM _n1_
+
+	PRINT a_1
+	PRINT nova
+	
+	BLOCO _n2_ 
+		PRINT nova
+		NUMERO x=42, c
+		c=x
+		x=90
+		PRINT c
+		PRINT x
+	FIM _n2_
+
+	PRINT x
+
+	BLOCO _n3_
+		PRINT nova
+		CADEIA x="Nova cadeia"
+		PRINT x
+		BLOCO _n4_
+			PRINT x
+			PRINT c
+			PRINT a
+			NUMERO a=81
+		FIM _n4_
+		PRINT a
+	FIM _n3_
+
+	PRINT nova
+	b=-934.0
+	PRINT b
+	PRINT a
+	a=b
+	PRINT a
+
+FIM _principal_

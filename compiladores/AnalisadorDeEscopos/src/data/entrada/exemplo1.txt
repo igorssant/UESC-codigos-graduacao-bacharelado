@@ -1,0 +1,40 @@
+BLOCO _principal_ 
+	NUMERO a = 10, b = 20 
+	CADEIA x
+
+	PRINT b 
+	PRINT a
+	x= "Ola mundo"
+	x=a 
+	PRINT x
+	BLOCO _n1_ 
+		CADEIA a = "Compiladores"
+		NUMERO c 
+		c=-0.45 
+		PRINT b 
+		PRINT c 
+	FIM _n1_
+
+	BLOCO _n2_ 
+		CADEIA b = "Compiladores"
+		PRINT a 
+		PRINT b 
+		a=11
+		CADEIA a= "Bloco2"
+		PRINT a 
+		PRINT c
+		BLOCO _n3_ 
+			NUMERO a=-0.28, c
+			PRINT a 
+			PRINT b 
+			PRINT c 
+			c=a
+			PRINT c
+			a=40
+			PRINT a
+			print c
+		FIM _n3_ 
+	FIM _n2_ 
+	PRINT c 
+	PRINT a
+FIM _principal_

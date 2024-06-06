@@ -1,0 +1,40 @@
+<tk_palavra_reservada, BLOCO><tk_id_bloco, _principal_>
+<tk_palavra_reservada, NUMERO><tk_identificador, a><tk_atribuicao><tk_numero, 10><tk_separador><tk_identificador, b><tk_atribuicao><tk_numero, 20>
+<tk_palavra_reservada, CADEIA><tk_identificador, x>
+
+<tk_palavra_reservada, PRINT><tk_identificador, b>
+<tk_palavra_reservada, PRINT><tk_identificador, a>
+<tk_identificador, x><tk_atribuicao><tk_cadeia, "Ola mundo">
+<tk_identificador, x><tk_atribuicao><tk_identificador, a>
+<tk_palavra_reservada, PRINT><tk_identificador, x>
+<tk_palavra_reservada, BLOCO><tk_id_bloco, _n1_>
+<tk_palavra_reservada, CADEIA><tk_identificador, a><tk_atribuicao><tk_cadeia, "Compiladores">
+<tk_palavra_reservada, NUMERO><tk_identificador, c>
+<tk_identificador, c><tk_atribuicao><tk_numero, -0.45>
+<tk_palavra_reservada, PRINT><tk_identificador, b>
+<tk_palavra_reservada, PRINT><tk_identificador, c>
+<tk_palavra_reservada, FIM><tk_id_bloco, _n1_>
+
+<tk_palavra_reservada, BLOCO><tk_id_bloco, _n2_>
+<tk_palavra_reservada, CADEIA><tk_identificador, b><tk_atribuicao><tk_cadeia, "Compiladores">
+<tk_palavra_reservada, PRINT><tk_identificador, a>
+<tk_palavra_reservada, PRINT><tk_identificador, b>
+<tk_identificador, a><tk_atribuicao><tk_numero, 11>
+<tk_palavra_reservada, CADEIA><tk_identificador, a><tk_atribuicao><tk_cadeia, "Bloco2">
+<tk_palavra_reservada, PRINT><tk_identificador, a>
+<tk_palavra_reservada, PRINT><tk_identificador, c>
+<tk_palavra_reservada, BLOCO><tk_id_bloco, _n3_>
+<tk_palavra_reservada, NUMERO><tk_identificador, a><tk_atribuicao><tk_numero, -0.28><tk_separador><tk_identificador, c>
+<tk_palavra_reservada, PRINT><tk_identificador, a>
+<tk_palavra_reservada, PRINT><tk_identificador, b>
+<tk_palavra_reservada, PRINT><tk_identificador, c>
+<tk_identificador, c><tk_atribuicao><tk_identificador, a>
+<tk_palavra_reservada, PRINT><tk_identificador, c>
+<tk_identificador, a><tk_atribuicao><tk_numero, 40>
+<tk_palavra_reservada, PRINT><tk_identificador, a>
+<tk_identificador, print><tk_identificador, c>
+<tk_palavra_reservada, FIM><tk_id_bloco, _n3_>
+<tk_palavra_reservada, FIM><tk_id_bloco, _n2_>
+<tk_palavra_reservada, PRINT><tk_identificador, c>
+<tk_palavra_reservada, PRINT><tk_identificador, a>
+<tk_palavra_reservada, FIM><tk_id_bloco, _principal_>
