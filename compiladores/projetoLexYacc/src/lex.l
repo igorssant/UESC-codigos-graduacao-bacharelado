@@ -17,7 +17,6 @@ _[a-z]+[a-z0-9]*_       { return BLOCO; }
 "FIM"                   { return FIM; }
 "="                     { return IGUAL; }
 "+"                     { return SOMA; }
-"*"                     { return MULTIPLICACAO; }
 "("                     { return ABRPAREN; }
 ")"                     { return FECPAREN; }
 "-"                     { return MENOS; }

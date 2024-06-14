@@ -55,7 +55,7 @@ lista_t* lista_atual = NULL;
 escopo_t* escopo_atual = NULL;
 %}
 
-%token INTEIRO IDENTIFICADOR BLOCO STRING TIPONUM TIPOCAD PRINT NOVO FIM IGUAL SOMA MULTIPLICACAO ABRPAREN FECPAREN MENOS TERMINADOR
+%token INTEIRO IDENTIFICADOR BLOCO STRING TIPONUM TIPOCAD PRINT NOVO FIM IGUAL SOMA ABRPAREN FECPAREN MENOS TERMINADOR
 %left MENOS
 %union {
     int numero;
@@ -69,6 +69,7 @@ comandos: comandos PRINT IDENTIFICADOR TERMINADOR {
     } |
     comandos NOVO BLOCO {
         push(lista_atual);
+        lista_atual = criar_lista();
     } |
     comandos FIM BLOCO{ 
         lista_atual = pop();
@@ -109,7 +110,7 @@ criacao: TIPONUM IDENTIFICADOR TERMINADOR {
             if(variavel_no_escopo_atual(lista_atual, $2.identificador)) {
                 printf("Erro. Variavel ja foi declarada.\n");
             } else {
-                inserir_inteiro("NUMERO", $2.identificador, $4.numero);
+                inserir_inteiro("NUMERO", $2.identificador, valor);
             }
         }
     } |
@@ -119,7 +120,7 @@ criacao: TIPONUM IDENTIFICADOR TERMINADOR {
         } else if(variavel_no_escopo_atual(lista_atual, $2.identificador)) {
             printf("Erro. Variavel ja foi declarada.\n");
         } else {
-            inserir_string("CADEIA", $2.identificador, "");
+            inserir_string("CADEIA", $2.identificador, " ");
         }
     } |
     TIPOCAD IDENTIFICADOR IGUAL STRING TERMINADOR {
@@ -139,13 +140,12 @@ criacao: TIPONUM IDENTIFICADOR TERMINADOR {
             if(variavel_no_escopo_atual(lista_atual, $2.identificador)) {
                 printf("Erro. Variavel ja foi declarada.\n");
             } else {
-                inserir_string("CADEIA", $2.identificador, $4.cadeia);
+                inserir_string("CADEIA", $2.identificador, valor);
             }
         }
     } |
     soma |
     subtracao |
-    multiplicacao |
     concatenar
     ;
 
@@ -173,6 +173,9 @@ atribuicao: IDENTIFICADOR IGUAL INTEIRO TERMINADOR {
                 atualizar_variavel_cadeia(lista_atual, $1.identificador, valor_cadeia);
             }
         }
+
+        tipo_variavel = NULL;
+        valor_cadeia = NULL;
     } |
     soma |
     subtracao |
@@ -181,70 +184,180 @@ atribuicao: IDENTIFICADOR IGUAL INTEIRO TERMINADOR {
     ;
 
 soma: IDENTIFICADOR IGUAL INTEIRO SOMA INTEIRO TERMINADOR {
-        printf("%s = %d", $1.identificador, ($3.numero + $5.numero));
+        atualizar_variavel_numero(lista_atual, $1.identificador, ($3.numero + $5.numero));
     } |
     IDENTIFICADOR IGUAL INTEIRO SOMA IDENTIFICADOR TERMINADOR {
-        printf("%s = %d + %s", $1.identificador, $3.numero, $5.identificador);
+        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, $5.identificador);
+        
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor != INT_MIN) {
+            atualizar_variavel_numero(lista_atual, $1.identificador, ($3.numero + valor));
+        }
     } |
     IDENTIFICADOR IGUAL IDENTIFICADOR SOMA INTEIRO TERMINADOR {
-        printf("%s = %s + %d", $1.identificador, $3.identificador, $5.numero);
+        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, $3.identificador);
+        
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor != INT_MIN) {
+            atualizar_variavel_numero(lista_atual, $1.identificador, ($5.numero + valor));
+        }
     } |
     IDENTIFICADOR IGUAL IDENTIFICADOR SOMA IDENTIFICADOR TERMINADOR {
-        printf("%s = %s + %s", $1.identificador, $3.identificador, $5.identificador);
+        int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, $3.identificador),
+            valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, $5.identificador);
+        
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor1 != INT_MIN && valor2 != INT_MIN) {
+            atualizar_variavel_numero(lista_atual, $1.identificador, (valor1 + valor2));
+        }
     } |
     TIPONUM IDENTIFICADOR IGUAL INTEIRO SOMA INTEIRO TERMINADOR {
-        printf("%s = %d", $2.identificador, ($4.numero + $6.numero));
+        if(vazia(escopo_atual)) {
+            printf("Erro. Nao ha nenhum bloco aberto.\n");
+        } else if(variavel_no_escopo_atual(lista_atual, $2.identificador)) {
+            printf("Erro. Variavel ja foi declarada.\n");
+        } else {
+            inserir_inteiro("NUMERO", $2.identificador, ($4.numero + $6.numero));
+        }
     } |
     TIPONUM IDENTIFICADOR IGUAL INTEIRO SOMA IDENTIFICADOR TERMINADOR {
-        printf("%s = %d + %s", $2.identificador, $4.numero, $6.identificador);
+        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, $6.identificador);
+        
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor != INT_MIN) {
+            if(variavel_no_escopo_atual(lista_atual, $2.identificador)) {
+                printf("Erro. Variavel ja foi declarada.\n");
+            } else {
+                inserir_inteiro("NUMERO", $2.identificador, ($4.numero + valor));
+            }
+        }
     } |
     TIPONUM IDENTIFICADOR IGUAL IDENTIFICADOR SOMA INTEIRO TERMINADOR {
-        printf("%s = %s + %d", $2.identificador, $4.identificador, $6.numero);
+        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, $4.identificador);
+        
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor != INT_MIN) {
+            if(variavel_no_escopo_atual(lista_atual, $2.identificador)) {
+                printf("Erro. Variavel ja foi declarada.\n");
+            } else {
+                inserir_inteiro("NUMERO", $2.identificador, ($6.numero + valor));
+            }
+        }
     } |
     TIPONUM IDENTIFICADOR IGUAL IDENTIFICADOR SOMA IDENTIFICADOR TERMINADOR {
-        printf("%s = %s + %s", $2.identificador, $4.identificador, $6.identificador);
+        int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, $4.identificador),
+            valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, $6.identificador);
+
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor1 != INT_MIN && valor2 != INT_MIN) {
+            if(variavel_no_escopo_atual(lista_atual, $2.identificador)) {
+                printf("Erro. Variavel ja foi declarada.\n");
+            } else {
+                atualizar_variavel_numero(lista_atual, $2.identificador, (valor1 + valor2));
+            }
+        }
     }
     ;
 
 subtracao: IDENTIFICADOR IGUAL INTEIRO MENOS INTEIRO TERMINADOR {
-        printf("%s = %d", $1.identificador, ($3.numero - $5.numero));
+        atualizar_variavel_numero(lista_atual, $1.identificador, ($3.numero - $5.numero));
     } |
     IDENTIFICADOR IGUAL INTEIRO MENOS IDENTIFICADOR TERMINADOR {
-        printf("%s = %d - %s", $1.identificador, $3.numero, $5.identificador);
+        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, $5.identificador);
+        
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor != INT_MIN) {
+            atualizar_variavel_numero(lista_atual, $1.identificador, ($3.numero - valor));
+        }
     } |
     IDENTIFICADOR IGUAL IDENTIFICADOR MENOS INTEIRO TERMINADOR {
-        printf("%s = %s - %d", $1.identificador, $3.identificador, $5.numero);
+        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, $3.identificador);
+        
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor != INT_MIN) {
+            atualizar_variavel_numero(lista_atual, $1.identificador, ($5.numero - valor));
+        }
     } |
     IDENTIFICADOR IGUAL IDENTIFICADOR MENOS IDENTIFICADOR TERMINADOR {
-        printf("%s = %s - %s", $1.identificador, $3.identificador, $5.identificador);
+        int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, $3.identificador),
+            valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, $5.identificador);
+        
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor1 != INT_MIN && valor2 != INT_MIN) {
+            atualizar_variavel_numero(lista_atual, $1.identificador, (valor1 - valor2));
+        }
     } |
     TIPONUM IDENTIFICADOR IGUAL INTEIRO MENOS INTEIRO TERMINADOR {
-        printf("%s = %d", $2.identificador, ($4.numero - $6.numero));
+        if(vazia(escopo_atual)) {
+            printf("Erro. Nao ha nenhum bloco aberto.\n");
+        } else if(variavel_no_escopo_atual(lista_atual, $2.identificador)) {
+            printf("Erro. Variavel ja foi declarada.\n");
+        } else {
+            inserir_inteiro("NUMERO", $2.identificador, ($4.numero - $6.numero));
+        }
     } |
     TIPONUM IDENTIFICADOR IGUAL INTEIRO MENOS IDENTIFICADOR TERMINADOR {
-        printf("%s = %d - %s", $2.identificador, $4.numero, $6.identificador);
+        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, $6.identificador);
+        
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor != INT_MIN) {
+            if(variavel_no_escopo_atual(lista_atual, $2.identificador)) {
+                printf("Erro. Variavel ja foi declarada.\n");
+            } else {
+                inserir_inteiro("NUMERO", $2.identificador, ($4.numero - valor));
+            }
+        }
     } |
     TIPONUM IDENTIFICADOR IGUAL IDENTIFICADOR MENOS INTEIRO TERMINADOR {
-        printf("%s = %s - %d", $2.identificador, $4.identificador, $6.numero);
+        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, $4.identificador);
+        
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor != INT_MIN) {
+            if(variavel_no_escopo_atual(lista_atual, $2.identificador)) {
+                printf("Erro. Variavel ja foi declarada.\n");
+            } else {
+                inserir_inteiro("NUMERO", $2.identificador, ($6.numero - valor));
+            }
+        }
     } |
     TIPONUM IDENTIFICADOR IGUAL IDENTIFICADOR MENOS IDENTIFICADOR TERMINADOR {
-        printf("%s = %s - %s", $2.identificador, $4.identificador, $6.identificador);
-    }
-    ;
+        int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, $4.identificador),
+            valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, $6.identificador);
 
-multiplicacao: IDENTIFICADOR IGUAL INTEIRO MULTIPLICACAO INTEIRO TERMINADOR {
-        printf("%s = %d", $1.identificador, ($3.numero * $5.numero));
-    } |
-    TIPONUM IDENTIFICADOR IGUAL INTEIRO MULTIPLICACAO INTEIRO TERMINADOR {
-        printf("%s = %d", $2.identificador, ($4.numero * $6.numero));
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor1 != INT_MIN && valor2 != INT_MIN) {
+            if(variavel_no_escopo_atual(lista_atual, $2.identificador)) {
+                printf("Erro. Variavel ja foi declarada.\n");
+            } else {
+                atualizar_variavel_numero(lista_atual, $2.identificador, (valor1 - valor2));
+            }
+        }
     }
     ;
 
 concatenar: IDENTIFICADOR IGUAL STRING SOMA STRING TERMINADOR {
-        printf("%s = %s%s", $1.identificador, $3.cadeia, $5.cadeia);
+        char* concatenado = strdup(concatenar($3.cadeia, $5.cadeia));
+        
+        if(variavel_no_escopo_atual(lista_atual, $1.identificador)) {
+            printf("Erro. Variavel ja foi declarada.\n");
+        } else {
+            atualizar_variavel_cadeia(lista_atual, $1.identificador, concatenado);
+        }
+
+        concatenado = NULL;
     } |
     TIPOCAD IDENTIFICADOR IGUAL STRING SOMA STRING TERMINADOR {
-        printf("%s = %s%s", $2.identificador, $4.cadeia, $6.cadeia);
+        char* concatenado = strdup(concatenar($4.cadeia, $6.cadeia));
+
+        if(vazia(escopo_atual)) {
+            printf("Erro. Nao ha nenhum bloco aberto.\n");
+        } else if(variavel_no_escopo_atual(lista_atual, $2.identificador)) {
+            printf("Erro. Variavel ja foi declarada.\n");
+        } else {
+            inserir_string("CADEIA", $2.identificador, concatenado);
+        }
+
+        concatenado = NULL;
     }
     ;
 %%

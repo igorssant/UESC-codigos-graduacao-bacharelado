@@ -612,11 +612,11 @@ static const short yyrhs[] = {    19,
 
 #if (YY_parse_DEBUG != 0) || defined(YY_parse_ERROR_VERBOSE) 
 static const short yyrline[] = { 0,
-    67,    69,    72,    80,    81,    83,    86,    94,   103,   115,
-   124,   133,   145,   146,   147,   148,   152,   154,   157,   176,
-   177,   178,   179,   183,   185,   188,   191,   194,   197,   200,
-   203,   209,   211,   214,   217,   220,   223,   226,   229,   235,
-   237,   243,   245
+    67,    69,    73,    81,    82,    84,    87,    95,   104,   116,
+   125,   134,   146,   147,   148,   149,   153,   155,   158,   177,
+   178,   179,   180,   184,   186,   194,   202,   211,   220,   232,
+   244,   260,   262,   270,   278,   287,   296,   308,   320,   336,
+   341,   353,   363
 };
 
 static const char * const yytname[] = {   "$","error","$illegal.","INTEIRO",
@@ -1209,10 +1209,11 @@ case 2:
 #line 70 "./src/yacc.y"
 {
         push(lista_atual);
+        lista_atual = criar_lista();
     ;
     break;}
 case 3:
-#line 73 "./src/yacc.y"
+#line 74 "./src/yacc.y"
 { 
         lista_atual = pop();
 
@@ -1223,7 +1224,7 @@ case 3:
     ;
     break;}
 case 7:
-#line 86 "./src/yacc.y"
+#line 87 "./src/yacc.y"
 {
         if(vazia(escopo_atual)) {
             printf("Erro. Nao ha nenhum bloco aberto.\n");
@@ -1235,7 +1236,7 @@ case 7:
     ;
     break;}
 case 8:
-#line 95 "./src/yacc.y"
+#line 96 "./src/yacc.y"
 {
         if(vazia(escopo_atual)) {
             printf("Erro. Nao ha nenhum bloco aberto.\n");
@@ -1247,7 +1248,7 @@ case 8:
     ;
     break;}
 case 9:
-#line 104 "./src/yacc.y"
+#line 105 "./src/yacc.y"
 {
         int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
         
@@ -1256,13 +1257,13 @@ case 9:
             if(variavel_no_escopo_atual(lista_atual, yyvsp[-3].identificador)) {
                 printf("Erro. Variavel ja foi declarada.\n");
             } else {
-                inserir_inteiro("NUMERO", yyvsp[-3].identificador, yyvsp[-1].numero);
+                inserir_inteiro("NUMERO", yyvsp[-3].identificador, valor);
             }
         }
     ;
     break;}
 case 10:
-#line 116 "./src/yacc.y"
+#line 117 "./src/yacc.y"
 {
         if(vazia(escopo_atual)) {
             printf("Erro. Nao ha nenhum bloco aberto.\n");
@@ -1274,7 +1275,7 @@ case 10:
     ;
     break;}
 case 11:
-#line 125 "./src/yacc.y"
+#line 126 "./src/yacc.y"
 {
         if(vazia(escopo_atual)) {
             printf("Erro. Nao ha nenhum bloco aberto.\n");
@@ -1286,7 +1287,7 @@ case 11:
     ;
     break;}
 case 12:
-#line 134 "./src/yacc.y"
+#line 135 "./src/yacc.y"
 {
         char* valor = strdup(retornar_valor_string_de_variavel(escopo_atual, yyvsp[-1].identificador));
 
@@ -1295,25 +1296,25 @@ case 12:
             if(variavel_no_escopo_atual(lista_atual, yyvsp[-3].identificador)) {
                 printf("Erro. Variavel ja foi declarada.\n");
             } else {
-                inserir_string("CADEIA", yyvsp[-3].identificador, yyvsp[-1].cadeia);
+                inserir_string("CADEIA", yyvsp[-3].identificador, valor);
             }
         }
     ;
     break;}
 case 17:
-#line 152 "./src/yacc.y"
+#line 153 "./src/yacc.y"
 {
         atualizar_variavel_numero(lista_atual, yyvsp[-3].identificador, yyvsp[-1].numero);
     ;
     break;}
 case 18:
-#line 155 "./src/yacc.y"
+#line 156 "./src/yacc.y"
 {
         atualizar_variavel_cadeia(lista_atual, yyvsp[-3].identificador, yyvsp[-1].cadeia);
     ;
     break;}
 case 19:
-#line 158 "./src/yacc.y"
+#line 159 "./src/yacc.y"
 {
         char* tipo_variavel = strdup(retornar_tipo_da_variavel(escopo_atual, yyvsp[-1].identificador));
         char* valor_cadeia;
@@ -1324,7 +1325,7 @@ case 19:
 
             if (valor_numero != INT_MIN) {
                 atualizar_variavel_numero(lista_atual, yyvsp[-3].identificador, valor_numero);
-            }            
+            }
         } else {
             valor_cadeia = strdup(retornar_valor_string_de_variavel(escopo_atual, yyvsp[-1].identificador));
 
@@ -1335,123 +1336,250 @@ case 19:
     ;
     break;}
 case 24:
-#line 183 "./src/yacc.y"
+#line 184 "./src/yacc.y"
 {
-        printf("%s = %d", yyvsp[-5].identificador, (yyvsp[-3].numero + yyvsp[-1].numero));
+        atualizar_variavel_numero(lista_atual, yyvsp[-5].identificador, (yyvsp[-3].numero + yyvsp[-1].numero));
     ;
     break;}
 case 25:
-#line 186 "./src/yacc.y"
+#line 187 "./src/yacc.y"
 {
-        printf("%s = %d + %s", yyvsp[-5].identificador, yyvsp[-3].numero, yyvsp[-1].identificador);
+        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
+        
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor != INT_MIN) {
+            atualizar_variavel_numero(lista_atual, yyvsp[-5].identificador, (yyvsp[-3].numero + valor));
+        }
     ;
     break;}
 case 26:
-#line 189 "./src/yacc.y"
+#line 195 "./src/yacc.y"
 {
-        printf("%s = %s + %d", yyvsp[-5].identificador, yyvsp[-3].identificador, yyvsp[-1].numero);
+        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador);
+        
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor != INT_MIN) {
+            atualizar_variavel_numero(lista_atual, yyvsp[-5].identificador, (yyvsp[-1].numero + valor));
+        }
     ;
     break;}
 case 27:
-#line 192 "./src/yacc.y"
+#line 203 "./src/yacc.y"
 {
-        printf("%s = %s + %s", yyvsp[-5].identificador, yyvsp[-3].identificador, yyvsp[-1].identificador);
+        int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador),
+            valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
+        
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor1 != INT_MIN && valor2 != INT_MIN) {
+            atualizar_variavel_numero(lista_atual, yyvsp[-5].identificador, (valor1 + valor2));
+        }
     ;
     break;}
 case 28:
-#line 195 "./src/yacc.y"
+#line 212 "./src/yacc.y"
 {
-        printf("%s = %d", yyvsp[-5].identificador, (yyvsp[-3].numero + yyvsp[-1].numero));
+        if(vazia(escopo_atual)) {
+            printf("Erro. Nao ha nenhum bloco aberto.\n");
+        } else if(variavel_no_escopo_atual(lista_atual, yyvsp[-5].identificador)) {
+            printf("Erro. Variavel ja foi declarada.\n");
+        } else {
+            inserir_inteiro("NUMERO", yyvsp[-5].identificador, (yyvsp[-3].numero + yyvsp[-1].numero));
+        }
     ;
     break;}
 case 29:
-#line 198 "./src/yacc.y"
+#line 221 "./src/yacc.y"
 {
-        printf("%s = %d + %s", yyvsp[-5].identificador, yyvsp[-3].numero, yyvsp[-1].identificador);
+        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
+        
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor != INT_MIN) {
+            if(variavel_no_escopo_atual(lista_atual, yyvsp[-5].identificador)) {
+                printf("Erro. Variavel ja foi declarada.\n");
+            } else {
+                inserir_inteiro("NUMERO", yyvsp[-5].identificador, (yyvsp[-3].numero + valor));
+            }
+        }
     ;
     break;}
 case 30:
-#line 201 "./src/yacc.y"
+#line 233 "./src/yacc.y"
 {
-        printf("%s = %s + %d", yyvsp[-5].identificador, yyvsp[-3].identificador, yyvsp[-1].numero);
+        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador);
+        
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor != INT_MIN) {
+            if(variavel_no_escopo_atual(lista_atual, yyvsp[-5].identificador)) {
+                printf("Erro. Variavel ja foi declarada.\n");
+            } else {
+                inserir_inteiro("NUMERO", yyvsp[-5].identificador, (yyvsp[-1].numero + valor));
+            }
+        }
     ;
     break;}
 case 31:
-#line 204 "./src/yacc.y"
+#line 245 "./src/yacc.y"
 {
-        printf("%s = %s + %s", yyvsp[-5].identificador, yyvsp[-3].identificador, yyvsp[-1].identificador);
+        int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-4].identificador),
+            valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-2].identificador);
+
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor1 != INT_MIN && valor2 != INT_MIN) {
+            if(variavel_no_escopo_atual(lista_atual, yyvsp[-5].identificador)) {
+                printf("Erro. Variavel ja foi declarada.\n");
+            } else {
+                atualizar_variavel_numero(lista_atual, yyvsp[-5].identificador, (valor1 + valor2));
+            }
+        }
     ;
     break;}
 case 32:
-#line 209 "./src/yacc.y"
+#line 260 "./src/yacc.y"
 {
-        printf("%s = %d", yyvsp[-5].identificador, (yyvsp[-3].numero - yyvsp[-1].numero));
+        atualizar_variavel_numero(lista_atual, yyvsp[-5].identificador, (yyvsp[-3].numero - yyvsp[-1].numero));
     ;
     break;}
 case 33:
-#line 212 "./src/yacc.y"
+#line 263 "./src/yacc.y"
 {
-        printf("%s = %d - %s", yyvsp[-5].identificador, yyvsp[-3].numero, yyvsp[-1].identificador);
+        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
+        
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor != INT_MIN) {
+            atualizar_variavel_numero(lista_atual, yyvsp[-5].identificador, (yyvsp[-3].numero - valor));
+        }
     ;
     break;}
 case 34:
-#line 215 "./src/yacc.y"
+#line 271 "./src/yacc.y"
 {
-        printf("%s = %s - %d", yyvsp[-5].identificador, yyvsp[-3].identificador, yyvsp[-1].numero);
+        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador);
+        
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor != INT_MIN) {
+            atualizar_variavel_numero(lista_atual, yyvsp[-5].identificador, (yyvsp[-1].numero - valor));
+        }
     ;
     break;}
 case 35:
-#line 218 "./src/yacc.y"
+#line 279 "./src/yacc.y"
 {
-        printf("%s = %s - %s", yyvsp[-5].identificador, yyvsp[-3].identificador, yyvsp[-1].identificador);
+        int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador),
+            valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
+        
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor1 != INT_MIN && valor2 != INT_MIN) {
+            atualizar_variavel_numero(lista_atual, yyvsp[-5].identificador, (valor1 - valor2));
+        }
     ;
     break;}
 case 36:
-#line 221 "./src/yacc.y"
+#line 288 "./src/yacc.y"
 {
-        printf("%s = %d", yyvsp[-5].identificador, (yyvsp[-3].numero - yyvsp[-1].numero));
+        if(vazia(escopo_atual)) {
+            printf("Erro. Nao ha nenhum bloco aberto.\n");
+        } else if(variavel_no_escopo_atual(lista_atual, yyvsp[-5].identificador)) {
+            printf("Erro. Variavel ja foi declarada.\n");
+        } else {
+            inserir_inteiro("NUMERO", yyvsp[-5].identificador, (yyvsp[-3].numero - yyvsp[-1].numero));
+        }
     ;
     break;}
 case 37:
-#line 224 "./src/yacc.y"
+#line 297 "./src/yacc.y"
 {
-        printf("%s = %d - %s", yyvsp[-5].identificador, yyvsp[-3].numero, yyvsp[-1].identificador);
+        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
+        
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor != INT_MIN) {
+            if(variavel_no_escopo_atual(lista_atual, yyvsp[-5].identificador)) {
+                printf("Erro. Variavel ja foi declarada.\n");
+            } else {
+                inserir_inteiro("NUMERO", yyvsp[-5].identificador, (yyvsp[-3].numero - valor));
+            }
+        }
     ;
     break;}
 case 38:
-#line 227 "./src/yacc.y"
+#line 309 "./src/yacc.y"
 {
-        printf("%s = %s - %d", yyvsp[-5].identificador, yyvsp[-3].identificador, yyvsp[-1].numero);
+        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador);
+        
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor != INT_MIN) {
+            if(variavel_no_escopo_atual(lista_atual, yyvsp[-5].identificador)) {
+                printf("Erro. Variavel ja foi declarada.\n");
+            } else {
+                inserir_inteiro("NUMERO", yyvsp[-5].identificador, (yyvsp[-1].numero - valor));
+            }
+        }
     ;
     break;}
 case 39:
-#line 230 "./src/yacc.y"
+#line 321 "./src/yacc.y"
 {
-        printf("%s = %s - %s", yyvsp[-5].identificador, yyvsp[-3].identificador, yyvsp[-1].identificador);
+        int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-4].identificador),
+            valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-2].identificador);
+
+        // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
+        if(valor1 != INT_MIN && valor2 != INT_MIN) {
+            if(variavel_no_escopo_atual(lista_atual, yyvsp[-5].identificador)) {
+                printf("Erro. Variavel ja foi declarada.\n");
+            } else {
+                atualizar_variavel_numero(lista_atual, yyvsp[-5].identificador, (valor1 - valor2));
+            }
+        }
     ;
     break;}
 case 40:
-#line 235 "./src/yacc.y"
+#line 336 "./src/yacc.y"
 {
-        printf("%s = %d", yyvsp[-5].identificador, (yyvsp[-3].numero * yyvsp[-1].numero));
+        int valor1 = yyvsp[-3].numero,
+            valor2 = yyvsp[-1].numero;
+
+        atualizar_variavel_cadeia(lista_atual, yyvsp[-5].identificador, (valor1 * valor2));
     ;
     break;}
 case 41:
-#line 238 "./src/yacc.y"
+#line 342 "./src/yacc.y"
 {
-        printf("%s = %d", yyvsp[-5].identificador, (yyvsp[-3].numero * yyvsp[-1].numero));
+        if(vazia(escopo_atual)) {
+            printf("Erro. Nao ha nenhum bloco aberto.\n");
+        } else if(variavel_no_escopo_atual(lista_atual, yyvsp[-5].identificador)) {
+            printf("Erro. Variavel ja foi declarada.\n");
+        } else {
+            inserir_inteiro("NUMERO", yyvsp[-5].identificador, (yyvsp[-3].numero * yyvsp[-1].numero));
+        }
     ;
     break;}
 case 42:
-#line 243 "./src/yacc.y"
+#line 353 "./src/yacc.y"
 {
-        printf("%s = %s%s", yyvsp[-5].identificador, yyvsp[-3].cadeia, yyvsp[-1].cadeia);
+        char* concatenado = strdup(yyvsp[-3].cadeia, yyvsp[-1].cadeia);
+        
+        if(variavel_no_escopo_atual(lista_atual, yyvsp[-4].identificador)) {
+            printf("Erro. Variavel ja foi declarada.\n");
+        } else {
+            atualizar_variavel_cadeia(lista_atual, yyvsp[-5].identificador, concatenado);
+        }
+
+        concatenado = NULL;
     ;
     break;}
 case 43:
-#line 246 "./src/yacc.y"
+#line 364 "./src/yacc.y"
 {
-        printf("%s = %s%s", yyvsp[-5].identificador, yyvsp[-3].cadeia, yyvsp[-1].cadeia);
+        char* concatenado = strdup(concatenar(yyvsp[-3].cadeia, yyvsp[-1].cadeia));
+
+        if(vazia(escopo_atual)) {
+            printf("Erro. Nao ha nenhum bloco aberto.\n");
+        } else if(variavel_no_escopo_atual(lista_atual, yyvsp[-5].identificador)) {
+            printf("Erro. Variavel ja foi declarada.\n");
+        } else {
+            inserir_string("CADEIA", yyvsp[-5].identificador, concatenado);
+        }
+
+        concatenado = NULL;
     ;
     break;}
 }
@@ -1658,7 +1786,7 @@ YYLABEL(yyerrhandle)
 /* END */
 
  #line 1038 "/usr/share/bison++/bison.cc"
-#line 250 "./src/yacc.y"
+#line 378 "./src/yacc.y"
 
 
 extern FILE *yyin;
