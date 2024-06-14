@@ -13,7 +13,7 @@
 
  #line 8 "/usr/share/bison++/bison.h"
 
-#line 53 "./src/yacc.y"
+#line 60 "./src/yacc.y"
 typedef union {
     int numero;
     char* cadeia;
