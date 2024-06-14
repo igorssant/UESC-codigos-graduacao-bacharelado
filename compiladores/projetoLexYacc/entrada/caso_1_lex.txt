@@ -1,0 +1,29 @@
+BLOCO _principal_
+	NUMERO a = 10, b = 20 + 30;
+	CADEIA x;
+	PRINT b;
+	PRINT a;
+	x = "Ola mundo";
+	x = a;
+	PRINT x;
+	BLOCO _n1_
+		CADEIA a = "Compiladores";
+		NUMERO c;
+		c = 3;
+		PRINT b;
+		PRINT c;
+		BLOCO _n2_
+			CADEIA b = " eh massa";
+			b = a + b;
+			PRINT b;
+			a=11;
+			CADEIA a = "Bloco2";
+			PRINT a;
+			PRINT c;
+			NUMERO d = c + 10;
+			print d;
+		FIM _n2_
+	FIM _n1_
+	PRINT c;
+	PRINT a;
+FIM _principal_
