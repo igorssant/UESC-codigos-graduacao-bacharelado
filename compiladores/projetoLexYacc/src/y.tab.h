@@ -202,11 +202,10 @@ typedef
 #define	FIM	266
 #define	IGUAL	267
 #define	SOMA	268
-#define	MULTIPLICACAO	269
-#define	ABRPAREN	270
-#define	FECPAREN	271
-#define	MENOS	272
-#define	TERMINADOR	273
+#define	ABRPAREN	269
+#define	FECPAREN	270
+#define	MENOS	271
+#define	TERMINADOR	272
 
 
 #line 169 "/usr/share/bison++/bison.h"
@@ -266,7 +265,6 @@ static const int NOVO;
 static const int FIM;
 static const int IGUAL;
 static const int SOMA;
-static const int MULTIPLICACAO;
 static const int ABRPAREN;
 static const int FECPAREN;
 static const int MENOS;
@@ -290,11 +288,10 @@ static const int TERMINADOR;
 	,FIM=266
 	,IGUAL=267
 	,SOMA=268
-	,MULTIPLICACAO=269
-	,ABRPAREN=270
-	,FECPAREN=271
-	,MENOS=272
-	,TERMINADOR=273
+	,ABRPAREN=269
+	,FECPAREN=270
+	,MENOS=271
+	,TERMINADOR=272
 
 
 #line 215 "/usr/share/bison++/bison.h"

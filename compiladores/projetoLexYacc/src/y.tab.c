@@ -148,7 +148,7 @@ void atualizar_variavel_numero(lista_t*, char*, int);
 void atualizar_variavel_cadeia(lista_t*, char*, char*);
 int retornar_valor_inteiro_de_variavel(escopo_t*, char*);
 char* retornar_valor_string_de_variavel(escopo_t*, char*);
-char* concatenar(const char*, const char*);
+char* concatenar_strings(const char*, const char*);
 char* retornar_tipo_da_variavel(escopo_t*, char*);
 
 // VARIAVEIS QUE SALVARAO A LISTA_ATUAL E A PILHA_ATUAL
@@ -371,11 +371,10 @@ typedef
 #define	FIM	266
 #define	IGUAL	267
 #define	SOMA	268
-#define	MULTIPLICACAO	269
-#define	ABRPAREN	270
-#define	FECPAREN	271
-#define	MENOS	272
-#define	TERMINADOR	273
+#define	ABRPAREN	269
+#define	FECPAREN	270
+#define	MENOS	271
+#define	TERMINADOR	272
 
 
 #line 263 "/usr/share/bison++/bison.cc"
@@ -436,7 +435,6 @@ static const int NOVO;
 static const int FIM;
 static const int IGUAL;
 static const int SOMA;
-static const int MULTIPLICACAO;
 static const int ABRPAREN;
 static const int FECPAREN;
 static const int MENOS;
@@ -460,11 +458,10 @@ enum YY_parse_ENUM_TOKEN { YY_parse_NULL_TOKEN=0
 	,FIM=266
 	,IGUAL=267
 	,SOMA=268
-	,MULTIPLICACAO=269
-	,ABRPAREN=270
-	,FECPAREN=271
-	,MENOS=272
-	,TERMINADOR=273
+	,ABRPAREN=269
+	,FECPAREN=270
+	,MENOS=271
+	,TERMINADOR=272
 
 
 #line 310 "/usr/share/bison++/bison.cc"
@@ -512,11 +509,10 @@ const int YY_parse_CLASS::NOVO=265;
 const int YY_parse_CLASS::FIM=266;
 const int YY_parse_CLASS::IGUAL=267;
 const int YY_parse_CLASS::SOMA=268;
-const int YY_parse_CLASS::MULTIPLICACAO=269;
-const int YY_parse_CLASS::ABRPAREN=270;
-const int YY_parse_CLASS::FECPAREN=271;
-const int YY_parse_CLASS::MENOS=272;
-const int YY_parse_CLASS::TERMINADOR=273;
+const int YY_parse_CLASS::ABRPAREN=269;
+const int YY_parse_CLASS::FECPAREN=270;
+const int YY_parse_CLASS::MENOS=271;
+const int YY_parse_CLASS::TERMINADOR=272;
 
 
 #line 341 "/usr/share/bison++/bison.cc"
@@ -535,11 +531,11 @@ YY_parse_CONSTRUCTOR_CODE;
  #line 352 "/usr/share/bison++/bison.cc"
 
 
-#define	YYFINAL		92
+#define	YYFINAL		85
 #define	YYFLAG		-32768
-#define	YYNTBASE	19
+#define	YYNTBASE	18
 
-#define YYTRANSLATE(x) ((unsigned)(x) <= 273 ? yytranslate[x] : 26)
+#define YYTRANSLATE(x) ((unsigned)(x) <= 272 ? yytranslate[x] : 24)
 
 static const char yytranslate[] = {     0,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -569,141 +565,130 @@ static const char yytranslate[] = {     0,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     1,     2,     3,     4,     5,
      6,     7,     8,     9,    10,    11,    12,    13,    14,    15,
-    16,    17,    18
+    16,    17
 };
 
 #if YY_parse_DEBUG != 0
 static const short yyprhs[] = {     0,
-     0,     5,     9,    13,    16,    19,    20,    24,    30,    36,
-    40,    46,    52,    54,    56,    58,    60,    65,    70,    75,
-    77,    79,    81,    83,    90,    97,   104,   111,   119,   127,
-   135,   143,   150,   157,   164,   171,   179,   187,   195,   203,
-   210,   218,   225
+     0,     5,     9,    13,    16,    19,    22,    25,    28,    29,
+    33,    39,    45,    49,    55,    61,    66,    71,    76,    83,
+    90,    97,   104,   112,   120,   128,   136,   143,   150,   157,
+   164,   172,   180,   188,   196,   203
 };
 
-static const short yyrhs[] = {    19,
-     9,     4,    18,     0,    19,    10,     5,     0,    19,    11,
-     5,     0,    19,    20,     0,    19,    21,     0,     0,     7,
-     4,    18,     0,     7,     4,    12,     3,    18,     0,     7,
-     4,    12,     4,    18,     0,     8,     4,    18,     0,     8,
-     4,    12,     6,    18,     0,     8,     4,    12,     4,    18,
-     0,    22,     0,    23,     0,    24,     0,    25,     0,     4,
-    12,     3,    18,     0,     4,    12,     6,    18,     0,     4,
-    12,     4,    18,     0,    22,     0,    23,     0,    24,     0,
-    25,     0,     4,    12,     3,    13,     3,    18,     0,     4,
-    12,     3,    13,     4,    18,     0,     4,    12,     4,    13,
-     3,    18,     0,     4,    12,     4,    13,     4,    18,     0,
-     7,     4,    12,     3,    13,     3,    18,     0,     7,     4,
-    12,     3,    13,     4,    18,     0,     7,     4,    12,     4,
-    13,     3,    18,     0,     7,     4,    12,     4,    13,     4,
-    18,     0,     4,    12,     3,    17,     3,    18,     0,     4,
-    12,     3,    17,     4,    18,     0,     4,    12,     4,    17,
-     3,    18,     0,     4,    12,     4,    17,     4,    18,     0,
-     7,     4,    12,     3,    17,     3,    18,     0,     7,     4,
-    12,     3,    17,     4,    18,     0,     7,     4,    12,     4,
-    17,     3,    18,     0,     7,     4,    12,     4,    17,     4,
-    18,     0,     4,    12,     3,    14,     3,    18,     0,     7,
-     4,    12,     3,    14,     3,    18,     0,     4,    12,     6,
-    13,     6,    18,     0,     8,     4,    12,     6,    13,     6,
-    18,     0
+static const short yyrhs[] = {    18,
+     9,     4,    17,     0,    18,    10,     5,     0,    18,    11,
+     5,     0,    18,    19,     0,    18,    20,     0,    18,    21,
+     0,    18,    22,     0,    18,    23,     0,     0,     7,     4,
+    17,     0,     7,     4,    12,     3,    17,     0,     7,     4,
+    12,     4,    17,     0,     8,     4,    17,     0,     8,     4,
+    12,     6,    17,     0,     8,     4,    12,     4,    17,     0,
+     4,    12,     3,    17,     0,     4,    12,     6,    17,     0,
+     4,    12,     4,    17,     0,     4,    12,     3,    13,     3,
+    17,     0,     4,    12,     3,    13,     4,    17,     0,     4,
+    12,     4,    13,     3,    17,     0,     4,    12,     4,    13,
+     4,    17,     0,     7,     4,    12,     3,    13,     3,    17,
+     0,     7,     4,    12,     3,    13,     4,    17,     0,     7,
+     4,    12,     4,    13,     3,    17,     0,     7,     4,    12,
+     4,    13,     4,    17,     0,     4,    12,     3,    16,     3,
+    17,     0,     4,    12,     3,    16,     4,    17,     0,     4,
+    12,     4,    16,     3,    17,     0,     4,    12,     4,    16,
+     4,    17,     0,     7,     4,    12,     3,    16,     3,    17,
+     0,     7,     4,    12,     3,    16,     4,    17,     0,     7,
+     4,    12,     4,    16,     3,    17,     0,     7,     4,    12,
+     4,    16,     4,    17,     0,     4,    12,     6,    13,     6,
+    17,     0,     8,     4,    12,     6,    13,     6,    17,     0
 };
 
 #endif
 
 #if (YY_parse_DEBUG != 0) || defined(YY_parse_ERROR_VERBOSE) 
 static const short yyrline[] = { 0,
-    67,    69,    73,    81,    82,    84,    87,    95,   104,   116,
-   125,   134,   146,   147,   148,   149,   153,   155,   158,   177,
-   178,   179,   180,   184,   186,   194,   202,   211,   220,   232,
-   244,   260,   262,   270,   278,   287,   296,   308,   320,   336,
-   341,   353,   363
+    67,    69,    73,    81,    82,    83,    84,    85,    87,    90,
+    98,   107,   119,   128,   137,   152,   154,   157,   181,   183,
+   191,   199,   208,   217,   229,   241,   257,   259,   267,   275,
+   284,   293,   305,   317,   333,   343
 };
 
 static const char * const yytname[] = {   "$","error","$illegal.","INTEIRO",
 "IDENTIFICADOR","BLOCO","STRING","TIPONUM","TIPOCAD","PRINT","NOVO","FIM","IGUAL",
-"SOMA","MULTIPLICACAO","ABRPAREN","FECPAREN","MENOS","TERMINADOR","comandos",
-"criacao","atribuicao","soma","subtracao","multiplicacao","concatenar",""
+"SOMA","ABRPAREN","FECPAREN","MENOS","TERMINADOR","comandos","criacao","atribuicao",
+"soma","subtracao","concatenar",""
 };
 #endif
 
 static const short yyr1[] = {     0,
-    19,    19,    19,    19,    19,    19,    20,    20,    20,    20,
-    20,    20,    20,    20,    20,    20,    21,    21,    21,    21,
-    21,    21,    21,    22,    22,    22,    22,    22,    22,    22,
-    22,    23,    23,    23,    23,    23,    23,    23,    23,    24,
-    24,    25,    25
+    18,    18,    18,    18,    18,    18,    18,    18,    18,    19,
+    19,    19,    19,    19,    19,    20,    20,    20,    21,    21,
+    21,    21,    21,    21,    21,    21,    22,    22,    22,    22,
+    22,    22,    22,    22,    23,    23
 };
 
 static const short yyr2[] = {     0,
-     4,     3,     3,     2,     2,     0,     3,     5,     5,     3,
-     5,     5,     1,     1,     1,     1,     4,     4,     4,     1,
-     1,     1,     1,     6,     6,     6,     6,     7,     7,     7,
-     7,     6,     6,     6,     6,     7,     7,     7,     7,     6,
-     7,     6,     7
+     4,     3,     3,     2,     2,     2,     2,     2,     0,     3,
+     5,     5,     3,     5,     5,     4,     4,     4,     6,     6,
+     6,     6,     7,     7,     7,     7,     6,     6,     6,     6,
+     7,     7,     7,     7,     6,     7
 };
 
-static const short yydefact[] = {     6,
-     0,     0,     0,     0,     0,     0,     0,     4,     5,    13,
-    14,    15,    16,     0,     0,     0,     0,     2,     3,     0,
-     0,     0,     0,     7,     0,    10,     1,     0,     0,     0,
-    17,     0,     0,    19,     0,    18,     0,     0,     0,     0,
-     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-     0,     0,     0,     8,     0,     0,     9,    12,     0,    11,
-    24,    25,    40,    32,    33,    26,    27,    34,    35,    42,
-     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-    28,    29,    41,    36,    37,    30,    31,    38,    39,    43,
-     0,     0
+static const short yydefact[] = {     9,
+     0,     0,     0,     0,     0,     0,     0,     4,     5,     6,
+     7,     8,     0,     0,     0,     0,     2,     3,     0,     0,
+     0,     0,    10,     0,    13,     1,     0,     0,    16,     0,
+     0,    18,     0,    17,     0,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,     0,     0,     0,     0,    11,
+     0,     0,    12,    15,     0,    14,    19,    20,    27,    28,
+    21,    22,    29,    30,    35,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,    23,    24,    31,    32,    25,    26,
+    33,    34,    36,     0,     0
 };
 
 static const short yydefgoto[] = {     1,
-     8,     9,    10,    11,    12,    13
+     8,     9,    10,    11,    12
 };
 
 static const short yypact[] = {-32768,
-     0,   -11,    10,    14,    21,    28,    55,-32768,-32768,-32768,
--32768,-32768,-32768,    -1,    -6,     1,    -3,-32768,-32768,     3,
-    11,    18,    38,-32768,    34,-32768,-32768,    40,    36,    42,
--32768,    44,    46,-32768,    53,-32768,     9,    17,    43,    19,
-    45,    47,    49,    51,    56,    57,    58,    59,    60,    61,
-    48,    63,    50,-32768,    52,    54,-32768,-32768,    62,-32768,
--32768,-32768,-32768,-32768,-32768,-32768,-32768,-32768,-32768,-32768,
-    64,    65,    66,    67,    68,    69,    70,    71,    72,    73,
--32768,-32768,-32768,-32768,-32768,-32768,-32768,-32768,-32768,-32768,
-    80,-32768
+     0,   -10,    10,    50,    51,    -2,    52,-32768,-32768,-32768,
+-32768,-32768,    28,   -11,     1,   -12,-32768,-32768,    -1,     4,
+    12,    33,-32768,    29,-32768,-32768,    35,    37,-32768,    39,
+    41,-32768,    53,-32768,     6,    11,    44,    13,    46,    48,
+    54,    55,    56,    57,    58,    59,    60,    43,    45,-32768,
+    47,    49,-32768,-32768,    61,-32768,-32768,-32768,-32768,-32768,
+-32768,-32768,-32768,-32768,-32768,    62,    63,    64,    65,    66,
+    67,    68,    69,    70,-32768,-32768,-32768,-32768,-32768,-32768,
+-32768,-32768,-32768,    78,-32768
 };
 
 static const short yypgoto[] = {-32768,
--32768,-32768,-32768,-32768,-32768,-32768
+-32768,-32768,-32768,-32768,-32768
 };
 
 
-#define	YYLAST		91
+#define	YYLAST		87
 
 
-static const short yytable[] = {    91,
-    14,    20,    21,     2,    22,    23,     3,     4,     5,     6,
-     7,    24,    25,    15,    27,    28,    29,    16,    26,    30,
-    31,    51,    52,    32,    17,    53,    54,    33,    34,    55,
-    35,    59,    18,    56,    57,    36,    60,    39,    43,    40,
-    37,    38,    41,    42,    44,    45,    46,    47,    48,    49,
-    71,    72,    74,    75,    76,    77,    78,    79,    50,    19,
-    58,     0,    61,     0,    62,    73,    63,    80,    64,     0,
-     0,     0,     0,    65,    66,    67,    68,    69,    70,    92,
-     0,    81,    82,    83,    84,    85,    86,    87,    88,    89,
-    90
+static const short yytable[] = {    84,
+    22,    13,    17,     2,    26,    23,     3,     4,     5,     6,
+     7,    27,    24,    14,    28,    29,    30,    25,    48,    31,
+    32,    49,    50,    51,    33,    55,    52,    53,    34,    56,
+    19,    20,    37,    21,    38,    35,    36,    39,    40,    41,
+    42,    43,    44,    45,    46,    66,    67,    68,    69,    70,
+    71,    72,    73,    15,    16,     0,    18,     0,    47,     0,
+    54,     0,    57,     0,    58,     0,    74,     0,     0,     0,
+    59,    60,    61,    62,    63,    64,    65,    85,    75,    76,
+    77,    78,    79,    80,    81,    82,    83
 };
 
 static const short yycheck[] = {     0,
-    12,     3,     4,     4,     6,    12,     7,     8,     9,    10,
-    11,    18,    12,     4,    18,    13,    14,     4,    18,    17,
-    18,    13,    14,    13,     4,    17,    18,    17,    18,    13,
-    13,    13,     5,    17,    18,    18,    18,     4,     3,     6,
-     3,     4,     3,     4,     3,     4,     3,     4,     3,     4,
-     3,     4,     3,     4,     3,     4,     3,     4,     6,     5,
-    18,    -1,    18,    -1,    18,     3,    18,     6,    18,    -1,
-    -1,    -1,    -1,    18,    18,    18,    18,    18,    18,     0,
-    -1,    18,    18,    18,    18,    18,    18,    18,    18,    18,
-    18
+    12,    12,     5,     4,    17,    17,     7,     8,     9,    10,
+    11,    13,    12,     4,    16,    17,    13,    17,    13,    16,
+    17,    16,    17,    13,    13,    13,    16,    17,    17,    17,
+     3,     4,     4,     6,     6,     3,     4,     3,     4,     3,
+     4,     3,     4,     3,     4,     3,     4,     3,     4,     3,
+     4,     3,     4,     4,     4,    -1,     5,    -1,     6,    -1,
+    17,    -1,    17,    -1,    17,    -1,     6,    -1,    -1,    -1,
+    17,    17,    17,    17,    17,    17,    17,     0,    17,    17,
+    17,    17,    17,    17,    17,    17,    17
 };
 
 #line 352 "/usr/share/bison++/bison.cc"
@@ -1223,8 +1208,8 @@ case 3:
         }
     ;
     break;}
-case 7:
-#line 87 "./src/yacc.y"
+case 10:
+#line 90 "./src/yacc.y"
 {
         if(vazia(escopo_atual)) {
             printf("Erro. Nao ha nenhum bloco aberto.\n");
@@ -1235,8 +1220,8 @@ case 7:
         }
     ;
     break;}
-case 8:
-#line 96 "./src/yacc.y"
+case 11:
+#line 99 "./src/yacc.y"
 {
         if(vazia(escopo_atual)) {
             printf("Erro. Nao ha nenhum bloco aberto.\n");
@@ -1247,8 +1232,8 @@ case 8:
         }
     ;
     break;}
-case 9:
-#line 105 "./src/yacc.y"
+case 12:
+#line 108 "./src/yacc.y"
 {
         int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
         
@@ -1262,20 +1247,20 @@ case 9:
         }
     ;
     break;}
-case 10:
-#line 117 "./src/yacc.y"
+case 13:
+#line 120 "./src/yacc.y"
 {
         if(vazia(escopo_atual)) {
             printf("Erro. Nao ha nenhum bloco aberto.\n");
         } else if(variavel_no_escopo_atual(lista_atual, yyvsp[-1].identificador)) {
             printf("Erro. Variavel ja foi declarada.\n");
         } else {
-            inserir_string("CADEIA", yyvsp[-1].identificador, "");
+            inserir_string("CADEIA", yyvsp[-1].identificador, " ");
         }
     ;
     break;}
-case 11:
-#line 126 "./src/yacc.y"
+case 14:
+#line 129 "./src/yacc.y"
 {
         if(vazia(escopo_atual)) {
             printf("Erro. Nao ha nenhum bloco aberto.\n");
@@ -1286,13 +1271,13 @@ case 11:
         }
     ;
     break;}
-case 12:
-#line 135 "./src/yacc.y"
+case 15:
+#line 138 "./src/yacc.y"
 {
         char* valor = strdup(retornar_valor_string_de_variavel(escopo_atual, yyvsp[-1].identificador));
 
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
-        if(!strcmp(valor, CHAR_ERRO)) {
+        if(strcmp(valor, CHAR_ERRO)) {
             if(variavel_no_escopo_atual(lista_atual, yyvsp[-3].identificador)) {
                 printf("Erro. Variavel ja foi declarada.\n");
             } else {
@@ -1301,24 +1286,26 @@ case 12:
         }
     ;
     break;}
-case 17:
-#line 153 "./src/yacc.y"
+case 16:
+#line 152 "./src/yacc.y"
 {
         atualizar_variavel_numero(lista_atual, yyvsp[-3].identificador, yyvsp[-1].numero);
     ;
     break;}
-case 18:
-#line 156 "./src/yacc.y"
+case 17:
+#line 155 "./src/yacc.y"
 {
         atualizar_variavel_cadeia(lista_atual, yyvsp[-3].identificador, yyvsp[-1].cadeia);
     ;
     break;}
-case 19:
-#line 159 "./src/yacc.y"
+case 18:
+#line 158 "./src/yacc.y"
 {
-        char* tipo_variavel = strdup(retornar_tipo_da_variavel(escopo_atual, yyvsp[-1].identificador));
+        char* tipo_variavel;
         char* valor_cadeia;
         int valor_numero;
+
+        strcpy(tipo_variavel, retornar_tipo_da_variavel(escopo_atual, yyvsp[-1].identificador));
 
         if(!strcmp(tipo_variavel, "NUMERO")) {
             valor_numero = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
@@ -1335,14 +1322,14 @@ case 19:
         }
     ;
     break;}
-case 24:
-#line 184 "./src/yacc.y"
+case 19:
+#line 181 "./src/yacc.y"
 {
         atualizar_variavel_numero(lista_atual, yyvsp[-5].identificador, (yyvsp[-3].numero + yyvsp[-1].numero));
     ;
     break;}
-case 25:
-#line 187 "./src/yacc.y"
+case 20:
+#line 184 "./src/yacc.y"
 {
         int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
         
@@ -1352,8 +1339,8 @@ case 25:
         }
     ;
     break;}
-case 26:
-#line 195 "./src/yacc.y"
+case 21:
+#line 192 "./src/yacc.y"
 {
         int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador);
         
@@ -1363,8 +1350,8 @@ case 26:
         }
     ;
     break;}
-case 27:
-#line 203 "./src/yacc.y"
+case 22:
+#line 200 "./src/yacc.y"
 {
         int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador),
             valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
@@ -1375,8 +1362,8 @@ case 27:
         }
     ;
     break;}
-case 28:
-#line 212 "./src/yacc.y"
+case 23:
+#line 209 "./src/yacc.y"
 {
         if(vazia(escopo_atual)) {
             printf("Erro. Nao ha nenhum bloco aberto.\n");
@@ -1387,8 +1374,8 @@ case 28:
         }
     ;
     break;}
-case 29:
-#line 221 "./src/yacc.y"
+case 24:
+#line 218 "./src/yacc.y"
 {
         int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
         
@@ -1402,8 +1389,8 @@ case 29:
         }
     ;
     break;}
-case 30:
-#line 233 "./src/yacc.y"
+case 25:
+#line 230 "./src/yacc.y"
 {
         int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador);
         
@@ -1417,14 +1404,14 @@ case 30:
         }
     ;
     break;}
-case 31:
-#line 245 "./src/yacc.y"
+case 26:
+#line 242 "./src/yacc.y"
 {
-        int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-4].identificador),
-            valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-2].identificador);
+        int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador),
+            valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
 
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
-        if(valor1 != INT_MIN && valor2 != INT_MIN) {
+        if((valor1 != INT_MIN) && (valor2 != INT_MIN)) {
             if(variavel_no_escopo_atual(lista_atual, yyvsp[-5].identificador)) {
                 printf("Erro. Variavel ja foi declarada.\n");
             } else {
@@ -1433,14 +1420,14 @@ case 31:
         }
     ;
     break;}
-case 32:
-#line 260 "./src/yacc.y"
+case 27:
+#line 257 "./src/yacc.y"
 {
         atualizar_variavel_numero(lista_atual, yyvsp[-5].identificador, (yyvsp[-3].numero - yyvsp[-1].numero));
     ;
     break;}
-case 33:
-#line 263 "./src/yacc.y"
+case 28:
+#line 260 "./src/yacc.y"
 {
         int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
         
@@ -1450,8 +1437,8 @@ case 33:
         }
     ;
     break;}
-case 34:
-#line 271 "./src/yacc.y"
+case 29:
+#line 268 "./src/yacc.y"
 {
         int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador);
         
@@ -1461,20 +1448,20 @@ case 34:
         }
     ;
     break;}
-case 35:
-#line 279 "./src/yacc.y"
+case 30:
+#line 276 "./src/yacc.y"
 {
         int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador),
             valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
         
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
-        if(valor1 != INT_MIN && valor2 != INT_MIN) {
+        if((valor1 != INT_MIN) && (valor2 != INT_MIN)) {
             atualizar_variavel_numero(lista_atual, yyvsp[-5].identificador, (valor1 - valor2));
         }
     ;
     break;}
-case 36:
-#line 288 "./src/yacc.y"
+case 31:
+#line 285 "./src/yacc.y"
 {
         if(vazia(escopo_atual)) {
             printf("Erro. Nao ha nenhum bloco aberto.\n");
@@ -1485,8 +1472,8 @@ case 36:
         }
     ;
     break;}
-case 37:
-#line 297 "./src/yacc.y"
+case 32:
+#line 294 "./src/yacc.y"
 {
         int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
         
@@ -1500,8 +1487,8 @@ case 37:
         }
     ;
     break;}
-case 38:
-#line 309 "./src/yacc.y"
+case 33:
+#line 306 "./src/yacc.y"
 {
         int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador);
         
@@ -1515,14 +1502,14 @@ case 38:
         }
     ;
     break;}
-case 39:
-#line 321 "./src/yacc.y"
+case 34:
+#line 318 "./src/yacc.y"
 {
-        int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-4].identificador),
-            valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-2].identificador);
+        int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador),
+            valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
 
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
-        if(valor1 != INT_MIN && valor2 != INT_MIN) {
+        if((valor1 != INT_MIN) && (valor2 != INT_MIN)) {
             if(variavel_no_escopo_atual(lista_atual, yyvsp[-5].identificador)) {
                 printf("Erro. Variavel ja foi declarada.\n");
             } else {
@@ -1531,55 +1518,34 @@ case 39:
         }
     ;
     break;}
-case 40:
-#line 336 "./src/yacc.y"
+case 35:
+#line 333 "./src/yacc.y"
 {
-        int valor1 = yyvsp[-3].numero,
-            valor2 = yyvsp[-1].numero;
+        char* string_concatenada;
 
-        atualizar_variavel_cadeia(lista_atual, yyvsp[-5].identificador, (valor1 * valor2));
-    ;
-    break;}
-case 41:
-#line 342 "./src/yacc.y"
-{
-        if(vazia(escopo_atual)) {
-            printf("Erro. Nao ha nenhum bloco aberto.\n");
-        } else if(variavel_no_escopo_atual(lista_atual, yyvsp[-5].identificador)) {
-            printf("Erro. Variavel ja foi declarada.\n");
-        } else {
-            inserir_inteiro("NUMERO", yyvsp[-5].identificador, (yyvsp[-3].numero * yyvsp[-1].numero));
-        }
-    ;
-    break;}
-case 42:
-#line 353 "./src/yacc.y"
-{
-        char* concatenado = strdup(yyvsp[-3].cadeia, yyvsp[-1].cadeia);
+        strcpy(string_concatenada, concatenar_strings(yyvsp[-3].cadeia, yyvsp[-1].cadeia));
         
-        if(variavel_no_escopo_atual(lista_atual, yyvsp[-4].identificador)) {
-            printf("Erro. Variavel ja foi declarada.\n");
+        if(!variavel_no_escopo_atual(lista_atual, yyvsp[-5].identificador)) {
+            printf("Erro. Variavel nao foi declarada.\n");
         } else {
-            atualizar_variavel_cadeia(lista_atual, yyvsp[-5].identificador, concatenado);
+            atualizar_variavel_cadeia(lista_atual, yyvsp[-5].identificador, string_concatenada);
         }
-
-        concatenado = NULL;
     ;
     break;}
-case 43:
-#line 364 "./src/yacc.y"
+case 36:
+#line 344 "./src/yacc.y"
 {
-        char* concatenado = strdup(concatenar(yyvsp[-3].cadeia, yyvsp[-1].cadeia));
+        char* string_concatenada;
+
+        strcpy(string_concatenada, concatenar_strings(yyvsp[-3].cadeia, yyvsp[-1].cadeia));
 
         if(vazia(escopo_atual)) {
             printf("Erro. Nao ha nenhum bloco aberto.\n");
         } else if(variavel_no_escopo_atual(lista_atual, yyvsp[-5].identificador)) {
             printf("Erro. Variavel ja foi declarada.\n");
         } else {
-            inserir_string("CADEIA", yyvsp[-5].identificador, concatenado);
+            inserir_string("CADEIA", yyvsp[-5].identificador, string_concatenada);
         }
-
-        concatenado = NULL;
     ;
     break;}
 }
@@ -1786,7 +1752,7 @@ YYLABEL(yyerrhandle)
 /* END */
 
  #line 1038 "/usr/share/bison++/bison.cc"
-#line 378 "./src/yacc.y"
+#line 358 "./src/yacc.y"
 
 
 extern FILE *yyin;
@@ -1810,7 +1776,7 @@ void inserir_inteiro(char* tipo, char* lexema, int valor_inteiro) {
 
     // SALVANDO OS VALORES NO ELO
     strcpy(ptr_novo_elo->tipo_variavel, tipo);
-	ptr_novo_elo->nome_variavel = strdup(lexema);
+    ptr_novo_elo->nome_variavel = strdup(lexema);
 	ptr_novo_elo->valor_inteiro = valor_inteiro;
 
     // ATUALIZANDO O PONTEIRO DE INICIO DA LISTA
@@ -2001,6 +1967,8 @@ void imprimir_variavel(char* nome_variavel) {
             } else {
                 printf("%s\n", no->valor_string);
             }
+
+            break;
         }
 
         no = no->ptr_proximo_no;
@@ -2019,7 +1987,6 @@ void atualizar_variavel_numero(lista_t* lista, char* nome_variavel, int novo_val
     } else { // SE NAO ESTIVER, PEGUE DA PILHA
         temp = retornar_escopo(escopo_atual, nome_variavel);
         no = temp->ptr_primeiro_lista;
-        temp = NULL;
     }
 
     // SE no NAO FOI ATUALIZANDO, REPORTAR ERRO E ABORTAR FUNCAO
@@ -2032,6 +1999,7 @@ void atualizar_variavel_numero(lista_t* lista, char* nome_variavel, int novo_val
     while(no != NULL) {
         if(!strcmp(no->nome_variavel, nome_variavel)) {
             no->valor_inteiro = novo_valor;
+            break;
         }
 
         no = no->ptr_proximo_no;
@@ -2050,7 +2018,6 @@ void atualizar_variavel_cadeia(lista_t* lista, char* nome_variavel, char* novo_v
     } else { // SE NAO ESTIVER, PEGUE DA PILHA
         temp = retornar_escopo(escopo_atual, nome_variavel);
         no = temp->ptr_primeiro_lista;
-        temp = NULL;
     }
 
     // SE no NAO FOI ATUALIZANDO, REPORTAR ERRO E ABORTAR FUNCAO
@@ -2063,6 +2030,7 @@ void atualizar_variavel_cadeia(lista_t* lista, char* nome_variavel, char* novo_v
     while(no != NULL) {
         if(!strcmp(no->nome_variavel, nome_variavel)) {
             no->valor_string = strdup(novo_valor);
+            break;
         }
 
         no = no->ptr_proximo_no;
@@ -2145,26 +2113,23 @@ char* retornar_valor_string_de_variavel(escopo_t* escopo, char* nome_variavel) {
     return CHAR_ERRO;
 }
 
-char* concatenar(const char* const string1, const char* const string2) {
-    char* resultado;
-    char* aux;
+char* concatenar_strings(const char* string1, const char* string2) {
+    char* resultado = NULL;
+    char* aux = NULL;
     
     // COPIANDO PRIMEIRA PARTE DA STRING
-    resultado = strdup(string1);
+    strcpy(resultado, string1);
     resultado[strlen(resultado) - 1] = '\0';
 
     // COPIANDO SEGUNDA PARTE DA STRING
-    strncpy(aux, string2 + 1, strlen(string2) - 1);
+    strncpy(aux, (string2 + 1), (strlen(string2) - 1));
     strcat(resultado, aux);
-
-    // LIMPANDO aux DA MEMORIA
-    aux == NULL;
 
     return resultado;
 }
 
 char* retornar_tipo_da_variavel(escopo_t* escopo, char* nome_variavel) {
-    char* tipo;
+    char* tipo = NULL;
     node_t* no = NULL;
     lista_t* temp = escopo->ptr_topo;
 
