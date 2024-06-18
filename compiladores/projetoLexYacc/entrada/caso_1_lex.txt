@@ -1,5 +1,6 @@
 BLOCO _principal_
-	NUMERO a = 10, b = 20 + 30;
+	NUMERO a = 10;
+	NUMERO b = 20 + 30;
 	CADEIA x;
 	PRINT b;
 	PRINT a;

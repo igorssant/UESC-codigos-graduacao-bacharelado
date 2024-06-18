@@ -146,10 +146,10 @@ int variavel_no_escopo_atual(lista_t*, char*);
 void imprimir_variavel(char*);
 void atualizar_variavel_numero(lista_t*, char*, int);
 void atualizar_variavel_cadeia(lista_t*, char*, char*);
-int retornar_valor_inteiro_de_variavel(escopo_t*, char*);
-char* retornar_valor_string_de_variavel(escopo_t*, char*);
+int retornar_valor_inteiro_de_variavel(lista_t*, char*);
+char* retornar_valor_string_de_variavel(lista_t*, char*);
 char* concatenar_strings(const char*, const char*);
-char* retornar_tipo_da_variavel(escopo_t*, char*);
+char* retornar_tipo_da_variavel(lista_t*, char*);
 
 // VARIAVEIS QUE SALVARAO A LISTA_ATUAL E A PILHA_ATUAL
 lista_t* lista_atual = NULL;
@@ -604,10 +604,10 @@ static const short yyrhs[] = {    18,
 
 #if (YY_parse_DEBUG != 0) || defined(YY_parse_ERROR_VERBOSE) 
 static const short yyrline[] = { 0,
-    67,    69,    73,    81,    82,    83,    84,    85,    87,    90,
-    98,   107,   119,   128,   137,   152,   154,   157,   181,   183,
-   191,   199,   208,   217,   229,   241,   257,   259,   267,   275,
-   284,   293,   305,   317,   333,   343
+    67,    69,    74,    86,    87,    88,    89,    90,    92,    95,
+   103,   112,   124,   133,   142,   157,   159,   162,   199,   201,
+   209,   217,   226,   235,   247,   259,   275,   277,   285,   293,
+   302,   311,   323,   335,   351,   359
 };
 
 static const char * const yytname[] = {   "$","error","$illegal.","INTEIRO",
@@ -1195,13 +1195,18 @@ case 2:
 {
         push(lista_atual);
         lista_atual = criar_lista();
+        lista_atual->ptr_proxima_lista = escopo_atual->ptr_topo;
     ;
     break;}
 case 3:
-#line 74 "./src/yacc.y"
+#line 75 "./src/yacc.y"
 { 
         lista_atual = pop();
 
+        if(lista_atual == NULL) {
+            lista_atual = criar_lista();
+        }
+        
         // SE O PROGRAMA ESTIVER PRESTES A ENCERRAR, MATAR A PILHA
         if(vazia(escopo_atual)) {
             deletar_pilha(escopo_atual);
@@ -1209,7 +1214,7 @@ case 3:
     ;
     break;}
 case 10:
-#line 90 "./src/yacc.y"
+#line 95 "./src/yacc.y"
 {
         if(vazia(escopo_atual)) {
             printf("Erro. Nao ha nenhum bloco aberto.\n");
@@ -1221,7 +1226,7 @@ case 10:
     ;
     break;}
 case 11:
-#line 99 "./src/yacc.y"
+#line 104 "./src/yacc.y"
 {
         if(vazia(escopo_atual)) {
             printf("Erro. Nao ha nenhum bloco aberto.\n");
@@ -1233,9 +1238,9 @@ case 11:
     ;
     break;}
 case 12:
-#line 108 "./src/yacc.y"
+#line 113 "./src/yacc.y"
 {
-        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
+        int valor = retornar_valor_inteiro_de_variavel(lista_atual, yyvsp[-1].identificador);
         
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(valor != INT_MIN) {
@@ -1248,19 +1253,19 @@ case 12:
     ;
     break;}
 case 13:
-#line 120 "./src/yacc.y"
+#line 125 "./src/yacc.y"
 {
         if(vazia(escopo_atual)) {
             printf("Erro. Nao ha nenhum bloco aberto.\n");
         } else if(variavel_no_escopo_atual(lista_atual, yyvsp[-1].identificador)) {
             printf("Erro. Variavel ja foi declarada.\n");
         } else {
-            inserir_string("CADEIA", yyvsp[-1].identificador, " ");
+            inserir_string("CADEIA", yyvsp[-1].identificador, "\0");
         }
     ;
     break;}
 case 14:
-#line 129 "./src/yacc.y"
+#line 134 "./src/yacc.y"
 {
         if(vazia(escopo_atual)) {
             printf("Erro. Nao ha nenhum bloco aberto.\n");
@@ -1272,9 +1277,9 @@ case 14:
     ;
     break;}
 case 15:
-#line 138 "./src/yacc.y"
+#line 143 "./src/yacc.y"
 {
-        char* valor = strdup(retornar_valor_string_de_variavel(escopo_atual, yyvsp[-1].identificador));
+        char* valor = strdup(retornar_valor_string_de_variavel(lista_atual, yyvsp[-1].identificador));
 
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(strcmp(valor, CHAR_ERRO)) {
@@ -1287,51 +1292,64 @@ case 15:
     ;
     break;}
 case 16:
-#line 152 "./src/yacc.y"
+#line 157 "./src/yacc.y"
 {
         atualizar_variavel_numero(lista_atual, yyvsp[-3].identificador, yyvsp[-1].numero);
     ;
     break;}
 case 17:
-#line 155 "./src/yacc.y"
+#line 160 "./src/yacc.y"
 {
         atualizar_variavel_cadeia(lista_atual, yyvsp[-3].identificador, yyvsp[-1].cadeia);
     ;
     break;}
 case 18:
-#line 158 "./src/yacc.y"
+#line 163 "./src/yacc.y"
 {
-        char* tipo_variavel;
-        char* valor_cadeia;
-        int valor_numero;
+        char* tipo_variavel_esquerda = NULL,
+            *tipo_variavel_direita = NULL;
+        char* valor_cadeia = NULL;
+        int valor_numero = 0;
 
-        strcpy(tipo_variavel, retornar_tipo_da_variavel(escopo_atual, yyvsp[-1].identificador));
+        tipo_variavel_esquerda = strdup(retornar_tipo_da_variavel(lista_atual, yyvsp[-3].identificador));
+        tipo_variavel_direita = strdup(retornar_tipo_da_variavel(lista_atual, yyvsp[-1].identificador));
 
-        if(!strcmp(tipo_variavel, "NUMERO")) {
-            valor_numero = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
+        // VERIFICA SE TIPO EH NUMERO E SE AMBOS TIPOS SAO IGUAIS ENTRE SI
+        if(
+            (!strcmp(tipo_variavel_esquerda, "NUMERO")) &&
+            (!strcmp(tipo_variavel_esquerda, tipo_variavel_direita))
+        ) {
+            valor_numero = retornar_valor_inteiro_de_variavel(lista_atual, yyvsp[-1].identificador);
 
-            if (valor_numero != INT_MIN) {
+            // VERIFICA SE HOUVE ALGUM ERRO NA HORA DE RETORNAR O DADO
+            if(valor_numero != INT_MIN) {
                 atualizar_variavel_numero(lista_atual, yyvsp[-3].identificador, valor_numero);
             }
-        } else {
-            valor_cadeia = strdup(retornar_valor_string_de_variavel(escopo_atual, yyvsp[-1].identificador));
+        } else if( // TIPO CADEIA ENTRA AQUI ABAIXO
+            (!strcmp(tipo_variavel_esquerda, "CADEIA")) &&
+            (!strcmp(tipo_variavel_esquerda, tipo_variavel_direita))
+        ) {
+            valor_cadeia = strdup(retornar_valor_string_de_variavel(lista_atual, yyvsp[-1].identificador));
 
+            // VERIFICA SE HOUVE ALGUM ERRO NA HORA DE RETORNAR O DADO
             if(strcmp(valor_cadeia, CHAR_ERRO)) {
                 atualizar_variavel_cadeia(lista_atual, yyvsp[-3].identificador, valor_cadeia);
             }
+        } else {
+            printf("Erro. Tipos incompativeis\n");
         }
     ;
     break;}
 case 19:
-#line 181 "./src/yacc.y"
+#line 199 "./src/yacc.y"
 {
         atualizar_variavel_numero(lista_atual, yyvsp[-5].identificador, (yyvsp[-3].numero + yyvsp[-1].numero));
     ;
     break;}
 case 20:
-#line 184 "./src/yacc.y"
+#line 202 "./src/yacc.y"
 {
-        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
+        int valor = retornar_valor_inteiro_de_variavel(lista_atual, yyvsp[-1].identificador);
         
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(valor != INT_MIN) {
@@ -1340,9 +1358,9 @@ case 20:
     ;
     break;}
 case 21:
-#line 192 "./src/yacc.y"
+#line 210 "./src/yacc.y"
 {
-        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador);
+        int valor = retornar_valor_inteiro_de_variavel(lista_atual, yyvsp[-3].identificador);
         
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(valor != INT_MIN) {
@@ -1351,10 +1369,10 @@ case 21:
     ;
     break;}
 case 22:
-#line 200 "./src/yacc.y"
+#line 218 "./src/yacc.y"
 {
-        int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador),
-            valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
+        int valor1 = retornar_valor_inteiro_de_variavel(lista_atual, yyvsp[-3].identificador),
+            valor2 = retornar_valor_inteiro_de_variavel(lista_atual, yyvsp[-1].identificador);
         
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(valor1 != INT_MIN && valor2 != INT_MIN) {
@@ -1363,7 +1381,7 @@ case 22:
     ;
     break;}
 case 23:
-#line 209 "./src/yacc.y"
+#line 227 "./src/yacc.y"
 {
         if(vazia(escopo_atual)) {
             printf("Erro. Nao ha nenhum bloco aberto.\n");
@@ -1375,10 +1393,10 @@ case 23:
     ;
     break;}
 case 24:
-#line 218 "./src/yacc.y"
+#line 236 "./src/yacc.y"
 {
-        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
-        
+        int valor = retornar_valor_inteiro_de_variavel(lista_atual, yyvsp[-1].identificador);
+
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(valor != INT_MIN) {
             if(variavel_no_escopo_atual(lista_atual, yyvsp[-5].identificador)) {
@@ -1390,9 +1408,9 @@ case 24:
     ;
     break;}
 case 25:
-#line 230 "./src/yacc.y"
+#line 248 "./src/yacc.y"
 {
-        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador);
+        int valor = retornar_valor_inteiro_de_variavel(lista_atual, yyvsp[-3].identificador);
         
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(valor != INT_MIN) {
@@ -1405,10 +1423,10 @@ case 25:
     ;
     break;}
 case 26:
-#line 242 "./src/yacc.y"
+#line 260 "./src/yacc.y"
 {
-        int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador),
-            valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
+        int valor1 = retornar_valor_inteiro_de_variavel(lista_atual, yyvsp[-3].identificador),
+            valor2 = retornar_valor_inteiro_de_variavel(lista_atual, yyvsp[-1].identificador);
 
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if((valor1 != INT_MIN) && (valor2 != INT_MIN)) {
@@ -1421,15 +1439,15 @@ case 26:
     ;
     break;}
 case 27:
-#line 257 "./src/yacc.y"
+#line 275 "./src/yacc.y"
 {
         atualizar_variavel_numero(lista_atual, yyvsp[-5].identificador, (yyvsp[-3].numero - yyvsp[-1].numero));
     ;
     break;}
 case 28:
-#line 260 "./src/yacc.y"
+#line 278 "./src/yacc.y"
 {
-        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
+        int valor = retornar_valor_inteiro_de_variavel(lista_atual, yyvsp[-1].identificador);
         
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(valor != INT_MIN) {
@@ -1438,9 +1456,9 @@ case 28:
     ;
     break;}
 case 29:
-#line 268 "./src/yacc.y"
+#line 286 "./src/yacc.y"
 {
-        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador);
+        int valor = retornar_valor_inteiro_de_variavel(lista_atual, yyvsp[-3].identificador);
         
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(valor != INT_MIN) {
@@ -1449,10 +1467,10 @@ case 29:
     ;
     break;}
 case 30:
-#line 276 "./src/yacc.y"
+#line 294 "./src/yacc.y"
 {
-        int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador),
-            valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
+        int valor1 = retornar_valor_inteiro_de_variavel(lista_atual, yyvsp[-3].identificador),
+            valor2 = retornar_valor_inteiro_de_variavel(lista_atual, yyvsp[-1].identificador);
         
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if((valor1 != INT_MIN) && (valor2 != INT_MIN)) {
@@ -1461,7 +1479,7 @@ case 30:
     ;
     break;}
 case 31:
-#line 285 "./src/yacc.y"
+#line 303 "./src/yacc.y"
 {
         if(vazia(escopo_atual)) {
             printf("Erro. Nao ha nenhum bloco aberto.\n");
@@ -1473,9 +1491,9 @@ case 31:
     ;
     break;}
 case 32:
-#line 294 "./src/yacc.y"
+#line 312 "./src/yacc.y"
 {
-        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
+        int valor = retornar_valor_inteiro_de_variavel(lista_atual, yyvsp[-1].identificador);
         
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(valor != INT_MIN) {
@@ -1488,9 +1506,9 @@ case 32:
     ;
     break;}
 case 33:
-#line 306 "./src/yacc.y"
+#line 324 "./src/yacc.y"
 {
-        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador);
+        int valor = retornar_valor_inteiro_de_variavel(lista_atual, yyvsp[-3].identificador);
         
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(valor != INT_MIN) {
@@ -1503,10 +1521,10 @@ case 33:
     ;
     break;}
 case 34:
-#line 318 "./src/yacc.y"
+#line 336 "./src/yacc.y"
 {
-        int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-3].identificador),
-            valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, yyvsp[-1].identificador);
+        int valor1 = retornar_valor_inteiro_de_variavel(lista_atual, yyvsp[-3].identificador),
+            valor2 = retornar_valor_inteiro_de_variavel(lista_atual, yyvsp[-1].identificador);
 
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if((valor1 != INT_MIN) && (valor2 != INT_MIN)) {
@@ -1519,11 +1537,9 @@ case 34:
     ;
     break;}
 case 35:
-#line 333 "./src/yacc.y"
+#line 351 "./src/yacc.y"
 {
-        char* string_concatenada;
-
-        strcpy(string_concatenada, concatenar_strings(yyvsp[-3].cadeia, yyvsp[-1].cadeia));
+        char* string_concatenada = strdup(concatenar_strings(yyvsp[-3].cadeia, yyvsp[-1].cadeia));
         
         if(!variavel_no_escopo_atual(lista_atual, yyvsp[-5].identificador)) {
             printf("Erro. Variavel nao foi declarada.\n");
@@ -1533,11 +1549,9 @@ case 35:
     ;
     break;}
 case 36:
-#line 344 "./src/yacc.y"
+#line 360 "./src/yacc.y"
 {
-        char* string_concatenada;
-
-        strcpy(string_concatenada, concatenar_strings(yyvsp[-3].cadeia, yyvsp[-1].cadeia));
+        char* string_concatenada = strdup(concatenar_strings(yyvsp[-3].cadeia, yyvsp[-1].cadeia));
 
         if(vazia(escopo_atual)) {
             printf("Erro. Nao ha nenhum bloco aberto.\n");
@@ -1752,7 +1766,7 @@ YYLABEL(yyerrhandle)
 /* END */
 
  #line 1038 "/usr/share/bison++/bison.cc"
-#line 358 "./src/yacc.y"
+#line 372 "./src/yacc.y"
 
 
 extern FILE *yyin;
@@ -1797,6 +1811,7 @@ void inserir_string(char* tipo, char* lexema, char* valor_string) {
 
     // ATUALIZANDO O PONTEIRO DE INICIO DA LISTA
 	ptr_novo_elo->ptr_proximo_no = lista_atual->ptr_primeiro_lista;
+    lista_atual->ptr_primeiro_lista = ptr_novo_elo;
 
 	return;
 }
@@ -1867,12 +1882,12 @@ void deletar_pilha(escopo_t* pilha) {
     return;
 }
 
-void push(lista_t* lista_atual) {
+void push(lista_t* lista) {
     // INSERINDO UMA NOVA LISTA NO TOPO DA PILHA
-    lista_atual->ptr_proxima_lista = escopo_atual->ptr_topo;   
+    lista->ptr_proxima_lista = escopo_atual->ptr_topo;   
 
-    // ATUALIZANDO O PONTEIRO
-    escopo_atual->ptr_topo = lista_atual;
+    // ATUALIZANDO OS PONTEIROS
+    escopo_atual->ptr_topo = lista;
 
     return;
 }
@@ -1883,7 +1898,7 @@ lista_t* pop() {
     // VERIFICANDO SE A PILHA ESTA VAZIA
     if(vazia(escopo_atual)) {
         printf("Erro. Pilha vazia.\n");
-        return NULL;
+        return temp;
     }
 
     // SALVANDO A LISTA QUE ESTA NO TOPO DA PILHA
@@ -1893,7 +1908,7 @@ lista_t* pop() {
     escopo_atual->ptr_topo = escopo_atual->ptr_topo->ptr_proxima_lista;
     free(temp);
 
-    return temp;
+    return escopo_atual->ptr_topo;
 }
 
 lista_t* retornar_escopo(escopo_t* escopo, char* nome_variavel) {
@@ -2025,11 +2040,11 @@ void atualizar_variavel_cadeia(lista_t* lista, char* nome_variavel, char* novo_v
         printf("Erro: variavel não declarada.\n");
         return;
     }
-    
+
     // ITERANDO PELA LISTA PARA PEGAR O no CORRETO
     while(no != NULL) {
         if(!strcmp(no->nome_variavel, nome_variavel)) {
-            no->valor_string = strdup(novo_valor);
+            strcpy(no->valor_string, novo_valor);
             break;
         }
 
@@ -2039,15 +2054,15 @@ void atualizar_variavel_cadeia(lista_t* lista, char* nome_variavel, char* novo_v
     return;
 }
 
-int retornar_valor_inteiro_de_variavel(escopo_t* escopo, char* nome_variavel) {
+int retornar_valor_inteiro_de_variavel(lista_t* lista, char* nome_variavel) {
     node_t* no = NULL;
-    lista_t* temp = escopo->ptr_topo;
+    lista_t* temp = NULL;
 
     // VERIFICA SE VARIAVEL ESTA NO ESCOPO ATUAL
-    if(variavel_no_escopo_atual(temp, nome_variavel)) {
-        no = temp->ptr_primeiro_lista;
+    if(variavel_no_escopo_atual(lista, nome_variavel)) {
+        no = lista->ptr_primeiro_lista;
     } else { // SE NAO EXISTIR, BUSCAR NA PILHA
-        temp = retornar_escopo(escopo, nome_variavel);
+        temp = retornar_escopo(escopo_atual, nome_variavel);
 
         // SO ATRIBUIR AO no SE REALEMNTE EXISTIR
         if(temp != NULL) {
@@ -2069,6 +2084,8 @@ int retornar_valor_inteiro_de_variavel(escopo_t* escopo, char* nome_variavel) {
                 return no->valor_inteiro;
             }
         }
+
+        no = no->ptr_proximo_no;
     }
 
     // SE CHEGOU ATE AQUI, ENTAO HA ERRO
@@ -2076,15 +2093,15 @@ int retornar_valor_inteiro_de_variavel(escopo_t* escopo, char* nome_variavel) {
     return INT_MIN;
 }
 
-char* retornar_valor_string_de_variavel(escopo_t* escopo, char* nome_variavel) {
+char* retornar_valor_string_de_variavel(lista_t* lista, char* nome_variavel) {
     node_t* no = NULL;
-    lista_t* temp = escopo->ptr_topo;
+    lista_t* temp = NULL;
 
     // VERIFICA SE VARIAVEL ESTA NO ESCOPO ATUAL
-    if(variavel_no_escopo_atual(temp, nome_variavel)) {
-        no = temp->ptr_primeiro_lista;
+    if(variavel_no_escopo_atual(lista, nome_variavel)) {
+        no = lista->ptr_primeiro_lista;
     } else { // SE NAO EXISTIR, BUSCAR NA PILHA
-        temp = retornar_escopo(escopo, nome_variavel);
+        temp = retornar_escopo(escopo_atual, nome_variavel);
 
         // SO ATRIBUIR AO no SE REALEMNTE EXISTIR
         if(temp != NULL) {
@@ -2106,6 +2123,8 @@ char* retornar_valor_string_de_variavel(escopo_t* escopo, char* nome_variavel) {
                 return no->valor_string;
             }
         }
+
+        no = no->ptr_proximo_no;
     }
 
     // SE CHEGOU ATE AQUI, ENTAO HA ERRO
@@ -2128,16 +2147,16 @@ char* concatenar_strings(const char* string1, const char* string2) {
     return resultado;
 }
 
-char* retornar_tipo_da_variavel(escopo_t* escopo, char* nome_variavel) {
-    char* tipo = NULL;
+char* retornar_tipo_da_variavel(lista_t* lista, char* nome_variavel) {
     node_t* no = NULL;
-    lista_t* temp = escopo->ptr_topo;
+    lista_t* temp = NULL;
+    char* tipo = NULL;
 
     // VERIFICA SE VARIAVEL ESTA NO ESCOPO ATUAL
-    if(variavel_no_escopo_atual(temp, nome_variavel)) {
-        no = temp->ptr_primeiro_lista;
+    if(variavel_no_escopo_atual(lista, nome_variavel)) {
+        no = lista->ptr_primeiro_lista;
     } else { // SE NAO EXISTIR, BUSCAR NA PILHA
-        temp = retornar_escopo(escopo, nome_variavel);
+        temp = retornar_escopo(escopo_atual, nome_variavel);
 
         // SO ATRIBUIR AO no SE REALEMNTE EXISTIR
         if(temp != NULL) {
@@ -2157,6 +2176,8 @@ char* retornar_tipo_da_variavel(escopo_t* escopo, char* nome_variavel) {
             tipo = strdup(no->tipo_variavel);
             break;
         }
+
+        no = no->ptr_proximo_no;
     }
 
     return tipo;

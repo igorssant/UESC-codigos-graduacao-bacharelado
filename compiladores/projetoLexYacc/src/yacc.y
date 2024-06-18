@@ -45,10 +45,10 @@ int variavel_no_escopo_atual(lista_t*, char*);
 void imprimir_variavel(char*);
 void atualizar_variavel_numero(lista_t*, char*, int);
 void atualizar_variavel_cadeia(lista_t*, char*, char*);
-int retornar_valor_inteiro_de_variavel(escopo_t*, char*);
-char* retornar_valor_string_de_variavel(escopo_t*, char*);
+int retornar_valor_inteiro_de_variavel(lista_t*, char*);
+char* retornar_valor_string_de_variavel(lista_t*, char*);
 char* concatenar_strings(const char*, const char*);
-char* retornar_tipo_da_variavel(escopo_t*, char*);
+char* retornar_tipo_da_variavel(lista_t*, char*);
 
 // VARIAVEIS QUE SALVARAO A LISTA_ATUAL E A PILHA_ATUAL
 lista_t* lista_atual = NULL;
@@ -70,10 +70,15 @@ comandos: comandos PRINT IDENTIFICADOR TERMINADOR {
     comandos NOVO BLOCO {
         push(lista_atual);
         lista_atual = criar_lista();
+        lista_atual->ptr_proxima_lista = escopo_atual->ptr_topo;
     } |
     comandos FIM BLOCO{ 
         lista_atual = pop();
 
+        if(lista_atual == NULL) {
+            lista_atual = criar_lista();
+        }
+        
         // SE O PROGRAMA ESTIVER PRESTES A ENCERRAR, MATAR A PILHA
         if(vazia(escopo_atual)) {
             deletar_pilha(escopo_atual);
@@ -106,7 +111,7 @@ criacao: TIPONUM IDENTIFICADOR TERMINADOR {
         }
     } |
     TIPONUM IDENTIFICADOR IGUAL IDENTIFICADOR TERMINADOR {
-        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, $4.identificador);
+        int valor = retornar_valor_inteiro_de_variavel(lista_atual, $4.identificador);
         
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(valor != INT_MIN) {
@@ -123,7 +128,7 @@ criacao: TIPONUM IDENTIFICADOR TERMINADOR {
         } else if(variavel_no_escopo_atual(lista_atual, $2.identificador)) {
             printf("Erro. Variavel ja foi declarada.\n");
         } else {
-            inserir_string("CADEIA", $2.identificador, " ");
+            inserir_string("CADEIA", $2.identificador, "\0");
         }
     } |
     TIPOCAD IDENTIFICADOR IGUAL STRING TERMINADOR {
@@ -136,7 +141,7 @@ criacao: TIPONUM IDENTIFICADOR TERMINADOR {
         }
     } |
     TIPOCAD IDENTIFICADOR IGUAL IDENTIFICADOR TERMINADOR {
-        char* valor = strdup(retornar_valor_string_de_variavel(escopo_atual, $4.identificador));
+        char* valor = strdup(retornar_valor_string_de_variavel(lista_atual, $4.identificador));
 
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(strcmp(valor, CHAR_ERRO)) {
@@ -156,24 +161,37 @@ atribuicao: IDENTIFICADOR IGUAL INTEIRO TERMINADOR {
         atualizar_variavel_cadeia(lista_atual, $1.identificador, $3.cadeia);
     } |
     IDENTIFICADOR IGUAL IDENTIFICADOR TERMINADOR {
-        char* tipo_variavel;
-        char* valor_cadeia;
-        int valor_numero;
+        char* tipo_variavel_esquerda = NULL,
+            *tipo_variavel_direita = NULL;
+        char* valor_cadeia = NULL;
+        int valor_numero = 0;
 
-        strcpy(tipo_variavel, retornar_tipo_da_variavel(escopo_atual, $3.identificador));
+        tipo_variavel_esquerda = strdup(retornar_tipo_da_variavel(lista_atual, $1.identificador));
+        tipo_variavel_direita = strdup(retornar_tipo_da_variavel(lista_atual, $3.identificador));
 
-        if(!strcmp(tipo_variavel, "NUMERO")) {
-            valor_numero = retornar_valor_inteiro_de_variavel(escopo_atual, $3.identificador);
+        // VERIFICA SE TIPO EH NUMERO E SE AMBOS TIPOS SAO IGUAIS ENTRE SI
+        if(
+            (!strcmp(tipo_variavel_esquerda, "NUMERO")) &&
+            (!strcmp(tipo_variavel_esquerda, tipo_variavel_direita))
+        ) {
+            valor_numero = retornar_valor_inteiro_de_variavel(lista_atual, $3.identificador);
 
-            if (valor_numero != INT_MIN) {
+            // VERIFICA SE HOUVE ALGUM ERRO NA HORA DE RETORNAR O DADO
+            if(valor_numero != INT_MIN) {
                 atualizar_variavel_numero(lista_atual, $1.identificador, valor_numero);
             }
-        } else {
-            valor_cadeia = strdup(retornar_valor_string_de_variavel(escopo_atual, $3.identificador));
+        } else if( // TIPO CADEIA ENTRA AQUI ABAIXO
+            (!strcmp(tipo_variavel_esquerda, "CADEIA")) &&
+            (!strcmp(tipo_variavel_esquerda, tipo_variavel_direita))
+        ) {
+            valor_cadeia = strdup(retornar_valor_string_de_variavel(lista_atual, $3.identificador));
 
+            // VERIFICA SE HOUVE ALGUM ERRO NA HORA DE RETORNAR O DADO
             if(strcmp(valor_cadeia, CHAR_ERRO)) {
                 atualizar_variavel_cadeia(lista_atual, $1.identificador, valor_cadeia);
             }
+        } else {
+            printf("Erro. Tipos incompativeis\n");
         }
     }
     ;
@@ -182,7 +200,7 @@ soma: IDENTIFICADOR IGUAL INTEIRO SOMA INTEIRO TERMINADOR {
         atualizar_variavel_numero(lista_atual, $1.identificador, ($3.numero + $5.numero));
     } |
     IDENTIFICADOR IGUAL INTEIRO SOMA IDENTIFICADOR TERMINADOR {
-        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, $5.identificador);
+        int valor = retornar_valor_inteiro_de_variavel(lista_atual, $5.identificador);
         
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(valor != INT_MIN) {
@@ -190,7 +208,7 @@ soma: IDENTIFICADOR IGUAL INTEIRO SOMA INTEIRO TERMINADOR {
         }
     } |
     IDENTIFICADOR IGUAL IDENTIFICADOR SOMA INTEIRO TERMINADOR {
-        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, $3.identificador);
+        int valor = retornar_valor_inteiro_de_variavel(lista_atual, $3.identificador);
         
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(valor != INT_MIN) {
@@ -198,8 +216,8 @@ soma: IDENTIFICADOR IGUAL INTEIRO SOMA INTEIRO TERMINADOR {
         }
     } |
     IDENTIFICADOR IGUAL IDENTIFICADOR SOMA IDENTIFICADOR TERMINADOR {
-        int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, $3.identificador),
-            valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, $5.identificador);
+        int valor1 = retornar_valor_inteiro_de_variavel(lista_atual, $3.identificador),
+            valor2 = retornar_valor_inteiro_de_variavel(lista_atual, $5.identificador);
         
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(valor1 != INT_MIN && valor2 != INT_MIN) {
@@ -216,8 +234,8 @@ soma: IDENTIFICADOR IGUAL INTEIRO SOMA INTEIRO TERMINADOR {
         }
     } |
     TIPONUM IDENTIFICADOR IGUAL INTEIRO SOMA IDENTIFICADOR TERMINADOR {
-        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, $6.identificador);
-        
+        int valor = retornar_valor_inteiro_de_variavel(lista_atual, $6.identificador);
+
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(valor != INT_MIN) {
             if(variavel_no_escopo_atual(lista_atual, $2.identificador)) {
@@ -228,7 +246,7 @@ soma: IDENTIFICADOR IGUAL INTEIRO SOMA INTEIRO TERMINADOR {
         }
     } |
     TIPONUM IDENTIFICADOR IGUAL IDENTIFICADOR SOMA INTEIRO TERMINADOR {
-        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, $4.identificador);
+        int valor = retornar_valor_inteiro_de_variavel(lista_atual, $4.identificador);
         
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(valor != INT_MIN) {
@@ -240,8 +258,8 @@ soma: IDENTIFICADOR IGUAL INTEIRO SOMA INTEIRO TERMINADOR {
         }
     } |
     TIPONUM IDENTIFICADOR IGUAL IDENTIFICADOR SOMA IDENTIFICADOR TERMINADOR {
-        int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, $4.identificador),
-            valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, $6.identificador);
+        int valor1 = retornar_valor_inteiro_de_variavel(lista_atual, $4.identificador),
+            valor2 = retornar_valor_inteiro_de_variavel(lista_atual, $6.identificador);
 
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if((valor1 != INT_MIN) && (valor2 != INT_MIN)) {
@@ -258,7 +276,7 @@ subtracao: IDENTIFICADOR IGUAL INTEIRO MENOS INTEIRO TERMINADOR {
         atualizar_variavel_numero(lista_atual, $1.identificador, ($3.numero - $5.numero));
     } |
     IDENTIFICADOR IGUAL INTEIRO MENOS IDENTIFICADOR TERMINADOR {
-        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, $5.identificador);
+        int valor = retornar_valor_inteiro_de_variavel(lista_atual, $5.identificador);
         
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(valor != INT_MIN) {
@@ -266,7 +284,7 @@ subtracao: IDENTIFICADOR IGUAL INTEIRO MENOS INTEIRO TERMINADOR {
         }
     } |
     IDENTIFICADOR IGUAL IDENTIFICADOR MENOS INTEIRO TERMINADOR {
-        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, $3.identificador);
+        int valor = retornar_valor_inteiro_de_variavel(lista_atual, $3.identificador);
         
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(valor != INT_MIN) {
@@ -274,8 +292,8 @@ subtracao: IDENTIFICADOR IGUAL INTEIRO MENOS INTEIRO TERMINADOR {
         }
     } |
     IDENTIFICADOR IGUAL IDENTIFICADOR MENOS IDENTIFICADOR TERMINADOR {
-        int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, $3.identificador),
-            valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, $5.identificador);
+        int valor1 = retornar_valor_inteiro_de_variavel(lista_atual, $3.identificador),
+            valor2 = retornar_valor_inteiro_de_variavel(lista_atual, $5.identificador);
         
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if((valor1 != INT_MIN) && (valor2 != INT_MIN)) {
@@ -292,7 +310,7 @@ subtracao: IDENTIFICADOR IGUAL INTEIRO MENOS INTEIRO TERMINADOR {
         }
     } |
     TIPONUM IDENTIFICADOR IGUAL INTEIRO MENOS IDENTIFICADOR TERMINADOR {
-        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, $6.identificador);
+        int valor = retornar_valor_inteiro_de_variavel(lista_atual, $6.identificador);
         
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(valor != INT_MIN) {
@@ -304,7 +322,7 @@ subtracao: IDENTIFICADOR IGUAL INTEIRO MENOS INTEIRO TERMINADOR {
         }
     } |
     TIPONUM IDENTIFICADOR IGUAL IDENTIFICADOR MENOS INTEIRO TERMINADOR {
-        int valor = retornar_valor_inteiro_de_variavel(escopo_atual, $4.identificador);
+        int valor = retornar_valor_inteiro_de_variavel(lista_atual, $4.identificador);
         
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if(valor != INT_MIN) {
@@ -316,8 +334,8 @@ subtracao: IDENTIFICADOR IGUAL INTEIRO MENOS INTEIRO TERMINADOR {
         }
     } |
     TIPONUM IDENTIFICADOR IGUAL IDENTIFICADOR MENOS IDENTIFICADOR TERMINADOR {
-        int valor1 = retornar_valor_inteiro_de_variavel(escopo_atual, $4.identificador),
-            valor2 = retornar_valor_inteiro_de_variavel(escopo_atual, $6.identificador);
+        int valor1 = retornar_valor_inteiro_de_variavel(lista_atual, $4.identificador),
+            valor2 = retornar_valor_inteiro_de_variavel(lista_atual, $6.identificador);
 
         // SO IRA ATUALIZAR SE NAO HOUVER ERRO NENHUM
         if((valor1 != INT_MIN) && (valor2 != INT_MIN)) {
@@ -331,9 +349,7 @@ subtracao: IDENTIFICADOR IGUAL INTEIRO MENOS INTEIRO TERMINADOR {
     ;
 
 concatenar: IDENTIFICADOR IGUAL STRING SOMA STRING TERMINADOR {
-        char* string_concatenada;
-
-        strcpy(string_concatenada, concatenar_strings($3.cadeia, $5.cadeia));
+        char* string_concatenada = strdup(concatenar_strings($3.cadeia, $5.cadeia));
         
         if(!variavel_no_escopo_atual(lista_atual, $1.identificador)) {
             printf("Erro. Variavel nao foi declarada.\n");
@@ -342,9 +358,7 @@ concatenar: IDENTIFICADOR IGUAL STRING SOMA STRING TERMINADOR {
         }
     } |
     TIPOCAD IDENTIFICADOR IGUAL STRING SOMA STRING TERMINADOR {
-        char* string_concatenada;
-
-        strcpy(string_concatenada, concatenar_strings($4.cadeia, $6.cadeia));
+        char* string_concatenada = strdup(concatenar_strings($4.cadeia, $6.cadeia));
 
         if(vazia(escopo_atual)) {
             printf("Erro. Nao ha nenhum bloco aberto.\n");
@@ -399,6 +413,7 @@ void inserir_string(char* tipo, char* lexema, char* valor_string) {
 
     // ATUALIZANDO O PONTEIRO DE INICIO DA LISTA
 	ptr_novo_elo->ptr_proximo_no = lista_atual->ptr_primeiro_lista;
+    lista_atual->ptr_primeiro_lista = ptr_novo_elo;
 
 	return;
 }
@@ -469,12 +484,12 @@ void deletar_pilha(escopo_t* pilha) {
     return;
 }
 
-void push(lista_t* lista_atual) {
+void push(lista_t* lista) {
     // INSERINDO UMA NOVA LISTA NO TOPO DA PILHA
-    lista_atual->ptr_proxima_lista = escopo_atual->ptr_topo;   
+    lista->ptr_proxima_lista = escopo_atual->ptr_topo;   
 
-    // ATUALIZANDO O PONTEIRO
-    escopo_atual->ptr_topo = lista_atual;
+    // ATUALIZANDO OS PONTEIROS
+    escopo_atual->ptr_topo = lista;
 
     return;
 }
@@ -485,7 +500,7 @@ lista_t* pop() {
     // VERIFICANDO SE A PILHA ESTA VAZIA
     if(vazia(escopo_atual)) {
         printf("Erro. Pilha vazia.\n");
-        return NULL;
+        return temp;
     }
 
     // SALVANDO A LISTA QUE ESTA NO TOPO DA PILHA
@@ -495,7 +510,7 @@ lista_t* pop() {
     escopo_atual->ptr_topo = escopo_atual->ptr_topo->ptr_proxima_lista;
     free(temp);
 
-    return temp;
+    return escopo_atual->ptr_topo;
 }
 
 lista_t* retornar_escopo(escopo_t* escopo, char* nome_variavel) {
@@ -627,11 +642,11 @@ void atualizar_variavel_cadeia(lista_t* lista, char* nome_variavel, char* novo_v
         printf("Erro: variavel não declarada.\n");
         return;
     }
-    
+
     // ITERANDO PELA LISTA PARA PEGAR O no CORRETO
     while(no != NULL) {
         if(!strcmp(no->nome_variavel, nome_variavel)) {
-            no->valor_string = strdup(novo_valor);
+            strcpy(no->valor_string, novo_valor);
             break;
         }
 
@@ -641,15 +656,15 @@ void atualizar_variavel_cadeia(lista_t* lista, char* nome_variavel, char* novo_v
     return;
 }
 
-int retornar_valor_inteiro_de_variavel(escopo_t* escopo, char* nome_variavel) {
+int retornar_valor_inteiro_de_variavel(lista_t* lista, char* nome_variavel) {
     node_t* no = NULL;
-    lista_t* temp = escopo->ptr_topo;
+    lista_t* temp = NULL;
 
     // VERIFICA SE VARIAVEL ESTA NO ESCOPO ATUAL
-    if(variavel_no_escopo_atual(temp, nome_variavel)) {
-        no = temp->ptr_primeiro_lista;
+    if(variavel_no_escopo_atual(lista, nome_variavel)) {
+        no = lista->ptr_primeiro_lista;
     } else { // SE NAO EXISTIR, BUSCAR NA PILHA
-        temp = retornar_escopo(escopo, nome_variavel);
+        temp = retornar_escopo(escopo_atual, nome_variavel);
 
         // SO ATRIBUIR AO no SE REALEMNTE EXISTIR
         if(temp != NULL) {
@@ -671,6 +686,8 @@ int retornar_valor_inteiro_de_variavel(escopo_t* escopo, char* nome_variavel) {
                 return no->valor_inteiro;
             }
         }
+
+        no = no->ptr_proximo_no;
     }
 
     // SE CHEGOU ATE AQUI, ENTAO HA ERRO
@@ -678,15 +695,15 @@ int retornar_valor_inteiro_de_variavel(escopo_t* escopo, char* nome_variavel) {
     return INT_MIN;
 }
 
-char* retornar_valor_string_de_variavel(escopo_t* escopo, char* nome_variavel) {
+char* retornar_valor_string_de_variavel(lista_t* lista, char* nome_variavel) {
     node_t* no = NULL;
-    lista_t* temp = escopo->ptr_topo;
+    lista_t* temp = NULL;
 
     // VERIFICA SE VARIAVEL ESTA NO ESCOPO ATUAL
-    if(variavel_no_escopo_atual(temp, nome_variavel)) {
-        no = temp->ptr_primeiro_lista;
+    if(variavel_no_escopo_atual(lista, nome_variavel)) {
+        no = lista->ptr_primeiro_lista;
     } else { // SE NAO EXISTIR, BUSCAR NA PILHA
-        temp = retornar_escopo(escopo, nome_variavel);
+        temp = retornar_escopo(escopo_atual, nome_variavel);
 
         // SO ATRIBUIR AO no SE REALEMNTE EXISTIR
         if(temp != NULL) {
@@ -708,6 +725,8 @@ char* retornar_valor_string_de_variavel(escopo_t* escopo, char* nome_variavel) {
                 return no->valor_string;
             }
         }
+
+        no = no->ptr_proximo_no;
     }
 
     // SE CHEGOU ATE AQUI, ENTAO HA ERRO
@@ -730,16 +749,16 @@ char* concatenar_strings(const char* string1, const char* string2) {
     return resultado;
 }
 
-char* retornar_tipo_da_variavel(escopo_t* escopo, char* nome_variavel) {
-    char* tipo = NULL;
+char* retornar_tipo_da_variavel(lista_t* lista, char* nome_variavel) {
     node_t* no = NULL;
-    lista_t* temp = escopo->ptr_topo;
+    lista_t* temp = NULL;
+    char* tipo = NULL;
 
     // VERIFICA SE VARIAVEL ESTA NO ESCOPO ATUAL
-    if(variavel_no_escopo_atual(temp, nome_variavel)) {
-        no = temp->ptr_primeiro_lista;
+    if(variavel_no_escopo_atual(lista, nome_variavel)) {
+        no = lista->ptr_primeiro_lista;
     } else { // SE NAO EXISTIR, BUSCAR NA PILHA
-        temp = retornar_escopo(escopo, nome_variavel);
+        temp = retornar_escopo(escopo_atual, nome_variavel);
 
         // SO ATRIBUIR AO no SE REALEMNTE EXISTIR
         if(temp != NULL) {
@@ -759,6 +778,8 @@ char* retornar_tipo_da_variavel(escopo_t* escopo, char* nome_variavel) {
             tipo = strdup(no->tipo_variavel);
             break;
         }
+
+        no = no->ptr_proximo_no;
     }
 
     return tipo;
