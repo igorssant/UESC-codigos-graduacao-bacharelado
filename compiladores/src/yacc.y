@@ -79,10 +79,10 @@ comandos: comandos PRINT IDENTIFICADOR TERMINADOR {
             lista_atual = criar_lista();
         }
         
-        /* SE O PROGRAMA ESTIVER PRESTES A ENCERRAR, MATAR A PILHA
+        // SE O PROGRAMA ESTIVER PRESTES A ENCERRAR, MATAR A PILHA
         if(vazia(escopo_atual)) {
             deletar_pilha(escopo_atual);
-        }*/
+        }
     } |
     comandos criacao |
     comandos atribuicao |
@@ -161,27 +161,37 @@ atribuicao: IDENTIFICADOR IGUAL INTEIRO TERMINADOR {
         atualizar_variavel_cadeia(lista_atual, $1.identificador, $3.cadeia);
     } |
     IDENTIFICADOR IGUAL IDENTIFICADOR TERMINADOR {
-        char* tipo_variavel;
-        char* valor_cadeia;
-        int valor_numero;
+        char* tipo_variavel_esquerda = NULL,
+            *tipo_variavel_direita = NULL;
+        char* valor_cadeia = NULL;
+        int valor_numero = 0;
 
-        tipo_variavel = strdup(retornar_tipo_da_variavel(lista_atual, $3.identificador));
+        tipo_variavel_esquerda = strdup(retornar_tipo_da_variavel(lista_atual, $1.identificador));
+        tipo_variavel_direita = strdup(retornar_tipo_da_variavel(lista_atual, $3.identificador));
 
-        // VERIFICA SE TIPO EH NUMERO
-        if(!strcmp(tipo_variavel, "NUMERO")) {
+        // VERIFICA SE TIPO EH NUMERO E SE AMBOS TIPOS SAO IGUAIS ENTRE SI
+        if(
+            (!strcmp(tipo_variavel_esquerda, "NUMERO")) &&
+            (!strcmp(tipo_variavel_esquerda, tipo_variavel_direita))
+        ) {
             valor_numero = retornar_valor_inteiro_de_variavel(lista_atual, $3.identificador);
 
             // VERIFICA SE HOUVE ALGUM ERRO NA HORA DE RETORNAR O DADO
             if(valor_numero != INT_MIN) {
                 atualizar_variavel_numero(lista_atual, $1.identificador, valor_numero);
             }
-        } else { // TIPO CADEIA ENTRA AQUI
+        } else if( // TIPO CADEIA ENTRA AQUI ABAIXO
+            (!strcmp(tipo_variavel_esquerda, "CADEIA")) &&
+            (!strcmp(tipo_variavel_esquerda, tipo_variavel_direita))
+        ) {
             valor_cadeia = strdup(retornar_valor_string_de_variavel(lista_atual, $3.identificador));
 
             // VERIFICA SE HOUVE ALGUM ERRO NA HORA DE RETORNAR O DADO
             if(strcmp(valor_cadeia, CHAR_ERRO)) {
                 atualizar_variavel_cadeia(lista_atual, $1.identificador, valor_cadeia);
             }
+        } else {
+            printf("Erro. Tipos incompativeis\n");
         }
     }
     ;
@@ -339,9 +349,7 @@ subtracao: IDENTIFICADOR IGUAL INTEIRO MENOS INTEIRO TERMINADOR {
     ;
 
 concatenar: IDENTIFICADOR IGUAL STRING SOMA STRING TERMINADOR {
-        char* string_concatenada;
-
-        strcpy(string_concatenada, concatenar_strings($3.cadeia, $5.cadeia));
+        char* string_concatenada = strdup(concatenar_strings($3.cadeia, $5.cadeia));
         
         if(!variavel_no_escopo_atual(lista_atual, $1.identificador)) {
             printf("Erro. Variavel nao foi declarada.\n");
@@ -350,9 +358,7 @@ concatenar: IDENTIFICADOR IGUAL STRING SOMA STRING TERMINADOR {
         }
     } |
     TIPOCAD IDENTIFICADOR IGUAL STRING SOMA STRING TERMINADOR {
-        char* string_concatenada;
-
-        strcpy(string_concatenada, concatenar_strings($4.cadeia, $6.cadeia));
+        char* string_concatenada = strdup(concatenar_strings($4.cadeia, $6.cadeia));
 
         if(vazia(escopo_atual)) {
             printf("Erro. Nao ha nenhum bloco aberto.\n");
@@ -744,9 +750,9 @@ char* concatenar_strings(const char* string1, const char* string2) {
 }
 
 char* retornar_tipo_da_variavel(lista_t* lista, char* nome_variavel) {
-    node_t* no;
-    lista_t* temp;
-    char* tipo;
+    node_t* no = NULL;
+    lista_t* temp = NULL;
+    char* tipo = NULL;
 
     // VERIFICA SE VARIAVEL ESTA NO ESCOPO ATUAL
     if(variavel_no_escopo_atual(lista, nome_variavel)) {
@@ -769,7 +775,7 @@ char* retornar_tipo_da_variavel(lista_t* lista, char* nome_variavel) {
     // ITERANDO PELA LISTA PARA PEGAR O no CORRETO
     while(no != NULL) {
         if(!strcmp(no->nome_variavel, nome_variavel)) {
-            strcpy(tipo, no->nome_variavel);
+            tipo = strdup(no->tipo_variavel);
             break;
         }
 
