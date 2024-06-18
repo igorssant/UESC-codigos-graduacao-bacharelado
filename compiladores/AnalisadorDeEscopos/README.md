@@ -1,147 +1,361 @@
-# Gerenciamento de escopo e verificação de tipos por meio de tabela de símbolos
+# Trabalho de Compiladores - Lex e Yacc
+- Quarto crédito da disciplina DEC000058 - Compiladores
+- Semestre 2024.1
 
-## Indice
-- [Objetivo](#objetivo)
-- [A linguagem](#a-linguagem)
-- [Programa exemplo](#programa-exemplo)
+## Índice
+- [Trabalho de Compiladores - Lex e Yacc](#trabalho-de-compiladores---lex-e-yacc)
+  - [Índice](#índice)
+  - [Descrição do Trabalho](#descrição-do-trabalho)
+    - [Modificações Posteriores](#modificações-posteriores)
+  - [Facetas da Análise](#facetas-da-análise)
+  - [Explicação de funções](#explicação-de-funções)
+  - [Instalação do Projeto](#instalação-do-projeto)
+  - [Como Executar](#como-executar)
+  - [Referências](#referências)
 
-## Objetivo
-- Você deverá implementar um programa, em qualquer linguagem, para gerenciar o escopo  dessa linguagem, acusar erro quando existir e mostrar os valores de cada PRINT.
+## Descrição do Trabalho
+- Verificação de tipos e escopo com expressão de adição
+Observem que podem reutilizar mesmas rotinas como:
+- Realizar o mesmo trabalho anterior, porém usando lex e yacc (verificação de tipo e escopo)
+Adicional ao trabalho anterior: expressão de adição simples
+- id = termo+termo;
+- id = constante;
+- Onde termo pode ser um id ou uma constante numérica ou cadeia.
+- Observem que podem reutilizar mesmas rotinas como:
+  - inserir e remover escopo da pilha
+  - verificar tipo das variáveis
+- Sua execução deve:
+  1. mostrar o resultado do print, para o identificador
+  2. mostrar erros: tipos de dados incompatíveis e variáveis não declaradas. Não será dado exemplos (casos de testes) com outros erros. Então a entrada estará sempre correta lexicalmente e sintaticamente
+- **Entregar**: arquivos (.l e .y) + video(captura de tela) mostrando a execução para os casos de teste, entradas e saídas.
+- Para realizar essa tarefa, você deverá implementar uma tabela de símbolos, como no exemplo 5. Deverá atualizá-la sempre que os ids mudarem de valor
+- Um id não pode mudar de tipo. Um id ganha em uma atribuição, a depender o tipo da operação (ou dado) do lado direto da
+atribuição.
+  - o operador + pode ser aplicado para 2 dados numéricos. Onde é realizado a adição desses valores.
+  - o operador + pode ser aplicado para 2 dados do tipo cadeia. Onde é realizado a concatenação dessas cadeias
 
-### Em um fluxo completo (front-end) de um compilador, os passos seriam os seguintes:
-1. Análise léxica – Reconhecer tokens da linguagem
-2. Analisar sintático – Construção de tabela de derivação a partir da gramática e tokens retornados pelo
-   léxico
-3. Análise semântica – Verificação de escopo
+### Modificações Posteriores
+Para o último trabalho, modifiquei os casos de teste para simplificar:
+- adicionei `;` ao fim de atribuições e declarações.
+- valores numericos apenas inteiros não-negativos.
 
-- Para simplificação do trabalho, não precisaremos executar a análise léxica e sintática. Vamos
-considerar que todo programa é sempre bem formatado lexicalmente e sintaticamente.
-- No entanto, você deverá implementar a análise semântica para gerenciamento de escopo e
-verificação de tipos
+## Facetas da Análise
+O programa:
+- nomes de bloco precisam iniciar e finalizar com o caractere *underscore* (`_`) e podem conter apenas letras minúsculas ou números;
+  - `BLOCO _nome_bloco_`.
+- nomes de variáveis devem iniciar com letras minúsculas, podem conter qualquer tamanho, podem receber números e underscores em sua formação, mas não aceitam letras maiúsculas nem caracteres especiais;
+- exige um token finalizador (`;`) para atribuição, criação e impressão;
+  - `NUMERO a = 10;`;
+  - `CADEIA x;`;
+  - `a = 50;`;
+  - `PRINT x;`.
+- não aceita o token finalizador para criação e exclusão de bloco;
+  - `BLOCO _nome_bloco_`;
+  - `FIM _nome_bloco_`
+- aceita como entrada para variáveis numéricas, somente valores inteiros positivos;
+- não aceita nenhum tipo de acento ou caractere especial para variáveis do tipo *cadeia*;
+- não aceita criacão de variáveis fora de blocos;
+- **NÃO** aceita criação de uma lista váriaveis numa mesma linha, como no exemplo abaixo:
+  - `NUMERO a = 5, b, c = 10;`.
+- aceita somente a criação de uma variável por linha;
+- aceita somente uma atribuição de valor a um variável por linha, como no exemplo abaixo:
+  - `a = 10;`.
+- após o fechamento do bloco principal (ou seja, o primeiro bloco declarado) não é possível criar novos blocos ou criar/instânciar novas variáveis.
 
-## Passos a serem seguidos
-- implementar uma tabela de símbolos e atualizá-la a cada abertura e fechamento de  escopo, bem como, a cada declaração e atribuição de valores. A tabela de símbolos deve ter no mínimo os seguintes atributos: token (categoria), lexema, tipo de dado, valor.
-- mostrar o valor de todos os prints
-- Informar quando houver algum erro semântico em relação ao escopo ou verificação de tipos.
-  - Possíveis erros:
-    - Tipos não compatíveis – ex, uma atribuição apenas pode ser realizada com elementos do mesmo tipo
-    - Variável não declarada – ex, um print de variável que não existe naquele escopo.
-    - **Ao identificar erros semânticos, informar e prosseguir o processamento. Não deve parar o programa.**
-- Você deverá escolher um dentre os seguintes métodos para gestão de escopo: op1, única
-  tabela de símbolos, onde cada lexema tem sua pilha de escopos; op2: pilha de escopos,
-  onde cada posição da pilha guarda uma tabela de símbolos
-- Entrega: relatório com código comentado (ou link para código); Entradas e saídas para os
-  exemplos fornecidos; Explicação de qual método utilizou para gerenciar escopo; Um pseudo
-  código (algoritmo) em alto nível de como seu programa funciona e gerencia o escopo e
-  verificação de tipos.
+## Explicação de funções
+<section>
 
-## A linguagem
-### A linguagem tem os seguintes comandos:
-- BLOCO
-> BLOCO tk_id_bloco
->
-> (...)
->
-> FIM tk_id_bloco
+```c
+void inserir_inteiro(char*, char*, int);
+```
+A função `inserir_inteiro()`:
+- recebe como parâmetros:
+  -  o tipo da variável `:: char*`;
+  -  o nome da variável `:: char*`;
+  -  o valor inteiro da variável (positivo) `:: int`.
+- cria um novo nó e insere ao início da lista encadeada que se encontra no topo da pilha;
+- não possui retorno.
+</section>
+<hr>
+<section>
 
-- DECLARAÇÕES E ATRIBUIÇÕES (seguem padrão descrito pela gramática):
-> DEC -> TIPO LIST AT
->
-> LIST -> AT ,
->
-> LIST ->
-> 
-> AT -> ID
-> 
-> AT -> ID = CONST
->
-> AT -> ID = ID
-> 
-> ID -> tk_identificador
-> 
-> CONST -> tk_numero
-> 
-> CONST -> tk_cadeia
-> 
-> TIPO -> NUMERO
-> 
-> TIPO -> CADEIA
+```c
+void inserir_string(char*, char*, char*);
+```
+A função `inserir_string()`:
+- recebe como parâmetros:
+  -  o tipo da variável `:: char*`;
+  -  o nome da variável `:: char*`;
+  -  o valor em cadeia de caracteres da variável `:: char*`.
+- cria um novo nó e insere ao início da lista encadeada que se encontra no topo da pilha;
+- não possui retorno.
+</section>
+<hr>
+<section>
 
-- PRINT
-> PRINT tk_identificador
+```c
+lista_t* criar_lista();
+```
+A função `criar_lista()`:
+- não recebe parâmetros;
+- cria uma nova lista encadeada;
+- aloca memória e salva a lista;
+- por fim, retorna a lista alocada;
+- retorna ponteiro para uma nova lista encadeada `:: lista_t*`.
+</section>
+<hr>
+<section>
 
-- Tokens:
-  - Identificadores (tk_identificador) – nomes para atributos são descritos iniciados por uma letra, e pode conter outras letras, dígitos ou _. 
-  - Identificadores de bloco (tk_id_bloco) – nomes para blocos são iniciados e terminados por _, possui 1 ou mais letras e dígitos.
-  - Tipos de dados:
-    - numero (tk_numero) – números inteiros ou reais (ex: 10, 10.0, +10, -1.345). Valor padrão é 0, se não atribuído nenhum.
-    - cadeia (tk_cadeia) – sequência de caracteres entre aspas duplas (ex: "", "cadeia", " * - * "). valor padrão é cadeia vazia "", se não atribuído nenhum
+```c
+void deletar_lista(lista_t*);
+```
+A função `deletar_lista()`:
+- recebe como parâmetros;
+  - um ponteiro para um lista encadeada qualquer `:: lista_t*`.
+- desaloca completamente a lista da memória;
+- não possui retorno.
+</section>
+<hr>
+<section>
 
-- Outros:
-  - Indentação não é obrigatória,
-  - A linguagem é fortemente tipada, NÃO permite o uso de variáveis sem declaração prévia ou faz conversão de tipos.
+```c
+int vazia(escopo_t*);
+```
+A função `vazia()`:
+- recebe como parâmetros:
+  - um ponteiro para uma pilha `:: escopo_t*`;
+- verifica se o ponteiro para o topo da pilha aponta para `NULL`;
+  - Se verdade, retorna 1;
+  - Se falso, retorna 0.
+- retorna valor inteiro representando verdadeiro(1) ou falso(0) `:: int`.
+</section>
+<hr>
+<section>
 
-## Programa exemplo
-### Entrada
-```txt
-BLOCO _principal_
-    NUMERO a = 10, b = 20
-    CADEIA x
-    PRINT b
-    PRINT a
-    x= “Ola mundo”
-    x=a
-    PRINT x
-    BLOCO _n1_
-        CADEIA a = “Compiladores”
-        NUMERO c
-        c=-0.45
-        PRINT b
-        PRINT c
-    FIM _n1_
-    BLOCO _n2_
-        CADEIA b = “Compiladores”
-        PRINT a
-        PRINT b
-        a=11
-        CADEIA a= “Bloco2”
-        PRINT a
-        PRINT c
-        BLOCO _n3_
-            NUMERO a=-0.28, c
-            PRINT a
-            PRINT b
-            PRINT c
-            c=a
-            PRINT c
-            a=40
-            PRINT a
-            print c
-        FIM _n3_
-    FIM _n2_
-    PRINT c
-    PRINT a
-FIM _principal_
+```c
+escopo_t* criar_pilha();
+```
+A função `criar_pilha()`:
+- não recebe parâmetros;
+- cria uma nova pilha;
+- aloca na memória e retorna um ponteiro para a pilha criada;
+- retorna ponteiro para uma nova pilha `:: escopo_t*`.
+</section>
+<hr>
+<section>
+
+```c
+void deletar_pilha(escopo_t*);
+```
+A função `deletar_pilha()`:
+- recebe como parâmetros:
+  - um ponteiro para uma pilha `:: escopo_t*`.
+- desaloca completamente a pilha da memória;
+- não possui retorno.
+</section>
+<hr>
+<section>
+
+```c
+void push(lista_t*);
+```
+A função `push()`:
+- recebe como parâmetros:
+  - um ponteiro para uma lista encadeada `:: lista_t*`.
+- cria uma nova lista encadeada;
+- atualiza os ponteiros envolvidos;
+- salva a lista no topo da pilha;
+- não possui retorno.
+</section>
+<hr>
+<section>
+
+```c
+lista_t* pop();
+```
+A função `pop()`:
+- não recebe parâmetros;
+- remove uma lista encadeada do topo da pilha;
+- atualiza os ponteiro envolvidos;
+- desaloca a lista removida;
+- retorna a lista que está no topo da pilha;
+- retorna ponteiro para lista encadeada `:: lista_t*`.
+</section>
+<hr>
+<section>
+
+```c
+lista_t* retornar_escopo(escopo_t*, char*);
+```
+A função `retornar_escopo()`:
+- recebe como parâmetros:
+  - um ponteiro para uma lista encadeada `:: lista_t`;
+  - o nome de uma variável qualquer `:: char*`.
+- itera pela pilha global em busca de uma lista que possua a variável em questão;
+- percorre de lista em lista até que ache o nó que possui chave `nome_variavel` igual ao valor passado  como parâmetro;
+  - se achar, retorna a lista correta `:: lista_t*`;
+  - se não achar, retorna o valor `NULL`.
+- não realiza nenhuma mudança na pilha global nem nas listas encadeadas salvas;
+- retorna ponteiro para lista encadeada `:: lista_t*`.
+</section>
+<hr>
+<section>
+
+```c
+int variavel_no_escopo_atual(lista_t*, char*);
+```
+A função `variavel_no_escopo_atual()`:
+- recebe como parâmetros:
+  - um ponteiro para uma lista encadeada `:: lista_t`;
+  - o nome de uma variável qualquer `:: char*`.
+- itera pela lista recebida até que ache o nó que possui chave `nome_variavel` igual ao valor passado como parâmetro;
+  - se achar, retorna verdade(1);
+  - se não achar, retorna falso(0).
+- não realiza nenhuma mudança na lista encadeada passada como parâmetro;
+- retorna valor inteiro representando verdadeiro(1) ou falso(0) `:: int`.
+</section>
+<hr>
+<section>
+
+```c
+void imprimir_variavel(char*);
+```
+A função `variavel_no_escopo_atual()`:
+- recebe como parâmetros:
+  - o nome de uma variável qualquer `:: char*`.
+- itera pela pilha global, de lista em lista;
+- ao percorrer as listas, procura de nó em nó se o mesmo possui chave `nome_variavel` igual ao valor passado como parâmetro;
+- ao percorrer completamente uma lista, se não achar o nó correto, desce para a próxima lista salva na pilha;
+  - se achar, imprime o valor da variável no console;
+  - se não achar, imprime: `Erro. Variável não declarada.`.
+- não realiza nenhuma mudança na pilha global, ou nas listas encadeadas salvas;
+- não possui retorno.
+</section>
+<hr>
+<section>
+
+```c
+void atualizar_variavel_numero(lista_t*, char*, int);
+```
+A função `atualizar_variavel_numero()`:
+- recebe como parâmetros:
+  - um ponteiro para uma lista encadeada `:: lista_t*`;
+  - o nome de uma variável qualquer `:: char*`;
+  - um valor inteiro qualquer `:: int`.
+- itera pela pilha global, de lista em lista;
+- ao percorrer as listas, procura de nó em nó se o mesmo possui chave `nome_variavel` igual ao valor passado como parâmetro;
+- ao percorrer completamente uma lista, se não achar o nó correto, desce para a próxima lista salva na pilha;
+  - se achar, atualiza o valor inteiro da variável no nó;
+  - se não achar, imprime: `Erro. Variável não declarada.`.
+- não realiza nenhuma mudança na pilha global, ou nas listas encadeadas salvas. Somente altera o nó;
+- não possui retorno.
+</section>
+<hr>
+<section>
+
+```c
+void atualizar_variavel_cadeia(lista_t*, char*, char*);
+```
+A função `atualizar_variavel_cadeia()`:
+- recebe como parâmetros:
+  - um ponteiro para uma lista encadeada `:: lista_t*`;
+  - o nome de uma variável qualquer `:: char*`;
+  - uma lista de caracteres qualquer `:: char*`.
+- itera pela pilha global, de lista em lista;
+- ao percorrer as listas, procura de nó em nó se o mesmo possui chave `nome_variavel` igual ao valor passado como parâmetro;
+- ao percorrer completamente uma lista, se não achar o nó correto, desce para a próxima lista salva na pilha;
+  - se achar, atualiza o valor *string* da variável no nó;
+  - se não achar, imprime: `Erro. Variável não declarada.`.
+- não realiza nenhuma mudança na pilha global, ou nas listas encadeadas salvas. Somente altera o nó;
+- não possui retorno.
+</section>
+<hr>
+<section>
+
+```c
+int retornar_valor_inteiro_de_variavel(lista_t*, char*);
+```
+A função `retornar_valor_inteiro_de_variavel()`:
+- recebe como parâmetros:
+  - um ponteiro para uma lista encadeada `:: lista_t*`;
+  - o nome de uma variável qualquer `:: char*`.
+- itera pela lista de nó em nó;
+- ao percorrer os nós, procura se algum dos mesmos possui chave `nome_variavel` igual ao valor passado como parâmetro;
+- ao percorrer completamente uma lista, se não achar o nó correto, acessa a pilha global e itera pelos níveis da pilha, lista a lista, procurando o nó;
+  - se achar, retorna o valor inteiro da variável desejada;
+  - se não achar, imprime: `Erro. Variável não declarada.`.
+- não realiza nenhuma mudança na pilha global, ou nas listas encadeadas salvas;
+- retorna valor inteiro do nó procurado `:: int` ou `NULL` se não existir.
+</section>
+<hr>
+<section>
+
+```c
+char* retornar_valor_string_de_variavel(lista_t*, char*);
+```
+A função `retornar_valor_string_de_variavel()`:
+- recebe como parâmetros:
+  - um ponteiro para uma lista encadeada `:: lista_t*`;
+  - o nome de uma variável qualquer `:: char*`.
+- itera pela lista de nó em nó;
+- ao percorrer os nós, procura se algum dos mesmos possui chave `nome_variavel` igual ao valor passado como parâmetro;
+- ao percorrer completamente uma lista, se não achar o nó correto, acessa a pilha global e itera pelos níveis da pilha, lista a lista, procurando o nó;
+  - se achar, retorna o valor *string* da variável desejada;
+  - se não achar, imprime: `Erro. Variável não declarada.`.
+- não realiza nenhuma mudança na pilha global, ou nas listas encadeadas salvas;
+- retorna valor *string* do nó procurado `:: char*` ou `NULL` se não existir.
+</section>
+<hr>
+<section>
+
+```c
+char* concatenar_strings(const char*, const char*);
+```
+A função `concatenar_strings()`:
+- recebe como parâmetros:
+  - uma cadeia de caracteres qualquer `:: char*`;
+  - uma cadeia de caracteres qualquer `:: char*`.
+- cria uma nova cadeia de caracteres internamente;
+- salva o valor da concatenação das duas cadeias de caracteres de entrada na variável criada;
+- retorna a variável criada com o valor concatenado;
+- retorna frase resultante da concatenação `:: char*`.
+</section>
+<hr>
+<section>
+
+```c
+char* retornar_tipo_da_variavel(lista_t*, char*);
+```
+A função `retornar_tipo_da_variavel()`:
+- recebe como parâmetros:
+  - um ponteiro para uma lista encadeada `:: lista_t*`;
+  - o nome de uma variável qualquer `:: char*`.
+- itera pela lista de nó em nó;
+- ao percorrer os nós, procura se algum dos mesmos possui chave `nome_variavel` igual ao valor passado como parâmetro;
+- ao percorrer completamente uma lista, se não achar o nó correto, acessa a pilha global e itera pelos níveis da pilha, lista a lista, procurando o nó;
+  - se achar, retorna o tipo da veriável procurada;
+  - se não achar, imprime: `Erro. Variável não declarada.`.
+- não realiza nenhuma mudança na pilha global, ou nas listas encadeadas salvas;
+- retorna tipo da variável procurada `:: char*` ou `NULL` se não existir.
+</section>
+
+## Instalação do Projeto
+- Baixe diretamente o projeto do GitHub em formato `.zip`.
+- Infelizmente não é possível clonar o projeto utilizando o comando `git clone`.
+
+## Como Executar
+Após instalar o projeto do GitHub, vá até a pasta principal do projeto (onde estão localizados os arquivos `README.md`, `makefile.sh` e `testar_lex.sh`).
+Abra esta mesma pasta em um terminal e digite o comando abaixo:
+
+```sh
+sh makefile.sh
 ```
 
-### Saida esperada
-```txt
-20
-10
-Erro linha 8, tipos não compatíveis
-“Ola mundo”
-20
--0.45
-10
-“Compiladores
-“Bloco2”
-Erro linha 25 - Variável não declarada
--0.28
-“Compiladores”
-0
--0.28
-40
--0.28
-Erro linha 38 - Variável não declarada
-11
-```
+O comando acima irá executar toda a etapa de compilação dos arquivos relacionados ao lex e o yacc, além de executar o projeto imediatamente, caso não haja nenhum erro na etapa de compilação.
+
+Lembrando, os arquivos compilados, os executáveis e os arquivos objetos já estão, de fato, incluídos no projeto, mas é indicado recompilar todos os arquivos novamente para adequar-se melhor à sua máquina.
+
+## Referências
+- https://developer.ibm.com/tutorials/au-lexyacc/
+- https://www2.cs.arizona.edu/classes/cs453/fall14/DOCS/tutorial-large.pdf
+- https://www.oreilly.com/library/view/lex-yacc/9781565920002/ch01.html

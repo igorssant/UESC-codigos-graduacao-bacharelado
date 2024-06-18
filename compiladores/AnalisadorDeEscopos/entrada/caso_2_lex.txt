@@ -1,0 +1,16 @@
+BLOCO _principal_
+    NUMERO a, b, c;
+    a = 10 + 2;
+    b = a + 45;
+    c = a + b;
+    PRINT c;
+    BLOCO _n1_
+        a = 34;
+        c = a + b;
+        CADEIA x = "123";
+        x = x + x;
+        PRINT x;
+    FIM _n1_
+    PRINT c;
+    PRINT d;
+FIM _principal_
