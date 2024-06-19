@@ -610,7 +610,7 @@ static const short yyrline[] = { 0,
     67,    69,    72,    84,    85,    86,    87,    88,    90,    93,
    101,   110,   122,   131,   140,   155,   157,   160,   197,   199,
    207,   215,   224,   233,   245,   257,   273,   275,   283,   291,
-   300,   309,   321,   333,   349,   357,   376,   395,   406,   425
+   300,   309,   321,   333,   349,   357,   376,   395,   406,   421
 };
 
 static const char * const yytname[] = {   "$","error","$illegal.","INTEIRO",
@@ -1616,16 +1616,12 @@ case 39:
 {
         char* string_concatenada = NULL,
             *novo_valor_string = NULL,
-            *tipo_variavel_esquerda = strdup(retornar_tipo_da_variavel(lista_atual, yyvsp[-5].identificador)),
             *tipo_variavel_direita = strdup(retornar_tipo_da_variavel(lista_atual, yyvsp[-3].identificador));
         
-        // VERIFICANDO SE AS VARIAVEIS REALMENTE EXISTEM
-        if(strcmp(tipo_variavel_esquerda, CHAR_ERRO) && strcmp(tipo_variavel_direita, CHAR_ERRO)) {
+        // VERIFICANDO SE A VARIAVEL REALMENTE EXISTE
+        if(strcmp(tipo_variavel_direita, CHAR_ERRO)) {
             // VERIFICA SE OS TIPOS SAO IGUAIS E SAO `CADEIA`
-            if(
-                (!strcmp(tipo_variavel_esquerda, tipo_variavel_direita)) &&
-                (!strcmp(tipo_variavel_esquerda, "CADEIA"))
-            ) {
+            if((!strcmp(tipo_variavel_direita, "CADEIA"))) {
                 novo_valor_string = strdup(retornar_valor_string_de_variavel(lista_atual, yyvsp[-3].identificador));
                 string_concatenada = strdup(concatenar_strings(novo_valor_string, yyvsp[-1].cadeia));
                 atualizar_variavel_cadeia(lista_atual, yyvsp[-5].identificador, string_concatenada);
@@ -1634,20 +1630,16 @@ case 39:
     ;
     break;}
 case 40:
-#line 426 "./src/yacc.y"
+#line 422 "./src/yacc.y"
 {
         char* string_concatenada = NULL,
             *novo_valor_string = NULL,
-            *tipo_variavel_esquerda = strdup(retornar_tipo_da_variavel(lista_atual, yyvsp[-5].identificador)),
             *tipo_variavel_direita = strdup(retornar_tipo_da_variavel(lista_atual, yyvsp[-1].identificador));
         
-        // VERIFICANDO SE AS VARIAVEIS REALMENTE EXISTEM
-        if(strcmp(tipo_variavel_esquerda, CHAR_ERRO) && strcmp(tipo_variavel_direita, CHAR_ERRO)) {
+        // VERIFICANDO SE A VARIAVEL REALMENTE EXISTE
+        if(strcmp(tipo_variavel_direita, CHAR_ERRO)) {
             // VERIFICA SE OS TIPOS SAO IGUAIS E SAO `CADEIA`
-            if(
-                (!strcmp(tipo_variavel_esquerda, tipo_variavel_direita)) &&
-                (!strcmp(tipo_variavel_esquerda, "CADEIA"))
-            ) {
+            if((!strcmp(tipo_variavel_direita, "CADEIA"))) {
                 novo_valor_string = strdup(retornar_valor_string_de_variavel(lista_atual, yyvsp[-1].identificador));
                 string_concatenada = strdup(concatenar_strings(yyvsp[-3].cadeia, novo_valor_string));
                 atualizar_variavel_cadeia(lista_atual, yyvsp[-5].identificador, string_concatenada);
@@ -1859,7 +1851,7 @@ YYLABEL(yyerrhandle)
 /* END */
 
  #line 1038 "/usr/share/bison++/bison.cc"
-#line 446 "./src/yacc.y"
+#line 438 "./src/yacc.y"
 
 
 extern FILE *yyin;
@@ -2232,13 +2224,16 @@ char* retornar_valor_string_de_variavel(lista_t* lista, char* nome_variavel) {
 char* concatenar_strings(const char* string1, const char* string2) {
     char* resultado = NULL;
     char* aux = NULL;
-    
+
     // COPIANDO PRIMEIRA PARTE DA STRING
-    strcpy(resultado, string1);
+    resultado = strdup(string1);
     resultado[strlen(resultado) - 1] = '\0';
 
     // COPIANDO SEGUNDA PARTE DA STRING
-    strncpy(aux, (string2 + 1), (strlen(string2) - 1));
+    aux = strdup(string2 + 1);
+    aux[strlen(aux)] = '\0';
+
+    // UNINDO AS DUAS PARTES
     strcat(resultado, aux);
 
     return resultado;

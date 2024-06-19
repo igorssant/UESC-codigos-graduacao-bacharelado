@@ -60,7 +60,7 @@ O programa:
 - aceita somente a criação de uma variável por linha;
 - aceita somente uma atribuição de valor a um variável por linha, como no exemplo abaixo:
   - `a = 10;`.
-- após o fechamento do bloco principal (ou seja, o primeiro bloco declarado) não é possível criar novos blocos ou criar/instânciar novas variáveis;
+- após o fechamento do bloco principal (ou seja, o primeiro bloco declarado) é possível criar novos blocos para criar/instânciar novas variáveis;
 - aceita soma;
   - `NUMERO b = 10 + 20;`;
   - `NUMERO a = b + 10;`;

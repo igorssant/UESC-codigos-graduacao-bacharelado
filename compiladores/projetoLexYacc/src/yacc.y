@@ -407,16 +407,12 @@ concatenar: IDENTIFICADOR IGUAL STRING SOMA STRING TERMINADOR {
     TIPOCAD IDENTIFICADOR IGUAL IDENTIFICADOR SOMA STRING TERMINADOR {
         char* string_concatenada = NULL,
             *novo_valor_string = NULL,
-            *tipo_variavel_esquerda = strdup(retornar_tipo_da_variavel(lista_atual, $2.identificador)),
             *tipo_variavel_direita = strdup(retornar_tipo_da_variavel(lista_atual, $4.identificador));
         
-        // VERIFICANDO SE AS VARIAVEIS REALMENTE EXISTEM
-        if(strcmp(tipo_variavel_esquerda, CHAR_ERRO) && strcmp(tipo_variavel_direita, CHAR_ERRO)) {
+        // VERIFICANDO SE A VARIAVEL REALMENTE EXISTE
+        if(strcmp(tipo_variavel_direita, CHAR_ERRO)) {
             // VERIFICA SE OS TIPOS SAO IGUAIS E SAO `CADEIA`
-            if(
-                (!strcmp(tipo_variavel_esquerda, tipo_variavel_direita)) &&
-                (!strcmp(tipo_variavel_esquerda, "CADEIA"))
-            ) {
+            if((!strcmp(tipo_variavel_direita, "CADEIA"))) {
                 novo_valor_string = strdup(retornar_valor_string_de_variavel(lista_atual, $4.identificador));
                 string_concatenada = strdup(concatenar_strings(novo_valor_string, $6.cadeia));
                 atualizar_variavel_cadeia(lista_atual, $2.identificador, string_concatenada);
@@ -426,16 +422,12 @@ concatenar: IDENTIFICADOR IGUAL STRING SOMA STRING TERMINADOR {
     TIPOCAD IDENTIFICADOR IGUAL STRING SOMA IDENTIFICADOR TERMINADOR {
         char* string_concatenada = NULL,
             *novo_valor_string = NULL,
-            *tipo_variavel_esquerda = strdup(retornar_tipo_da_variavel(lista_atual, $2.identificador)),
             *tipo_variavel_direita = strdup(retornar_tipo_da_variavel(lista_atual, $6.identificador));
         
-        // VERIFICANDO SE AS VARIAVEIS REALMENTE EXISTEM
-        if(strcmp(tipo_variavel_esquerda, CHAR_ERRO) && strcmp(tipo_variavel_direita, CHAR_ERRO)) {
+        // VERIFICANDO SE A VARIAVEL REALMENTE EXISTE
+        if(strcmp(tipo_variavel_direita, CHAR_ERRO)) {
             // VERIFICA SE OS TIPOS SAO IGUAIS E SAO `CADEIA`
-            if(
-                (!strcmp(tipo_variavel_esquerda, tipo_variavel_direita)) &&
-                (!strcmp(tipo_variavel_esquerda, "CADEIA"))
-            ) {
+            if((!strcmp(tipo_variavel_direita, "CADEIA"))) {
                 novo_valor_string = strdup(retornar_valor_string_de_variavel(lista_atual, $6.identificador));
                 string_concatenada = strdup(concatenar_strings($4.cadeia, novo_valor_string));
                 atualizar_variavel_cadeia(lista_atual, $2.identificador, string_concatenada);
@@ -815,13 +807,16 @@ char* retornar_valor_string_de_variavel(lista_t* lista, char* nome_variavel) {
 char* concatenar_strings(const char* string1, const char* string2) {
     char* resultado = NULL;
     char* aux = NULL;
-    
+
     // COPIANDO PRIMEIRA PARTE DA STRING
-    strcpy(resultado, string1);
+    resultado = strdup(string1);
     resultado[strlen(resultado) - 1] = '\0';
 
     // COPIANDO SEGUNDA PARTE DA STRING
-    strncpy(aux, (string2 + 1), (strlen(string2) - 1));
+    aux = strdup(string2 + 1);
+    aux[strlen(aux)] = '\0';
+
+    // UNINDO AS DUAS PARTES
     strcat(resultado, aux);
 
     return resultado;
