@@ -36,7 +36,7 @@ void deletar_lista(lista_t*);
 int vazia(escopo_t*);
 escopo_t* criar_pilha();
 void deletar_pilha(escopo_t*);
-void push(lista_t*);
+lista_t* push();
 lista_t* pop();
 
 // REGRAS DE NEGOCIO
@@ -68,9 +68,7 @@ comandos: comandos PRINT IDENTIFICADOR TERMINADOR {
         imprimir_variavel($3.identificador);
     } |
     comandos NOVO BLOCO {
-        push(lista_atual);
-        lista_atual = criar_lista();
-        lista_atual->ptr_proxima_lista = escopo_atual->ptr_topo;
+        lista_atual = push();
     } |
     comandos FIM BLOCO{ 
         lista_atual = pop();
@@ -357,6 +355,44 @@ concatenar: IDENTIFICADOR IGUAL STRING SOMA STRING TERMINADOR {
             atualizar_variavel_cadeia(lista_atual, $1.identificador, string_concatenada);
         }
     } |
+    IDENTIFICADOR IGUAL IDENTIFICADOR SOMA STRING TERMINADOR {
+        char* string_concatenada = NULL,
+            *novo_valor_string = NULL,
+            *tipo_variavel_esquerda = strdup(retornar_tipo_da_variavel(lista_atual, $1.identificador)),
+            *tipo_variavel_direita = strdup(retornar_tipo_da_variavel(lista_atual, $3.identificador));
+        
+        // VERIFICANDO SE AS VARIAVEIS REALMENTE EXISTEM
+        if(strcmp(tipo_variavel_esquerda, CHAR_ERRO) && strcmp(tipo_variavel_direita, CHAR_ERRO)) {
+            // VERIFICA SE OS TIPOS SAO IGUAIS E SAO `CADEIA`
+            if(
+                (!strcmp(tipo_variavel_esquerda, tipo_variavel_direita)) &&
+                (!strcmp(tipo_variavel_esquerda, "CADEIA"))
+            ) {
+                novo_valor_string = strdup(retornar_valor_string_de_variavel(lista_atual, $3.identificador));
+                string_concatenada = strdup(concatenar_strings(novo_valor_string, $5.cadeia));
+                atualizar_variavel_cadeia(lista_atual, $1.identificador, string_concatenada);
+            }
+        }
+    } |
+    IDENTIFICADOR IGUAL STRING SOMA IDENTIFICADOR TERMINADOR {
+        char* string_concatenada = NULL,
+            *novo_valor_string = NULL,
+            *tipo_variavel_esquerda = strdup(retornar_tipo_da_variavel(lista_atual, $1.identificador)),
+            *tipo_variavel_direita = strdup(retornar_tipo_da_variavel(lista_atual, $5.identificador));
+        
+        // VERIFICANDO SE AS VARIAVEIS REALMENTE EXISTEM
+        if(strcmp(tipo_variavel_esquerda, CHAR_ERRO) && strcmp(tipo_variavel_direita, CHAR_ERRO)) {
+            // VERIFICA SE OS TIPOS SAO IGUAIS E SAO `CADEIA`
+            if(
+                (!strcmp(tipo_variavel_esquerda, tipo_variavel_direita)) &&
+                (!strcmp(tipo_variavel_esquerda, "CADEIA"))
+            ) {
+                novo_valor_string = strdup(retornar_valor_string_de_variavel(lista_atual, $5.identificador));
+                string_concatenada = strdup(concatenar_strings($3.cadeia, novo_valor_string));
+                atualizar_variavel_cadeia(lista_atual, $1.identificador, string_concatenada);
+            }
+        }
+    } |
     TIPOCAD IDENTIFICADOR IGUAL STRING SOMA STRING TERMINADOR {
         char* string_concatenada = strdup(concatenar_strings($4.cadeia, $6.cadeia));
 
@@ -366,6 +402,44 @@ concatenar: IDENTIFICADOR IGUAL STRING SOMA STRING TERMINADOR {
             printf("Erro. Variavel ja foi declarada.\n");
         } else {
             inserir_string("CADEIA", $2.identificador, string_concatenada);
+        }
+    } |
+    TIPOCAD IDENTIFICADOR IGUAL IDENTIFICADOR SOMA STRING TERMINADOR {
+        char* string_concatenada = NULL,
+            *novo_valor_string = NULL,
+            *tipo_variavel_esquerda = strdup(retornar_tipo_da_variavel(lista_atual, $2.identificador)),
+            *tipo_variavel_direita = strdup(retornar_tipo_da_variavel(lista_atual, $4.identificador));
+        
+        // VERIFICANDO SE AS VARIAVEIS REALMENTE EXISTEM
+        if(strcmp(tipo_variavel_esquerda, CHAR_ERRO) && strcmp(tipo_variavel_direita, CHAR_ERRO)) {
+            // VERIFICA SE OS TIPOS SAO IGUAIS E SAO `CADEIA`
+            if(
+                (!strcmp(tipo_variavel_esquerda, tipo_variavel_direita)) &&
+                (!strcmp(tipo_variavel_esquerda, "CADEIA"))
+            ) {
+                novo_valor_string = strdup(retornar_valor_string_de_variavel(lista_atual, $4.identificador));
+                string_concatenada = strdup(concatenar_strings(novo_valor_string, $6.cadeia));
+                atualizar_variavel_cadeia(lista_atual, $2.identificador, string_concatenada);
+            }
+        }
+    } |
+    TIPOCAD IDENTIFICADOR IGUAL STRING SOMA IDENTIFICADOR TERMINADOR {
+        char* string_concatenada = NULL,
+            *novo_valor_string = NULL,
+            *tipo_variavel_esquerda = strdup(retornar_tipo_da_variavel(lista_atual, $2.identificador)),
+            *tipo_variavel_direita = strdup(retornar_tipo_da_variavel(lista_atual, $6.identificador));
+        
+        // VERIFICANDO SE AS VARIAVEIS REALMENTE EXISTEM
+        if(strcmp(tipo_variavel_esquerda, CHAR_ERRO) && strcmp(tipo_variavel_direita, CHAR_ERRO)) {
+            // VERIFICA SE OS TIPOS SAO IGUAIS E SAO `CADEIA`
+            if(
+                (!strcmp(tipo_variavel_esquerda, tipo_variavel_direita)) &&
+                (!strcmp(tipo_variavel_esquerda, "CADEIA"))
+            ) {
+                novo_valor_string = strdup(retornar_valor_string_de_variavel(lista_atual, $6.identificador));
+                string_concatenada = strdup(concatenar_strings($4.cadeia, novo_valor_string));
+                atualizar_variavel_cadeia(lista_atual, $2.identificador, string_concatenada);
+            }
         }
     }
     ;
@@ -484,14 +558,18 @@ void deletar_pilha(escopo_t* pilha) {
     return;
 }
 
-void push(lista_t* lista) {
+lista_t* push() {
+    // REINICIANDO A LISTA
+    lista_t* lista = NULL;
+    lista = criar_lista();
+
     // INSERINDO UMA NOVA LISTA NO TOPO DA PILHA
     lista->ptr_proxima_lista = escopo_atual->ptr_topo;   
 
     // ATUALIZANDO OS PONTEIROS
     escopo_atual->ptr_topo = lista;
 
-    return;
+    return lista;
 }
 
 lista_t* pop() {

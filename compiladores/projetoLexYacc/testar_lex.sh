@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 flex ./src/lex.l
 mv ./lex.yy.c ./test/
