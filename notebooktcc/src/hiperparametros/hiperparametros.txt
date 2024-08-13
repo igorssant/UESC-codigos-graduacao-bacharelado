@@ -1,6 +1,0 @@
-semente_randomica = 42
-nro_iteracoes_inicial = 1
-nro_maximo_iteracoes = 300,
-metodo_inicialiozacao = "random"
-nro_clusters = 2
-parametro_fuzzy = 2
