@@ -51,13 +51,22 @@ class Kmeans:
         return self._kmeans.n_features_in_
     
     def fit(self, X:pd.DataFrame, sample_weight:np.array = None) -> KMeans:
-        return self._kmeans.fit(X = X, sample_weight = sample_weight)
+        if sample_weight is not None:
+            return self._kmeans.fit(X = X, sample_weight = sample_weight)
+        else:
+            return self._kmeans.fit(X = X)
     
     def fit_predict(self, X:pd.DataFrame, sample_weight:np.array = None) -> KMeans:
-        return self._kmeans.fit_predict(X = X, sample_weight = sample_weight)
-        
+        if sample_weight is not None:
+            return self._kmeans.fit_predict(X = X, sample_weight = sample_weight)
+        else:
+            return self._kmeans.fit_predict(X = X)
+    
     def fit_transform(self, X:pd.DataFrame, sample_weight:np.array = None) -> np.array:
-        return self._kmeans.fit_transform(X = X, sample_weight = sample_weight)
+        if sample_weight is not None:
+            return self._kmeans.fit_transform(X = X, sample_weight = sample_weight)
+        else:
+            return self._kmeans.fit_transform(X = X)
     
     def get_feature_names_out(self, input_features:np.array = None) -> np.array:
         return self._kmeans.get_feature_names_out(input_features)
@@ -66,10 +75,16 @@ class Kmeans:
         return self._kmeans.get_params(deep)
     
     def predict(self, X:pd.DataFrame, sample_weight:np.array = None) -> np.array:
-        return self._kmeans.predict(X = X, sample_weight = sample_weight)
+        if sample_weight is not None:
+            return self._kmeans.predict(X = X, sample_weight = sample_weight)
+        else:
+            return self._kmeans.predict(X = X)
     
     def score(self, X:pd.DataFrame, sample_weight:np.array = None) -> float:
-        return self._kmeans.score(X = X, sample_weight = sample_weight)
+        if sample_weight is not None:
+            return self._kmeans.score(X = X, sample_weight = sample_weight)
+        else:
+            return self._kmeans.score(X = X)
     
     def set_params(self, **params) -> KMeans:
         return self._kmeans.set_params(params = params)
