@@ -1,0 +1,8 @@
+epocas = 0.5
+peso_minimo = 5
+metrica = euclidean
+algoritmo = auto
+tamanho_folha = 30
+metrica_minkowski = None
+nro_threads = 
+semente_randomica = 42

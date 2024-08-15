@@ -327,3 +327,105 @@ class ParametrosCmeans:
     def setNro_threads(self, nro_threads:int) -> None:
         self._nro_threads_ = nro_threads
 # FIM CLASSE ParametrosCmeans
+
+class ParametrosDBSCAN:
+    
+    
+    # ===================================== #
+    # METODO CONSTRUTOR                     #
+    # ===================================== #
+    def __init__(self,
+                 epocas:float = 0.5,
+                 peso_minimo:int = 5,
+                 metrica:str = "euclidean",
+                 parametros_metrica:dict|None = None,
+                 algoritmo:str = "auto",
+                 tamanho_folha:int = 30,
+                 metrica_minkowski:float|None = None,
+                 nro_threads:int|None = None,
+                 semente_randomica:int = 42,
+                 path_arquivo_hiperparametros:str|None = None) -> None:
+        if path_arquivo_hiperparametros is not None:
+            self._epocas_ = epocas
+            self._peso_minimo_ = peso_minimo
+            self._metrica_ = metrica
+            self._algoritmo_ = algoritmo
+            self._tamanho_folha_ = tamanho_folha
+            self._metrica_minkowski_ = metrica_minkowski
+            self._nro_threads_ = nro_threads
+            self._semente_randomica_ = semente_randomica
+            
+        else:
+            with open(file = path_arquivo_hiperparametros, mode = "r") as arquivo:
+                self._epocas_ = int(pegarsubstring.substring(arquivo.readline()))
+                self._peso_minimo_ = int(pegarsubstring.substring(arquivo.readline()))
+                self._metrica_ = pegarsubstring.substring(arquivo.readline())
+                self._algoritmo_ = pegarsubstring.substring(arquivo.readline())
+                self._tamanho_folha_ = pegarsubstring.substring(arquivo.readline())
+                self._metrica_minkowski_ = pegarsubstring.substring(arquivo.readline())
+                self._nro_threads_ = pegarsubstring.substring(arquivo.readline())
+                self._semente_randomica_ = pegarsubstring.substring(arquivo.readline())
+                
+        self._parametros_metrica_ = parametros_metrica
+    # FIM DO METODO CONSTRUTOR
+
+    # ===================================== #
+    # METODOS GETTER                        #
+    # ===================================== #
+    def getEpocas(self) -> int:
+        return self._epocas_
+
+    def getPeso_minimo(self) -> int:
+        return self._peso_minimo_
+    
+    def getMetrica(self) -> int:
+        return self._metrica_
+    
+    def getParametros_metrica(self) -> dict|None:
+        return self._parametros_metrica_
+    
+    def getAlgoritmo(self) -> str:
+        return self._algoritmo_
+    
+    def getTamanho_folha(self) -> int:
+        return self._tamanho_folha_
+    
+    def getMetricaMinkowski(self) -> float:
+        return self._metrica_minkowski_
+    
+    def getNro_threads(self) -> int:
+        return self._nro_threads_
+    
+    def getSemente_randomica(self) -> int:
+        return self._semente_randomica_
+
+    # ===================================== #
+    # METODOS SETTER                        #
+    # ===================================== #
+    def setEpocas(self, epocas:int) -> None:
+        self._epocas_ = epocas
+
+    def setPeso_minimo(self, peso_minimo:int) -> None:
+        self._peso_minimo_ = peso_minimo
+    
+    def setMetrica(self, metrica:int) -> None:
+        self._metrica_ = metrica
+    
+    def setParametros_metrica(self, parametros_metrica:dict) -> None:
+        self._parametros_metrica_ = parametros_metrica
+    
+    def setAlgoritmo(self, algoritmo:str) -> None:
+        self._algoritmo_ = algoritmo
+    
+    def setTamanho_folha(self, tamanho_folha:int) -> None:
+        self._tamanho_folha_ = tamanho_folha
+    
+    def setMetricaMinkowski(self, metrica_minkowski:float) -> None:
+        self._metrica_minkowski_ = metrica_minkowski
+    
+    def setNro_threads(self, nro_threads:int) -> None:
+        self._nro_threads_ = nro_threads
+        
+    def setSemente_randomica(self, semente_randomica:int) -> None:
+        self._semente_randomica_ = semente_randomica
+# FIM CLASSE ParametrosDBSCAN
