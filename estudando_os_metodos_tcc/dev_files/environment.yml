@@ -1,0 +1,16 @@
+name: .tcc-igorsousa-venv
+channels:
+  - conda-forge
+dependencies:
+  - python==3.12.3
+  - pandas
+  - numpy
+  - matplotlib
+  - nbformat
+  - ipykernel
+  - openpyxl
+  - scikit-learn
+  - pip
+  - seaborn
+  - pip:
+    - fuzzy-c-means
