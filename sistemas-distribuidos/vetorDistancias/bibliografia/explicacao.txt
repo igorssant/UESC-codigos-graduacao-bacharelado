@@ -1,0 +1,76 @@
+MPI.COMM_WORLD.send(
+    dados,              // dados a serem enviados
+    7,                  // quantidade de dados
+    MPI.SHORT,          // tipos dos dados
+    1,                  // para quem enviar
+    tag                 // nao entendi essa parte, mas serve pra universalizar os pacotes
+);
+
+MPI.COMM_WORLD.recv(
+    dados,              // dados a serem enviados
+    7,                  // quantidade de dados
+    MPI.SHORT,          // tipos dos dados
+    MPI.ANY_SOURCE,     // de quem receber
+    tag                 // nao entendi essa parte, mas serve pra universalizar os pacotes
+);
+
+
+
+
+for(Integer i = 0; i < 10; i++) {            
+            if (idProcesso == 0) {
+                for(No vertice : grafo) {
+                    for(No no : vertice.getVizinhos()) {
+                        MPI.COMM_WORLD.send(vertice.getVetorDeDistancias(), 7, MPI.SHORT, conversaoVizinhos.get(no.getNomeNo()), 0);
+                    }
+                }
+            } else if(idProcesso == 1) {
+                for(No vertice : grafo) {
+                    for(No no : vertice.getVizinhos()) {
+                        MPI.COMM_WORLD.recv(bufferResposta[0], 7, MPI.SHORT, conversaoVizinhos.get(no.getNomeNo()), 0);
+                        vertice.atualizarVetorDeDistancias(bufferResposta[0]);
+                    }
+                }
+            } else if(idProcesso == 2) {
+                for(No vertice : grafo) {
+                    for(No no : vertice.getVizinhos()) {
+                        MPI.COMM_WORLD.recv(bufferResposta[1], 7, MPI.SHORT, conversaoVizinhos.get(no.getNomeNo()), 0);
+                        vertice.atualizarVetorDeDistancias(bufferResposta[1]);
+                    }
+                }
+            } else if(idProcesso == 3) {
+                for(No vertice : grafo) {
+                    for(No no : vertice.getVizinhos()) {
+                        MPI.COMM_WORLD.recv(bufferResposta[2], 7, MPI.SHORT, conversaoVizinhos.get(no.getNomeNo()), 0);
+                        vertice.atualizarVetorDeDistancias(bufferResposta[2]);
+                    }
+                }
+            } else if(idProcesso == 4) {
+                for(No vertice : grafo) {
+                    for(No no : vertice.getVizinhos()) {
+                        MPI.COMM_WORLD.recv(bufferResposta[3], 7, MPI.SHORT, conversaoVizinhos.get(no.getNomeNo()), 0);
+                        vertice.atualizarVetorDeDistancias(bufferResposta[3]);
+                    }
+                }
+            } else if(idProcesso == 5) {
+                for(No vertice : grafo) {
+                    for(No no : vertice.getVizinhos()) {
+                        MPI.COMM_WORLD.recv(bufferResposta[4], 7, MPI.SHORT, conversaoVizinhos.get(no.getNomeNo()), 0);
+                        vertice.atualizarVetorDeDistancias(bufferResposta[4]);
+                    }
+                }
+            } else if(idProcesso == 6) {
+                for(No vertice : grafo) {
+                    for(No no : vertice.getVizinhos()) {
+                        MPI.COMM_WORLD.recv(bufferResposta[6], 7, MPI.SHORT, conversaoVizinhos.get(no.getNomeNo()), 0);
+                        vertice.atualizarVetorDeDistancias(bufferResposta[6]);
+                    }
+                }
+            } else if(idProcesso == 7) {
+                for(No vertice : grafo) {
+                    for(No no : vertice.getVizinhos()) {
+                        MPI.COMM_WORLD.recv(bufferResposta[6], 7, MPI.SHORT, conversaoVizinhos.get(no.getNomeNo()), 0);
+                        vertice.atualizarVetorDeDistancias(bufferResposta[6]);
+                    }
+                }
+            }
